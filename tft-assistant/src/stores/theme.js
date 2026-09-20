@@ -6,17 +6,17 @@ const presetThemes = [
   {
     name: '暗夜金铲铲',
     colors: {
-      '--bg-primary': '#0f172a',
-      '--bg-secondary': '#1e293b',
-      '--bg-card': '#1e293b',
-      '--bg-card-hover': '#273549',
-      '--text-primary': '#e2e8f0',
-      '--text-secondary': '#94a3b8',
-      '--accent-color': '#818cf8',
-      '--accent-hover': '#6366f1',
-      '--border-color': '#334155',
-      '--nav-bg': 'rgba(0, 0, 0, 0.3)',
-      '--shadow-color': 'rgba(99, 102, 241, 0.15)',
+      '--bg-primary': '#080d16',
+      '--bg-secondary': '#0e1524',
+      '--bg-card': '#101a2e',
+      '--bg-card-hover': '#16233c',
+      '--text-primary': '#e8eef9',
+      '--text-secondary': '#93a2bf',
+      '--accent-color': '#33e6d5',
+      '--accent-hover': '#17d0be',
+      '--border-color': '#1e2c49',
+      '--nav-bg': 'rgba(5, 8, 14, 0.72)',
+      '--shadow-color': 'rgba(51, 230, 213, 0.16)',
     }
   },
   {
