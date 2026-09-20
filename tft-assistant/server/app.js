@@ -16,6 +16,7 @@ import feedbackRoutes from './routes/feedbackRoutes.js'
 import lineupRoutes from './routes/lineupRoutes.js'
 import tftDataRoutes from './routes/tftDataRoutes.js'
 import matchRecordRoutes from './routes/matchRecordRoutes.js'
+import aiRoutes from './routes/aiRoutes.js'
 
 dotenv.config()
 
@@ -80,6 +81,7 @@ app.use('/api/feedback', feedbackRoutes)
 app.use('/api/lineups', lineupRoutes)
 app.use('/api/tft', tftDataRoutes)
 app.use('/api/records', matchRecordRoutes)
+app.use('/api/ai', aiRoutes)
 
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: '服务正常运行' })

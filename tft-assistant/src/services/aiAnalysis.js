@@ -2,121 +2,88 @@
 // High Accuracy Vision Analysis with Multi-frame Verification
 
 import { ocrService } from './ocrService'
+import { aiApi } from './api'
 
 class AIAnalysisService {
   constructor() {
-    this.apiKey = localStorage.getItem('ai_api_key') || ''
+    // 密钥仅存在于服务端，浏览器不再保存任何 API Key
     this.apiProvider = localStorage.getItem('ai_provider') || 'qwen'
+    this.serverConfigured = false
     this.lastAnalysis = null
     this.analysisCount = 0
     this.ocrInitialized = false
-    
+
     // 历史分析缓存（用于多帧比对）
     this.historyBuffer = []
     this.maxHistorySize = 5
-    
+
     // 识别置信度阈值
     this.confidenceThreshold = 0.7
-    
-    // 国内Vision服务商配置（无需VPN）
-    // 注意：DeepSeek官方API（api.deepseek.com）只支持纯文本，不支持图片！
-    // DeepSeek-VL2是开源模型，需要自己部署，不能通过DeepSeek官方API调用
+
+    // Vision 服务商展示信息（实际请求统一走后端 /api/ai/chat 代理）
     this.visionProviders = {
-      qwen: {
-        name: '阿里云通义千问',
-        url: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
-        model: 'qwen3-vl-plus',
-        format: 'openai'
-      },
-      zhipu: {
-        name: '智谱AI',
-        url: 'https://open.bigmodel.cn/api/paas/v4/chat/completions',
-        model: 'glm-4v-flash',
-        format: 'openai'
-      }
+      qwen: { name: '阿里云通义千问', model: 'qwen3-vl-plus' },
+      zhipu: { name: '智谱AI', model: 'glm-4v-flash' }
     }
   }
 
-  // Configure AI service
+  // 从服务端获取配置状态（不接触密钥内容）
+  async fetchServerStatus() {
+    try {
+      const { data } = await aiApi.getStatus()
+      this.serverConfigured = !!data.data.configured
+      if (!localStorage.getItem('ai_provider') && data.data.defaultProvider) {
+        this.apiProvider = data.data.defaultProvider
+      }
+      return data.data
+    } catch (e) {
+      this.serverConfigured = false
+      return null
+    }
+  }
+
+  // Configure AI service（仅保存服务商偏好，无密钥）
   configure(config) {
-    this.apiKey = config.apiKey
-    this.apiProvider = config.provider || 'openai'
-    localStorage.setItem('ai_api_key', this.apiKey)
-    localStorage.setItem('ai_provider', this.apiProvider)
+    if (config.provider) {
+      this.apiProvider = config.provider
+      localStorage.setItem('ai_provider', this.apiProvider)
+    }
   }
 
-  // Check if AI is configured
+  // Check if AI is configured（依据服务端状态）
   isConfigured() {
-    return this.apiKey && this.apiKey.length > 0
+    return this.serverConfigured
   }
 
-  // Get current configuration
+  // Get current configuration（不返回任何密钥）
   getConfig() {
     return {
-      apiKey: this.apiKey,
       provider: this.apiProvider
     }
   }
 
+  // 统一代理调用：所有厂商请求经服务端转发
+  async callProvider({ provider, messages, model, maxTokens = 1000, temperature = 0.7 }) {
+    const { data } = await aiApi.chat({
+      provider: provider || this.apiProvider,
+      messages,
+      model,
+      maxTokens,
+      temperature
+    })
+    return data.data
+  }
+
   // Test API connection with a simple text request
   async testAPI() {
-    if (!this.isConfigured()) {
-      throw new Error('请先配置API Key')
-    }
-
-    let url, model, headers
-    
-    if (this.apiProvider === 'openai') {
-      url = 'https://api.openai.com/v1/chat/completions'
-      model = 'gpt-4o'
-      headers = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`
-      }
-    } else if (this.visionProviders[this.apiProvider]) {
-      const providerConfig = this.visionProviders[this.apiProvider]
-      url = providerConfig.url
-      model = providerConfig.model
-      headers = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`
-      }
-    } else {
-      throw new Error('不支持的服务商')
-    }
-
-    console.log(`测试API: ${this.apiProvider}, URL: ${url}, Model: ${model}`)
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify({
-        model: model,
-        messages: [
-          {
-            role: 'user',
-            content: '请返回OK'
-          }
-        ],
-        max_tokens: 10,
-        temperature: 0
-      })
+    const data = await this.callProvider({
+      messages: [{ role: 'user', content: '请返回OK' }],
+      maxTokens: 10,
+      temperature: 0
     })
 
-    if (!response.ok) {
-      let errorMsg = `API请求失败，状态码: ${response.status}`
-      try {
-        const errorData = await response.json()
-        errorMsg += `, 错误信息: ${JSON.stringify(errorData)}`
-      } catch (e) {
-        errorMsg += `, 无法解析错误信息`
-      }
-      throw new Error(errorMsg)
-    }
-
-    const data = await response.json()
     const content = data.choices?.[0]?.message?.content || ''
-    
+
     if (content.trim().includes('OK')) {
       return { success: true, message: 'API连接测试成功', provider: this.apiProvider }
     } else {
@@ -215,7 +182,7 @@ class AIAnalysisService {
   // Analyze game screen using AI
   async analyzeScreen(videoElement) {
     if (!this.isConfigured()) {
-      throw new Error('请先配置AI API密钥')
+      throw new Error('服务端未配置AI密钥，请联系管理员在环境变量中设置 AI_API_KEY')
     }
 
     if (!videoElement) {
@@ -224,15 +191,16 @@ class AIAnalysisService {
 
     try {
       this.analysisCount++
-      
+
       const imageBase64 = this.captureFrame(videoElement)
-      
+
       if (this.apiProvider === 'openai') {
         return await this.analyzeWithOpenAI(imageBase64)
       } else if (this.visionProviders[this.apiProvider]) {
         return await this.analyzeWithDeepSeekVision(imageBase64)
       } else {
-        return await this.analyzeWithCustomAPI(videoElement)
+        // 未知服务商，统一走代理由服务端处理
+        return await this.analyzeWithDeepSeekVision(imageBase64)
       }
     } catch (error) {
       console.error('AI Analysis failed:', error)
@@ -240,108 +208,68 @@ class AIAnalysisService {
     }
   }
 
-  // Analyze with OpenAI Vision API
+  // Analyze with OpenAI Vision API（经服务端代理）
   async analyzeWithOpenAI(imageBase64) {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o',
-        messages: [
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'text',
-                text: this.getVisionAnalysisPrompt()
-              },
-              {
-                type: 'image_url',
-                image_url: {
-                  url: `data:image/jpeg;base64,${imageBase64}`,
-                  detail: 'low' // Use low detail to save costs
-                }
-              }
-            ]
-          }
-        ],
-        max_tokens: 1000,
-        temperature: 0.7
-      })
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.error?.message || 'OpenAI API请求失败')
-    }
-
-    const data = await response.json()
-    const analysisText = data.choices[0]?.message?.content || ''
-    
-    return this.parseAIResponse(analysisText, true)
-  }
-
-  // Analyze with Vision API (支持阿里云通义千问、智谱AI、DeepSeek)
-  async analyzeWithDeepSeekVision(imageBase64) {
-    const providerConfig = this.visionProviders[this.apiProvider] || this.visionProviders.qwen
-    
-    console.log(`使用Vision服务商: ${providerConfig.name}`)
-    
-    const requestBody = {
-      model: providerConfig.model,
+    const data = await this.callProvider({
       messages: [
         {
           role: 'user',
           content: [
-            {
-              type: 'text',
-              text: this.getVisionAnalysisPrompt()
-            },
+            { type: 'text', text: this.getVisionAnalysisPrompt() },
             {
               type: 'image_url',
               image_url: {
-                url: `data:image/jpeg;base64,${imageBase64}`
+                url: `data:image/jpeg;base64,${imageBase64}`,
+                detail: 'low' // 低细节模式节省成本
               }
             }
           ]
         }
       ],
-      max_tokens: 1000,
-      temperature: 0.1
-    }
-    
-    const response = await fetch(providerConfig.url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`
-      },
-      body: JSON.stringify(requestBody)
+      maxTokens: 1000,
+      temperature: 0.7
     })
 
-    if (!response.ok) {
-      const errorData = await response.json()
-      console.error(`${providerConfig.name} API错误:`, errorData)
-      throw new Error(errorData.error?.message || `${providerConfig.name} API请求失败 (${response.status})`)
-    }
-
-    const data = await response.json()
-    console.log(`${providerConfig.name}完整响应:`, JSON.stringify(data, null, 2))
-    
     const analysisText = data.choices?.[0]?.message?.content || ''
-    
+    return this.parseAIResponse(analysisText, true)
+  }
+
+  // Analyze with Vision API（通义千问/智谱，经服务端代理）
+  async analyzeWithDeepSeekVision(imageBase64) {
+    const providerConfig = this.visionProviders[this.apiProvider] || this.visionProviders.qwen
+
+    console.log(`使用Vision服务商: ${providerConfig.name}`)
+
+    const data = await this.callProvider({
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: this.getVisionAnalysisPrompt() },
+            {
+              type: 'image_url',
+              image_url: { url: `data:image/jpeg;base64,${imageBase64}` }
+            }
+          ]
+        }
+      ],
+      maxTokens: 1000,
+      temperature: 0.1
+    })
+
+    const message = data.choices?.[0]?.message
+    const analysisText = message?.content || ''
+
     if (!analysisText) {
-      const reasoningContent = data.choices?.[0]?.message?.reasoning_content || ''
+      // 部分推理模型正文在 reasoning_content
+      const reasoningContent = message?.reasoning_content || ''
       if (reasoningContent) {
         console.log('使用reasoning_content:', reasoningContent)
         return this.parseAIResponse(reasoningContent, true)
       }
       throw new Error(`${providerConfig.name}返回内容为空`)
     }
-    
+
     return this.parseAIResponse(analysisText, true)
   }
 
@@ -357,73 +285,33 @@ class AIAnalysisService {
 
     console.log('OCR识别结果:', ocrResult)
 
-    // 第二步：将OCR识别的文字信息发送给DeepSeek分析
+    // 第二步：将OCR识别的文字信息经服务端代理发送给DeepSeek分析
     const textPrompt = this.getTextAnalysisPrompt(ocrResult)
-    
-    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`
-      },
-      body: JSON.stringify({
-        model: 'deepseek-v4-flash',
-        messages: [
-          {
-            role: 'user',
-            content: textPrompt
-          }
-        ],
-        max_tokens: 1000,
-        temperature: 0.7
-      })
+
+    const data = await this.callProvider({
+      provider: 'deepseek',
+      model: 'deepseek-chat',
+      messages: [{ role: 'user', content: textPrompt }],
+      maxTokens: 1000,
+      temperature: 0.7
     })
 
-    if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.error?.message || 'DeepSeek API请求失败')
-    }
+    const analysisText = data.choices?.[0]?.message?.content || ''
 
-    const data = await response.json()
-    const analysisText = data.choices[0]?.message?.content || ''
-    
     // 合并OCR识别的数字信息
     const parsedResult = this.parseAIResponse(analysisText, true)
-    
+
     // 用OCR识别的数字覆盖AI分析结果（OCR更准确）
     if (ocrResult.goldNumber) parsedResult.gold = ocrResult.goldNumber.toString()
     if (ocrResult.healthNumber) parsedResult.health = ocrResult.healthNumber.toString()
     if (ocrResult.levelNumber) parsedResult.level = ocrResult.levelNumber.toString()
-    
+
     return parsedResult
   }
 
-  // Analyze with custom API
-  async analyzeWithCustomAPI(videoElement) {
-    const customEndpoint = localStorage.getItem('ai_custom_endpoint') || ''
-    if (!customEndpoint) {
-      throw new Error('请配置自定义API端点')
-    }
-
-    const imageBase64 = this.captureFrame(videoElement)
-    const response = await fetch(customEndpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`
-      },
-      body: JSON.stringify({
-        image: imageBase64,
-        prompt: this.getVisionAnalysisPrompt()
-      })
-    })
-
-    if (!response.ok) {
-      throw new Error('自定义API请求失败')
-    }
-
-    const data = await response.json()
-    return this.parseAIResponse(data.analysis || data.result || '', true)
+  // 自定义端点直连已废弃（密钥不能再保存在浏览器）
+  async analyzeWithCustomAPI() {
+    throw new Error('自定义直连已停用，请在服务端环境变量中配置 AI Key 后使用标准服务商')
   }
 
   // Vision分析提示词（用于OpenAI等支持图片的AI）

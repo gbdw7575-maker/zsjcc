@@ -395,42 +395,19 @@
               <el-option label="阿里云通义千问 (推荐，数字识别准确)" value="qwen" />
               <el-option label="智谱AI GLM-4V (便宜)" value="zhipu" />
               <el-option label="OpenAI GPT-4 Vision (需VPN)" value="openai" />
-              <el-option label="自定义API" value="custom" />
             </el-select>
           </el-form-item>
-          
-          <el-form-item label="API Key">
-            <el-input 
-              v-model="aiConfigForm.apiKey"
-              type="password"
-              placeholder="请输入您的API Key"
-              show-password
-            />
-          </el-form-item>
-          
-          <!-- API Key获取链接 -->
-          <div class="text-xs text-gray-500 mb-2">
-            <span v-if="aiConfigForm.provider === 'qwen'">
-              获取API Key: 
-              <a href="https://dashscope.console.aliyun.com/" target="_blank" class="text-blue-500 hover:underline">阿里云DashScope控制台</a>
-            </span>
-            <span v-else-if="aiConfigForm.provider === 'zhipu'">
-              获取API Key: 
-              <a href="https://open.bigmodel.cn/" target="_blank" class="text-blue-500 hover:underline">智谱AI开放平台</a>
-            </span>
-            <span v-else-if="aiConfigForm.provider === 'openai'">
-              获取API Key: 
-              <a href="https://platform.openai.com/api-keys" target="_blank" class="text-blue-500 hover:underline">OpenAI API Keys</a>
+
+          <!-- 密钥状态由服务端环境变量决定，浏览器不再输入/保存密钥 -->
+          <div class="p-3 rounded-lg border mb-2"
+               :class="isAIConfigured ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'">
+            <span class="text-sm">
+              {{ isAIConfigured ? '✅ 服务端 AI 密钥已配置' : '⚠️ 服务端尚未配置 AI 密钥（AI_API_KEY）' }}
             </span>
           </div>
-          
-          <div v-if="aiConfigForm.provider === 'custom'" class="space-y-3">
-            <el-form-item label="自定义API端点">
-              <el-input 
-                v-model="aiConfigForm.customEndpoint"
-                placeholder="https://your-api-endpoint.com/analyze"
-              />
-            </el-form-item>
+
+          <div class="text-xs text-gray-500">
+            密钥由管理员在服务端 .env 中统一配置，浏览器不再保存或传输 API Key。
           </div>
         </el-form>
         
@@ -478,9 +455,7 @@ const isDemoMode = ref(false)
 // AI Configuration
 const showAIConfig = ref(false)
 const aiConfigForm = ref({
-  apiKey: '',
-  provider: 'qwen',  // 默认使用阿里云通义千问（国内无需VPN）
-  customEndpoint: ''
+  provider: 'qwen' // 仅保存服务商偏好；密钥由服务端管理
 })
 const isAIConfigured = ref(false)
 const lastAnalysisType = ref('') // 'AI' or 'Mock'
@@ -809,54 +784,34 @@ const updateAnalysisData = (analysis) => {
 }
 
 // Open AI configuration dialog
-const openAIConfig = () => {
+const openAIConfig = async () => {
   const config = aiAnalysisService.getConfig()
-  aiConfigForm.value.apiKey = config.apiKey
   aiConfigForm.value.provider = config.provider
+  // 每次打开对话框刷新服务端密钥状态
+  await checkAIConfig()
   showAIConfig.value = true
 }
 
-// Save AI configuration
+// Save AI configuration（仅服务商偏好）
 const saveAIConfig = async () => {
-  if (!aiConfigForm.value.apiKey) {
-    ElMessage.warning('请输入API Key')
-    return
-  }
-  
-  aiAnalysisService.configure({
-    apiKey: aiConfigForm.value.apiKey,
-    provider: aiConfigForm.value.provider
-  })
-  
-  if (aiConfigForm.value.customEndpoint) {
-    localStorage.setItem('ai_custom_endpoint', aiConfigForm.value.customEndpoint)
-  }
-  
-  const providerTips = {
-    qwen: '阿里云通义千问已配置，数字识别准确，无需VPN',
-    zhipu: '智谱AI已配置，价格便宜，无需VPN',
-    openai: 'OpenAI已配置，需要VPN访问'
-  }
-  
-  isAIConfigured.value = true
+  aiAnalysisService.configure({ provider: aiConfigForm.value.provider })
+
+  isAIConfigured.value = aiAnalysisService.isConfigured()
   showAIConfig.value = false
-  ElMessage.success(providerTips[aiConfigForm.value.provider] || 'AI配置已保存')
+
+  if (!isAIConfigured.value) {
+    ElMessage.warning('偏好已保存，但服务端尚未配置 AI 密钥')
+  } else {
+    ElMessage.success('AI 服务商偏好已保存')
+  }
 }
 
-// Test API connection
+// Test API connection（通过服务端代理）
 const testAIConnection = async () => {
-  if (!aiConfigForm.value.apiKey) {
-    ElMessage.warning('请先输入API Key')
-    return
-  }
-  
+  aiAnalysisService.configure({ provider: aiConfigForm.value.provider })
+
   ElMessage.info('正在测试API连接...')
-  
-  aiAnalysisService.configure({
-    apiKey: aiConfigForm.value.apiKey,
-    provider: aiConfigForm.value.provider
-  })
-  
+
   try {
     const result = await aiAnalysisService.testAPI()
     if (result.success) {
@@ -870,13 +825,12 @@ const testAIConnection = async () => {
   }
 }
 
-// Check AI configuration on mount
-const checkAIConfig = () => {
-  isAIConfigured.value = aiAnalysisService.isConfigured()
-  if (isAIConfigured.value) {
-    const config = aiAnalysisService.getConfig()
-    aiConfigForm.value.apiKey = config.apiKey
-    aiConfigForm.value.provider = config.provider
+// Check AI configuration on mount（从服务端获取，无密钥内容）
+const checkAIConfig = async () => {
+  const status = await aiAnalysisService.fetchServerStatus()
+  isAIConfigured.value = !!status?.configured
+  if (status?.defaultProvider && !localStorage.getItem('ai_provider')) {
+    aiConfigForm.value.provider = status.defaultProvider
   }
 }
 

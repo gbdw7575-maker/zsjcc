@@ -153,4 +153,10 @@ export const recordApi = {
   delete: (id) => api.delete(`/records/${id}`)
 }
 
+export const aiApi = {
+  // 服务端代理调用，浏览器不接触密钥
+  chat: (data) => api.post('/ai/chat', data),
+  getStatus: () => api.get('/ai/status')
+}
+
 export default api
