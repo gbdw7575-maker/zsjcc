@@ -85,13 +85,20 @@ const io = new Server(server, {
 
 const onlineUsers = new Map()
 
-io.use((socket, next) => {
+io.use(async (socket, next) => {
   const token = socket.handshake.auth.token
   if (!token) {
     return next(new Error('未授权'))
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    const user = await User.findById(decoded.id)
+    if (!user) {
+      return next(new Error('用户不存在'))
+    }
+    if (user.isBanned) {
+      return next(new Error('账号已被封禁'))
+    }
     socket.userId = decoded.id
     next()
   } catch (error) {

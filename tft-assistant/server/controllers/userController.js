@@ -47,6 +47,10 @@ export const login = async (req, res) => {
       return res.status(401).json({ success: false, message: '用户名或密码错误' })
     }
 
+    if (user.isBanned) {
+      return res.status(403).json({ success: false, message: '账号已被封禁，请联系管理员' })
+    }
+
     res.json({
       success: true,
       data: {

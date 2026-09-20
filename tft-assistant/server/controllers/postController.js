@@ -42,6 +42,15 @@ export const getPostById = async (req, res) => {
       return res.status(404).json({ success: false, message: '帖子不存在' })
     }
 
+    // 非 published 帖仅作者本人或管理员可见，防止直链绕过审核
+    if (post.status !== 'published') {
+      const isOwner = req.user && post.author._id.toString() === req.user._id.toString()
+      const isAdmin = req.user && req.user.role === 'admin'
+      if (!isOwner && !isAdmin) {
+        return res.status(404).json({ success: false, message: '帖子不存在或未发布' })
+      }
+    }
+
     post.views += 1
     await post.save()
 
