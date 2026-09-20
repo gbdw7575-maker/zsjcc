@@ -9,6 +9,7 @@ import User from './models/User.js'
 import { setIo } from './services/socketStore.js'
 import { createAndDeliverMessage } from './services/messageService.js'
 import { FixedWindowRateLimiter } from './services/messagePolicy.js'
+import { corsOrigin } from './config/cors.js'
 
 const PORT = process.env.PORT || 3000
 const server = createServer(app)
@@ -73,14 +74,8 @@ start()
 
 const io = new Server(server, {
   cors: {
-    origin: function (origin, callback) {
-      const allowed = ['http://localhost:5173', 'http://localhost:5174', 'http://127.0.0.1:5173', 'http://127.0.0.1:5174']
-      if (!origin || allowed.includes(origin)) {
-        callback(null, true)
-      } else {
-        callback(new Error('Not allowed by CORS'))
-      }
-    },
+    // 与 REST 共用统一白名单，部署时设置 CLIENT_URL 即可
+    origin: corsOrigin,
     methods: ['GET', 'POST']
   }
 })

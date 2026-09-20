@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit'
 import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { corsOrigin } from './config/cors.js'
 import userRoutes from './routes/userRoutes.js'
 import postRoutes from './routes/postRoutes.js'
 import socialRoutes from './routes/socialRoutes.js'
@@ -28,18 +29,9 @@ const app = express()
 // 安全 headers
 app.use(helmet())
 
-// CORS - 允许本地开发端口
-const allowedOrigins = process.env.CLIENT_URL
-  ? [process.env.CLIENT_URL]
-  : ['http://localhost:5173', 'http://localhost:5174', 'http://127.0.0.1:5173', 'http://127.0.0.1:5174']
+// CORS：与 Socket.IO 共用统一白名单（CLIENT_URL，多个来源逗号分隔）
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  },
+  origin: corsOrigin,
   credentials: true
 }))
 
