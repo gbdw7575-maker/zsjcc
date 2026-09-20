@@ -10,8 +10,8 @@ services:
     volumes:
       - mongo_data:/data/db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: tft123456
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-please_change_mongo_password}
 
   backend:
     build: ./server
@@ -21,11 +21,13 @@ services:
       - "3000:3000"
     environment:
       - PORT=3000
-      - MONGODB_URI=mongodb://admin:tft123456@mongo:27017/tft_assistant?authSource=admin
-      - JWT_SECRET=tft_assistant_jwt_secret_key_2024
+      - MONGODB_URI=mongodb://${MONGO_ROOT_USER:-admin}:${MONGO_ROOT_PASSWORD:-please_change_mongo_password}@mongo:27017/tft_assistant?authSource=admin
+      - JWT_SECRET=${JWT_SECRET:-please_change_jwt_secret}
       - JWT_EXPIRE=7d
       - NODE_ENV=production
-      - CLIENT_URL=http://localhost:5173
+      - CLIENT_URL=${CLIENT_URL:-http://localhost}
+      # AI 分析代理所用密钥（服务端持有，不下发前端）
+      - AI_API_KEY=${AI_API_KEY:-}
     depends_on:
       - mongo
     volumes:
