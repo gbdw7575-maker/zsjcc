@@ -5,8 +5,10 @@ import app from './app.js'
 import connectDB from './config/db.js'
 import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
-import Message from './models/Message.js'
 import User from './models/User.js'
+import { setIo } from './services/socketStore.js'
+import { createAndDeliverMessage } from './services/messageService.js'
+import { FixedWindowRateLimiter } from './services/messagePolicy.js'
 
 const PORT = process.env.PORT || 3000
 const server = createServer(app)
@@ -83,7 +85,14 @@ const io = new Server(server, {
   }
 })
 
+// 注册 io 实例供 REST 层投递实时事件
+setIo(io)
+
 const onlineUsers = new Map()
+
+// Socket 私信频率限制：每用户每10秒最多10条，定期清理过期计数
+const messageRateLimiter = new FixedWindowRateLimiter({ windowMs: 10 * 1000, max: 10 })
+setInterval(() => messageRateLimiter.cleanup(), 60 * 1000).unref()
 
 io.use(async (socket, next) => {
   const token = socket.handshake.auth.token
@@ -108,25 +117,18 @@ io.use(async (socket, next) => {
 
 io.on('connection', (socket) => {
   console.log(`用户连接: ${socket.userId}`)
+  // 加入以自己 userId 命名的房间，保证多标签页/设备都能收到私信
+  socket.join(`user:${socket.userId}`)
   onlineUsers.set(socket.userId, socket.id)
 
   socket.on('send_message', async (data) => {
     try {
-      const { receiverId, content } = data
-      const message = await Message.create({
-        sender: socket.userId,
-        receiver: receiverId,
-        content
-      })
-
-      await message.populate('sender', 'username avatar')
-      await message.populate('receiver', 'username avatar')
-
-      const receiverSocketId = onlineUsers.get(receiverId)
-      if (receiverSocketId) {
-        io.to(receiverSocketId).emit('new_message', message)
+      if (!messageRateLimiter.check(socket.userId)) {
+        return socket.emit('error', { message: '发送过于频繁，请稍后再试' })
       }
-
+      const { receiverId, content } = data || {}
+      // 与 REST 共用统一发送入口：黑名单/互关/首条策略全部生效
+      const message = await createAndDeliverMessage(socket.userId, receiverId, content)
       socket.emit('message_sent', message)
     } catch (error) {
       socket.emit('error', { message: error.message })
