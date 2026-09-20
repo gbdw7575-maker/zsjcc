@@ -34,10 +34,19 @@ export const loginRules = [
 ]
 
 export const updateProfileRules = [
+  body('username')
+    .optional()
+    .trim()
+    .isLength({ min: 3, max: 20 }).withMessage('用户名需要3-20个字符')
+    .matches(/^[a-zA-Z0-9_\u4e00-\u9fa5]+$/).withMessage('用户名只能包含中文、英文、数字和下划线'),
   body('bio')
     .optional()
     .trim()
     .isLength({ max: 200 }).withMessage('个人简介最多200个字符'),
+  body('avatar')
+    .optional()
+    .isString()
+    .isLength({ max: 2000000 }).withMessage('头像数据过大'),
   body('gameId')
     .optional()
     .trim()
@@ -45,7 +54,33 @@ export const updateProfileRules = [
   body('region')
     .optional()
     .trim()
-    .isLength({ max: 20 }).withMessage('所在地区最多20个字符')
+    .isLength({ max: 20 }).withMessage('所在地区最多20个字符'),
+  body('gender')
+    .optional({ values: 'falsy' })
+    .isIn(['male', 'female', 'secret']).withMessage('无效的性别选项'),
+  body('ageGroup')
+    .optional({ values: 'falsy' })
+    .isIn(['12-17', '18-24', '25-30', '31-40', '40+']).withMessage('无效的年龄段'),
+  body('rank')
+    .optional({ values: 'falsy' })
+    .isIn(['unranked', 'bronze', 'silver', 'gold', 'platinum', 'diamond', 'master', 'grandmaster', 'challenger']).withMessage('无效的段位'),
+  body('tags')
+    .optional()
+    .isArray({ max: 5 }).withMessage('个人标签最多5个'),
+  body('targetWinRate')
+    .optional({ nullable: true })
+    .isInt({ min: 0, max: 100 }).withMessage('目标胜率需为0-100的整数'),
+  body('targetTeam')
+    .optional()
+    .trim()
+    .isLength({ max: 50 }).withMessage('目标阵容最多50个字符')
+]
+
+export const changePasswordRules = [
+  body('oldPassword')
+    .notEmpty().withMessage('请输入当前密码'),
+  body('newPassword')
+    .isLength({ min: 6, max: 50 }).withMessage('新密码需要6-50个字符')
 ]
 
 // ============ 帖子相关 ============

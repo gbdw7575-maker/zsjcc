@@ -57,6 +57,54 @@ const userSchema = new mongoose.Schema({
   isBanned: {
     type: Boolean,
     default: false
+  },
+  // 扩展资料（个人中心编辑）
+  gender: {
+    type: String,
+    enum: ['male', 'female', 'secret'],
+    default: ''
+  },
+  ageGroup: {
+    type: String,
+    enum: ['12-17', '18-24', '25-30', '31-40', '40+'],
+    default: ''
+  },
+  rank: {
+    type: String,
+    enum: ['unranked', 'bronze', 'silver', 'gold', 'platinum', 'diamond', 'master', 'grandmaster', 'challenger'],
+    default: ''
+  },
+  tags: [{
+    type: String,
+    trim: true,
+    maxlength: [20, '标签最多20个字符']
+  }],
+  // 游戏账号绑定
+  tftAccount: {
+    summonerName: { type: String, default: '' },
+    region: { type: String, default: '' },
+    default: null,
+    _id: false
+  },
+  jinchanchanAccount: {
+    gameId: { type: String, default: '' },
+    server: { type: String, default: '' },
+    default: null,
+    _id: false
+  },
+  // 目标设置
+  targetRank: {
+    type: String,
+    default: ''
+  },
+  targetWinRate: {
+    type: Number,
+    default: null
+  },
+  targetTeam: {
+    type: String,
+    default: '',
+    maxlength: [50, '目标阵容最多50个字符']
   }
 }, {
   timestamps: true
@@ -64,10 +112,11 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) {
-    next()
+    return next()
   }
   const salt = await bcrypt.genSalt(10)
   this.password = await bcrypt.hash(this.password, salt)
+  next()
 })
 
 userSchema.methods.matchPassword = async function(enteredPassword) {

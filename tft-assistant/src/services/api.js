@@ -38,6 +38,7 @@ export const userApi = {
   login: (data) => api.post('/users/login', data),
   getMe: () => api.get('/users/me'),
   updateProfile: (data) => api.put('/users/profile', data),
+  changePassword: (data) => api.put('/users/password', data),
   getUserProfile: (id) => api.get(`/users/${id}`)
 }
 

@@ -550,6 +550,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { useUserStore } from '../stores/user'
 import { matchService } from '../services/matchService'
 import { lolApi } from '../services/lolApi'
+import { userApi } from '../services/api'
 import { ElMessage } from 'element-plus'
 
 const userStore = useUserStore()
@@ -596,14 +597,23 @@ const passwordForm = reactive({
 
 const unreadMessages = ref(0)
 
-// 保存目标设置
-const saveTarget = () => {
-  ElMessage.success('目标设置已保存')
-  showTargetDialog.value = false
+// 保存目标设置（落库）
+const saveTarget = async () => {
+  try {
+    await userStore.updateProfile({
+      targetRank: targetForm.rank,
+      targetWinRate: targetForm.winRate,
+      targetTeam: targetForm.favoriteTeam
+    })
+    ElMessage.success('目标设置已保存')
+    showTargetDialog.value = false
+  } catch (error) {
+    ElMessage.error(error.message || '保存失败')
+  }
 }
 
-// 修改密码
-const changePassword = () => {
+// 修改密码（校验旧密码后落库）
+const changePassword = async () => {
   if (!passwordForm.oldPassword) {
     ElMessage.warning('请输入当前密码')
     return
@@ -620,11 +630,19 @@ const changePassword = () => {
     ElMessage.error('新密码长度不能少于6位')
     return
   }
-  ElMessage.success('密码修改成功')
-  showPasswordDialog.value = false
-  passwordForm.oldPassword = ''
-  passwordForm.newPassword = ''
-  passwordForm.confirmPassword = ''
+  try {
+    await userApi.changePassword({
+      oldPassword: passwordForm.oldPassword,
+      newPassword: passwordForm.newPassword
+    })
+    ElMessage.success('密码修改成功')
+    showPasswordDialog.value = false
+    passwordForm.oldPassword = ''
+    passwordForm.newPassword = ''
+    passwordForm.confirmPassword = ''
+  } catch (error) {
+    ElMessage.error(error.response?.data?.message || '密码修改失败')
+  }
 }
 
 const avatarBg = computed(() => {
@@ -645,9 +663,13 @@ const handleAvatarUpload = (event) => {
   const file = event.target.files[0]
   if (file) {
     const reader = new FileReader()
-    reader.onload = (e) => {
-      userStore.updateProfile({ avatar: e.target.result })
-      ElMessage.success('头像上传成功')
+    reader.onload = async (e) => {
+      try {
+        await userStore.updateProfile({ avatar: e.target.result })
+        ElMessage.success('头像上传成功')
+      } catch (error) {
+        ElMessage.error(error.message || '头像上传失败')
+      }
     }
     reader.readAsDataURL(file)
   }
@@ -664,7 +686,7 @@ const bindTftAccount = async () => {
     const result = await matchService.syncMatchData('current_user')
     
     if (result.success) {
-      userStore.updateUserInfo({
+      await userStore.updateProfile({
         tftAccount: {
           summonerName: tftForm.summonerName,
           region: tftForm.region
@@ -679,13 +701,17 @@ const bindTftAccount = async () => {
   }
 }
 
-const unbindTftAccount = () => {
-  userStore.updateUserInfo({ tftAccount: null })
-  matchService.clearMatchData('current_user')
-  ElMessage.success('账号已解绑')
+const unbindTftAccount = async () => {
+  try {
+    await userStore.updateProfile({ tftAccount: null })
+    matchService.clearMatchData('current_user')
+    ElMessage.success('账号已解绑')
+  } catch (error) {
+    ElMessage.error(error.message || '解绑失败')
+  }
 }
 
-const bindJinchanchanAccount = () => {
+const bindJinchanchanAccount = async () => {
   if (!jinchanchanForm.gameId || !jinchanchanForm.server) {
     ElMessage.warning('请填写完整的账号信息')
     return
@@ -693,19 +719,27 @@ const bindJinchanchanAccount = () => {
   
   matchService.bindGameAccount('current_user', jinchanchanForm.gameId, 'cn', jinchanchanForm.server)
   
-  userStore.updateUserInfo({
-    jinchanchanAccount: {
-      gameId: jinchanchanForm.gameId,
-      server: jinchanchanForm.server
-    }
-  })
-  ElMessage.success('金铲铲账号绑定成功')
+  try {
+    await userStore.updateProfile({
+      jinchanchanAccount: {
+        gameId: jinchanchanForm.gameId,
+        server: jinchanchanForm.server
+      }
+    })
+    ElMessage.success('金铲铲账号绑定成功')
+  } catch (error) {
+    ElMessage.error(error.message || '绑定失败')
+  }
 }
 
-const unbindJinchanchanAccount = () => {
-  userStore.updateUserInfo({ jinchanchanAccount: null })
-  matchService.clearMatchData('current_user')
-  ElMessage.success('账号已解绑')
+const unbindJinchanchanAccount = async () => {
+  try {
+    await userStore.updateProfile({ jinchanchanAccount: null })
+    matchService.clearMatchData('current_user')
+    ElMessage.success('账号已解绑')
+  } catch (error) {
+    ElMessage.error(error.message || '解绑失败')
+  }
 }
 
 const syncMatchData = async () => {
@@ -731,18 +765,30 @@ const removeTag = (index) => {
 
 const resetForm = () => {
   const user = userStore.userInfo || {}
-  formData.nickname = user.nickname || ''
+  formData.nickname = user.username || ''
   formData.gender = user.gender || ''
   formData.ageGroup = user.ageGroup || ''
   formData.region = user.region || ''
   formData.rank = user.rank || ''
   formData.bio = user.bio || ''
-  formData.tags = user.tags || []
+  formData.tags = user.tags ? [...user.tags] : []
 }
 
-const saveProfile = () => {
-  userStore.updateUserInfo(formData)
-  ElMessage.success('资料保存成功')
+const saveProfile = async () => {
+  try {
+    await userStore.updateProfile({
+      username: formData.nickname,
+      gender: formData.gender,
+      ageGroup: formData.ageGroup,
+      region: formData.region,
+      rank: formData.rank,
+      bio: formData.bio,
+      tags: formData.tags
+    })
+    ElMessage.success('资料保存成功')
+  } catch (error) {
+    ElMessage.error(error.message || '资料保存失败')
+  }
 }
 
 const getPlacementClass = (placement) => {
