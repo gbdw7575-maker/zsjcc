@@ -85,7 +85,6 @@ export const updateProfile = async (req, res) => {
     const allowedFields = [
       'username', 'bio', 'avatar', 'gameId', 'region',
       'gender', 'ageGroup', 'rank', 'tags',
-      'tftAccount', 'jinchanchanAccount',
       'targetRank', 'targetWinRate', 'targetTeam'
     ]
     const updates = {}

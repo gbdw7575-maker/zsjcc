@@ -61,17 +61,17 @@ const userSchema = new mongoose.Schema({
   // 扩展资料（个人中心编辑）
   gender: {
     type: String,
-    enum: ['male', 'female', 'secret'],
+    enum: ['', 'male', 'female', 'secret'],
     default: ''
   },
   ageGroup: {
     type: String,
-    enum: ['12-17', '18-24', '25-30', '31-40', '40+'],
+    enum: ['', '12-17', '18-24', '25-30', '31-40', '40+'],
     default: ''
   },
   rank: {
     type: String,
-    enum: ['unranked', 'bronze', 'silver', 'gold', 'platinum', 'diamond', 'master', 'grandmaster', 'challenger'],
+    enum: ['', 'unranked', 'bronze', 'silver', 'gold', 'platinum', 'diamond', 'master', 'grandmaster', 'challenger'],
     default: ''
   },
   tags: [{
@@ -79,19 +79,6 @@ const userSchema = new mongoose.Schema({
     trim: true,
     maxlength: [20, '标签最多20个字符']
   }],
-  // 游戏账号绑定
-  tftAccount: {
-    summonerName: { type: String, default: '' },
-    region: { type: String, default: '' },
-    default: null,
-    _id: false
-  },
-  jinchanchanAccount: {
-    gameId: { type: String, default: '' },
-    server: { type: String, default: '' },
-    default: null,
-    _id: false
-  },
   // 目标设置
   targetRank: {
     type: String,
