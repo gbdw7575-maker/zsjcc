@@ -123,104 +123,30 @@
 
         <!-- 右侧：编辑表单和战绩 -->
         <div class="lg:col-span-3 space-y-6">
-          <!-- 游戏账号绑定 -->
+          <!-- 战绩同步 -->
           <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
-            <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <span class="text-lg">🎮</span>
-              游戏账号绑定
+              战绩同步
             </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- 云顶之弈国际版 -->
-              <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                  <span class="text-gray-300 font-medium">云顶之弈国际版 (TFT)</span>
-                  <span v-if="userStore.userInfo?.tftAccount" class="text-green-400 text-sm">已绑定</span>
-                </div>
-                
-                <div v-if="!userStore.userInfo?.tftAccount" class="space-y-3">
-                  <input 
-                    v-model="tftForm.summonerName"
-                    type="text"
-                    class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
-                    placeholder="召唤师名称"
-                  />
-                  <select 
-                    v-model="tftForm.region"
-                    class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500/50 transition-colors appearance-none cursor-pointer"
-                  >
-                    <option value="" class="bg-slate-900">选择服务器</option>
-                    <option value="na" class="bg-slate-900">NA 北美</option>
-                    <option value="euw" class="bg-slate-900">EUW 西欧</option>
-                    <option value="kr" class="bg-slate-900">KR 韩国</option>
-                    <option value="jp" class="bg-slate-900">JP 日本</option>
-                    <option value="oce" class="bg-slate-900">OCE 大洋洲</option>
-                    <option value="br" class="bg-slate-900">BR 巴西</option>
-                    <option value="eune" class="bg-slate-900">EUNE 东欧</option>
-                  </select>
-                  <button 
-                    @click="bindTftAccount"
-                    :disabled="isMatchSyncing"
-                    class="w-full px-4 py-2.5 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2"
-                  >
-                    <svg v-if="isMatchSyncing" class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    {{ isMatchSyncing ? '查询中...' : '绑定并查询战绩' }}
-                  </button>
-                </div>
-                
-                <div v-else class="flex items-center justify-between p-3 bg-green-500/10 rounded-lg">
-                  <div>
-                    <div class="text-white font-medium">{{ userStore.userInfo.tftAccount.summonerName }}</div>
-                    <div class="text-gray-400 text-sm">{{ userStore.userInfo.tftAccount.region }}</div>
-                  </div>
-                  <button @click="unbindTftAccount" class="text-red-400 hover:text-red-300 text-sm">解绑</button>
-                </div>
-              </div>
-
-              <!-- 金铲铲之战 -->
-              <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                  <span class="text-gray-300 font-medium">金铲铲之战 (国服)</span>
-                  <span v-if="userStore.userInfo?.jinchanchanAccount" class="text-green-400 text-sm">已绑定</span>
-                </div>
-                
-                <div v-if="!userStore.userInfo?.jinchanchanAccount" class="space-y-3">
-                  <input 
-                    v-model="jinchanchanForm.gameId"
-                    type="text"
-                    class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
-                    placeholder="游戏ID"
-                  />
-                  <input 
-                    v-model="jinchanchanForm.server"
-                    type="text"
-                    class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
-                    placeholder="服务器名称"
-                  />
-                  <button 
-                    @click="bindJinchanchanAccount"
-                    class="w-full px-4 py-2.5 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 rounded-lg transition-colors"
-                  >
-                    绑定账号
-                  </button>
-                </div>
-                
-                <div v-else class="flex items-center justify-between p-3 bg-green-500/10 rounded-lg">
-                  <div>
-                    <div class="text-white font-medium">{{ userStore.userInfo.jinchanchanAccount.gameId }}</div>
-                    <div class="text-gray-400 text-sm">{{ userStore.userInfo.jinchanchanAccount.server }}</div>
-                  </div>
-                  <button @click="unbindJinchanchanAccount" class="text-red-400 hover:text-red-300 text-sm">解绑</button>
-                </div>
-                
-                <p class="text-xs text-gray-500">
-                  ⚠️ 金铲铲之战国服暂未开放官方API，战绩数据将使用模拟数据展示。
-                </p>
-              </div>
-            </div>
+            <p class="text-sm text-gray-400 mb-4 leading-relaxed">
+              本系统会自动发现本机运行中的英雄联盟客户端，无需手动填写账号信息。
+              请先在电脑上启动客户端并登录，再点击下方按钮。
+            </p>
+            <button
+              @click="syncMatchData"
+              :disabled="isMatchSyncing"
+              class="w-full px-4 py-2.5 bg-purple-500 hover:bg-purple-600 disabled:bg-gray-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2"
+            >
+              <svg v-if="isMatchSyncing" class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              {{ isMatchSyncing ? '同步中...' : '从本机客户端同步最近战绩' }}
+            </button>
+            <p class="text-xs text-gray-500 mt-3">
+              💡 手机端金铲铲玩家可前往「我的战绩」页面手动录入对局。
+            </p>
           </div>
 
           <!-- 战绩统计详情 -->
@@ -279,45 +205,48 @@
             </h3>
             
             <div v-if="isMatchSyncing" class="flex items-center justify-center py-12">
-              <el-loading text="加载战绩中..." />
+              <div class="animate-spin w-6 h-6 border-2 border-purple-400 border-t-transparent rounded-full"></div>
             </div>
-            
+
             <div v-else-if="matchHistoryList.length === 0" class="text-center py-12">
               <div class="text-6xl mb-4">📭</div>
               <div class="text-gray-400">暂无战绩数据</div>
-              <div class="text-gray-500 text-sm mt-2">绑定游戏账号后可查看真实战绩</div>
+              <div class="text-gray-500 text-sm mt-2">同步本机客户端战绩，或手动录入对局</div>
             </div>
-            
+
             <div v-else class="space-y-3">
-              <div 
-                v-for="(match, index) in matchHistoryList" 
-                :key="index"
+              <div
+                v-for="match in matchHistoryList"
+                :key="match._id"
                 class="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-purple-500/30 transition-colors"
               >
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between flex-wrap gap-3">
                   <div class="flex items-center gap-4">
-                    <div 
-                      class="w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold"
-                      :class="getPlacementClass(match?.info?.participants?.[0]?.placement || match?.placement || '--')"
+                    <div
+                      class="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold"
+                      :class="getPlacementClass(match.placement)"
                     >
-                      {{ match?.info?.participants?.[0]?.placement || match?.placement || '--' }}
+                      {{ match.placement }}
                     </div>
                     <div>
-                      <div class="text-white font-medium">
-                        {{ formatDate(match?.info?.game_datetime || match?.game_datetime || '') }}
+                      <div class="text-white font-medium text-sm">
+                        {{ formatDate(match.playedAt) }}
                       </div>
-                      <div class="text-gray-400 text-sm">
-                        等级 {{ match?.info?.participants?.[0]?.level || match?.level || '--' }} | 剩余 {{ match?.info?.participants?.[0]?.gold_left || match?.gold_left || '--' }} 金币
+                      <div class="text-gray-400 text-xs mt-0.5">
+                        等级 {{ match.level || '--' }} | 时长 {{ match.gameDuration || '--' }} 分钟
+                        <span class="ml-1 px-1 py-0.5 rounded text-[10px]"
+                          :class="match.source === 'lcu' ? 'bg-blue-500/20 text-blue-300' : 'bg-gray-500/20 text-gray-300'"
+                        >{{ match.source === 'lcu' ? '自动同步' : '手动录入' }}</span>
                       </div>
                     </div>
                   </div>
-                  <div class="flex flex-wrap gap-2">
-                    <span 
-                      v-for="trait in match?.info?.participants?.[0]?.traits?.slice(0, 3) || []" 
-                      :key="trait?.name"
+                  <div class="flex flex-wrap gap-1.5">
+                    <span
+                      v-for="trait in (match.traits || []).slice(0, 3)"
+                      :key="trait"
                       class="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-xs"
                     >
-                      {{ trait?.name }}({{ trait?.num_units }})
+                      {{ traitName(trait) }}
                     </span>
                   </div>
                 </div>
@@ -548,19 +477,23 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useUserStore } from '../stores/user'
-import { matchService } from '../services/matchService'
-import { lolApi } from '../services/lolApi'
-import { userApi } from '../services/api'
+import { userApi, recordApi } from '../services/api'
+import { traitName } from '../services/tftNameMap'
 import { ElMessage } from 'element-plus'
 
 const userStore = useUserStore()
 
-// 战绩服务本地别名：使模板中 ref 作为顶层属性自动解包
-const matchStats = matchService.stats
-const matchHistoryList = matchHistoryList
-const isMatchSyncing = matchService.isSyncing
-// 使用真实用户ID作为本地战绩存储键，不再共用固定字符串
-const matchUserId = computed(() => userStore.userInfo?._id || matchUserId.value)
+// 战绩数据：来自后端 MatchRecord（手动录入 + LCU 自动同步统一一套）
+const matchStats = ref({
+  totalGames: 0,
+  wins: 0,
+  top4: 0,
+  winRate: 0,
+  top4Rate: 0,
+  avgPlacement: 0
+})
+const matchHistoryList = ref([])
+const isMatchSyncing = ref(false)
 
 const formData = reactive({
   nickname: '',
@@ -570,16 +503,6 @@ const formData = reactive({
   rank: '',
   bio: '',
   tags: []
-})
-
-const tftForm = reactive({
-  summonerName: '',
-  region: ''
-})
-
-const jinchanchanForm = reactive({
-  gameId: '',
-  server: ''
 })
 
 const newTag = ref('')
@@ -684,79 +607,44 @@ const handleAvatarUpload = (event) => {
   }
 }
 
-const bindTftAccount = async () => {
-  if (!tftForm.summonerName || !tftForm.region) {
-    ElMessage.warning('请填写完整的账号信息')
-    return
-  }
-  
+/**
+ * 从后端加载战绩统计与最近对局
+ */
+const loadRecordData = async () => {
   try {
-    matchService.bindGameAccount(matchUserId.value, tftForm.summonerName, tftForm.region, tftForm.region)
-    const result = await matchService.syncMatchData(matchUserId.value)
-    
-    if (result.success) {
-      await userStore.updateProfile({
-        tftAccount: {
-          summonerName: tftForm.summonerName,
-          region: tftForm.region
+    const res = await recordApi.getList({ page: 1, limit: 5 })
+    const payload = res.data.data
+    const s = payload.stats
+    matchStats.value = s
+      ? {
+          totalGames: s.totalGames,
+          wins: s.wins,
+          top4: s.top4s,
+          winRate: s.winRate,
+          top4Rate: s.top4Rate,
+          avgPlacement: s.avgPlacement
         }
-      })
-      ElMessage.success('云顶之弈账号绑定成功，数据已同步')
-    } else {
-      ElMessage.error('绑定失败：' + result.message)
-    }
-  } catch (error) {
-    ElMessage.error('绑定失败：' + error.message)
+      : { totalGames: 0, wins: 0, top4: 0, winRate: 0, top4Rate: 0, avgPlacement: 0 }
+    matchHistoryList.value = payload.records || []
+  } catch {
+    // 未登录或暂无数据时保持空态
   }
 }
 
-const unbindTftAccount = async () => {
-  try {
-    await userStore.updateProfile({ tftAccount: null })
-    matchService.clearMatchData(matchUserId.value)
-    ElMessage.success('账号已解绑')
-  } catch (error) {
-    ElMessage.error(error.message || '解绑失败')
-  }
-}
-
-const bindJinchanchanAccount = async () => {
-  if (!jinchanchanForm.gameId || !jinchanchanForm.server) {
-    ElMessage.warning('请填写完整的账号信息')
-    return
-  }
-  
-  matchService.bindGameAccount(matchUserId.value, jinchanchanForm.gameId, 'cn', jinchanchanForm.server)
-  
-  try {
-    await userStore.updateProfile({
-      jinchanchanAccount: {
-        gameId: jinchanchanForm.gameId,
-        server: jinchanchanForm.server
-      }
-    })
-    ElMessage.success('金铲铲账号绑定成功')
-  } catch (error) {
-    ElMessage.error(error.message || '绑定失败')
-  }
-}
-
-const unbindJinchanchanAccount = async () => {
-  try {
-    await userStore.updateProfile({ jinchanchanAccount: null })
-    matchService.clearMatchData(matchUserId.value)
-    ElMessage.success('账号已解绑')
-  } catch (error) {
-    ElMessage.error(error.message || '解绑失败')
-  }
-}
-
+/**
+ * 触发服务端从本机英雄联盟客户端同步，然后刷新本页数据
+ */
 const syncMatchData = async () => {
-  const result = await matchService.syncMatchData(matchUserId.value)
-  if (result.success) {
-    ElMessage.success('数据同步成功')
-  } else {
-    ElMessage.error(result.message)
+  isMatchSyncing.value = true
+  try {
+    const res = await recordApi.syncLCU()
+    const { synced, total } = res.data.data
+    ElMessage.success(`同步完成：新增 ${synced} 场，累计 ${total} 场`)
+    await loadRecordData()
+  } catch (error) {
+    ElMessage.error(error.response?.data?.message || error.message || '同步失败')
+  } finally {
+    isMatchSyncing.value = false
   }
 }
 
@@ -815,16 +703,6 @@ const formatDate = (timestamp) => {
 
 onMounted(() => {
   resetForm()
-  // 加载该用户本地已保存的战绩数据
-  matchService.loadMatchData(matchUserId.value)
-  if (userStore.userInfo?.tftAccount) {
-    tftForm.summonerName = userStore.userInfo.tftAccount.summonerName
-    tftForm.region = userStore.userInfo.tftAccount.region
-  }
-  if (userStore.userInfo?.jinchanchanAccount) {
-    jinchanchanForm.gameId = userStore.userInfo.jinchanchanAccount.gameId
-    jinchanchanForm.server = userStore.userInfo.jinchanchanAccount.server
-  }
-  
+  loadRecordData()
 })
 </script>

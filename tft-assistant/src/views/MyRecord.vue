@@ -10,13 +10,22 @@
         </span>
         我的战绩
       </h1>
-      <button
+      <div class="flex items-center gap-2">
+        <button
+          @click="syncFromClient"
+          :disabled="syncing"
+          class="px-4 py-2 rounded-xl font-semibold text-sm bg-white/10 text-gray-200 hover:bg-white/15 disabled:opacity-40 transition-all"
+        >
+          {{ syncing ? '同步中...' : '同步本机战绩' }}
+        </button>
+        <button
         @click="showForm = !showForm"
         class="px-4 py-2 rounded-xl font-semibold text-sm transition-all"
         :class="showForm ? 'bg-white/10 text-gray-300 hover:bg-white/15' : 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white hover:opacity-90'"
       >
         {{ showForm ? '收起' : '+ 录入战绩' }}
       </button>
+      </div>
     </div>
 
     <!-- 录入表单 -->
@@ -197,7 +206,7 @@
         <h3 class="text-white font-semibold text-xs mb-3">常用羁绊</h3>
         <div class="space-y-1.5">
           <div v-for="t in stats.topTraits" :key="t.name" class="flex items-center gap-2">
-            <span class="text-gray-300 text-xs flex-1">{{ t.name }}</span>
+            <span class="text-gray-300 text-xs flex-1">{{ traitName(t.name) }}</span>
             <span class="text-purple-400 text-[10px] font-mono">{{ t.count }}场</span>
             <div class="w-20 h-1 rounded-full bg-white/10">
               <div class="h-full rounded-full bg-purple-400/50" :style="{ width: pct(t.count, stats.totalGames) }"></div>
@@ -209,7 +218,7 @@
         <h3 class="text-white font-semibold text-xs mb-3">常用英雄</h3>
         <div class="space-y-1.5">
           <div v-for="c in stats.topChampions" :key="c.name" class="flex items-center gap-2">
-            <span class="text-gray-300 text-xs flex-1">{{ c.name }}</span>
+            <span class="text-gray-300 text-xs flex-1">{{ unitName(c.name) }}</span>
             <span class="text-emerald-400 text-[10px] font-mono">{{ c.count }}场</span>
             <div class="w-20 h-1 rounded-full bg-white/10">
               <div class="h-full rounded-full bg-emerald-400/50" :style="{ width: pct(c.count, stats.totalGames) }"></div>
@@ -260,7 +269,7 @@
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 flex-wrap">
               <span class="text-white text-sm truncate">
-                {{ r.traits?.length ? r.traits.slice(0, 3).join('、') : '未记录羁绊' }}
+                {{ r.traits?.length ? r.traits.slice(0, 3).map(traitName).join('、') : '未记录羁绊' }}
               </span>
               <span
                 v-if="r.placement === 1"
@@ -269,7 +278,7 @@
             </div>
             <div class="text-gray-500 text-[11px] mt-0.5 flex items-center gap-2 flex-wrap">
               <span>{{ modeLabel(r.mode) }}</span>
-              <span v-if="r.units?.length">{{ r.units.map(u => `${u.champion}${'★'.repeat(u.star)}`).join(' ') }}</span>
+              <span v-if="r.units?.length">{{ r.units.map(u => `${unitName(u.champion)}${'★'.repeat(u.star)}`).join(' ') }}</span>
             </div>
           </div>
 
@@ -313,9 +322,11 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { recordApi } from '../services/api.js'
 import { gameData } from '../services/gameDataService'
+import { unitName, traitName } from '../services/tftNameMap'
 
 const showForm = ref(false)
 const submitting = ref(false)
+const syncing = ref(false)
 const loading = ref(true)
 const records = ref([])
 const stats = ref(null)
@@ -431,6 +442,20 @@ const deleteRecord = async (id) => {
     await loadRecords(page.value)
   } catch {
     alert('删除失败')
+  }
+}
+
+const syncFromClient = async () => {
+  syncing.value = true
+  try {
+    const res = await recordApi.syncLCU()
+    const { synced, total } = res.data.data
+    alert(`同步完成：新增 ${synced} 场，累计 ${total} 场`)
+    await loadRecords(1)
+  } catch (err) {
+    alert(err.response?.data?.message || '同步失败，请确认英雄联盟客户端已启动并登录')
+  } finally {
+    syncing.value = false
   }
 }
 

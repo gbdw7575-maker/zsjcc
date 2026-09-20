@@ -150,7 +150,9 @@ export const recordApi = {
   create: (data) => api.post('/records', data),
   getList: (params) => api.get('/records', { params }),
   getDetail: (id) => api.get(`/records/${id}`),
-  delete: (id) => api.delete(`/records/${id}`)
+  delete: (id) => api.delete(`/records/${id}`),
+  // 从本机英雄联盟客户端自动同步最近对局
+  syncLCU: () => api.post('/records/sync-lcu')
 }
 
 export const aiApi = {
