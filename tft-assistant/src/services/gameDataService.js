@@ -85,8 +85,12 @@ async function load() {
           if (item.data) augments.value = item.data
           break
         case 'metaTeam':
+        case 'team': // 历史数据兼容：team 与 metaTeam 同义
           if (item.data?.length) metaTeams.value = item.data
           break
+        default:
+          // 未识别类型不再静默丢弃
+          console.warn(`[gameData] 未识别的数据类型: ${item.type}`)
       }
       currentVersion.value = item.version
     }

@@ -91,19 +91,18 @@ export const getActiveVersion = async (req, res) => {
 export const bulkCreateGameData = async (req, res) => {
   try {
     const { version, items } = req.body
-    const createdItems = []
-    
-    for (const item of items) {
-      const gameData = await GameData.create({
-        version,
-        type: item.type,
-        data: item.data,
-        source: item.source || '',
-        isActive: true
-      })
-      createdItems.push(gameData)
-    }
-    
+
+    const docs = items.map(item => ({
+      version,
+      type: item.type,
+      data: item.data,
+      source: item.source || '',
+      isActive: true
+    }))
+
+    // insertMany 一次写入，默认按序插入，失败抛出首个错误
+    const createdItems = await GameData.insertMany(docs)
+
     res.status(201).json({ success: true, data: createdItems, count: createdItems.length })
   } catch (error) {
     res.status(500).json({ success: false, message: error.message })

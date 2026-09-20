@@ -108,12 +108,12 @@
           <div>
             <label class="text-gray-400 text-sm mb-1">批量数据 (JSON数组格式)</label>
             <textarea v-model="bulkJson" rows="12" class="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white font-mono text-sm" placeholder='[
-  { "type": "team", "data": {...}, "source": "游侠网" },
+  { "type": "metaTeam", "data": {...}, "source": "游侠网" },
   { "type": "equipment", "data": {...}, "source": "头条" }
 ]'></textarea>
           </div>
           <div class="text-gray-500 text-sm">
-            提示：每条数据需包含 type (team/equipment/synergy/hero)、data (对象)、source (可选)
+            提示：每条数据需包含 type (metaTeam/equipment/synergy/hero/augment/pool)、data (对象)、source (可选)
           </div>
         </div>
         <template #footer>
@@ -148,6 +148,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { gameDataApi } from '../services/api'
+import { gameData as gameDataStore } from '../services/gameDataService'
 import { ElMessage } from 'element-plus'
 
 const loading = ref(false)
@@ -163,25 +164,32 @@ const bulkJson = ref('')
 
 const newItem = ref({
   version: 'S8怪兽入侵返厂',
-  type: 'team',
+  type: 'metaTeam',
   source: '',
   dataJson: ''
 })
 
 const dataTypes = [
   { value: 'all', label: '全部' },
-  { value: 'team', label: '阵容数据' },
+  { value: 'metaTeam', label: '阵容数据' },
   { value: 'equipment', label: '装备数据' },
   { value: 'synergy', label: '羁绊数据' },
-  { value: 'hero', label: '英雄数据' }
+  { value: 'hero', label: '英雄数据' },
+  { value: 'augment', label: '海克斯数据' },
+  { value: 'pool', label: '卡池数据' }
 ]
 
 const filteredData = computed(() => {
   if (activeType.value === 'all') return gameData.value
+  if (activeType.value === 'metaTeam') {
+    // 历史 team 数据并入阵容数据展示
+    return gameData.value.filter(item => ['metaTeam', 'team'].includes(item.type))
+  }
   return gameData.value.filter(item => item.type === activeType.value)
 })
 
 const getTypeLabel = (type) => {
+  if (type === 'team') return '阵容数据'
   const t = dataTypes.find(d => d.value === type)
   return t ? t.label : type
 }
@@ -205,10 +213,12 @@ const loadGameData = async () => {
 const addItem = async () => {
   try {
     const dataObj = JSON.parse(newItem.value.dataJson)
+    // 旧 team 数据保存时归一化为 metaTeam
+    const normalizedType = newItem.value.type === 'team' ? 'metaTeam' : newItem.value.type
     if (editingId.value) {
       await gameDataApi.updateGameData(editingId.value, {
         version: newItem.value.version,
-        type: newItem.value.type,
+        type: normalizedType,
         data: dataObj,
         source: newItem.value.source
       })
@@ -216,7 +226,7 @@ const addItem = async () => {
     } else {
       await gameDataApi.createGameData({
         version: newItem.value.version,
-        type: newItem.value.type,
+        type: normalizedType,
         data: dataObj,
         source: newItem.value.source
       })
@@ -224,8 +234,10 @@ const addItem = async () => {
     }
     showAddDialog.value = false
     editingId.value = null
-    newItem.value = { version: 'S8怪兽入侵返厂', type: 'team', source: '', dataJson: '' }
+    newItem.value = { version: 'S8怪兽入侵返厂', type: 'metaTeam', source: '', dataJson: '' }
     await loadGameData()
+    // 通知全局游戏数据服务重新拉取，用户无需手动刷新页面
+    await gameDataStore.refresh()
   } catch (error) {
     ElMessage.error('操作失败，请检查JSON格式')
   }
@@ -242,6 +254,7 @@ const bulkImport = async () => {
     showBulkDialog.value = false
     bulkJson.value = ''
     await loadGameData()
+    await gameDataStore.refresh()
   } catch (error) {
     ElMessage.error('导入失败，请检查JSON格式')
   }
@@ -269,6 +282,7 @@ const deleteItem = async (id) => {
     await gameDataApi.deleteGameData(id)
     ElMessage.success('删除成功')
     await loadGameData()
+    await gameDataStore.refresh()
   } catch (error) {
     ElMessage.error('删除失败')
   }
