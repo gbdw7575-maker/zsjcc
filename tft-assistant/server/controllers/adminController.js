@@ -4,6 +4,7 @@ import Announcement from '../models/Announcement.js'
 import Feedback from '../models/Feedback.js'
 import GameData from '../models/GameData.js'
 import { escapeRegex } from '../utils/escapeRegex.js'
+import { cleanupUserData } from '../services/userCleanupService.js'
 
 // 获取用户列表（管理员专用）
 export const getUsers = async (req, res) => {
@@ -101,12 +102,10 @@ export const deleteUser = async (req, res) => {
       return res.status(400).json({ success: false, message: '不能删除自己' })
     }
 
-    await User.findByIdAndDelete(req.params.id)
-    
-    // 同时删除该用户的帖子和评论
-    await Post.deleteMany({ author: req.params.id })
+    // 级联清理帖子、评论、私信、关注/拉黑、阵容、战绩、反馈、公告、数组引用及磁盘文件
+    const result = await cleanupUserData(req.params.id)
 
-    res.json({ success: true, message: '用户已删除' })
+    res.json({ success: true, message: '用户及关联数据已删除', data: result })
   } catch (error) {
     res.status(500).json({ success: false, message: error.message })
   }
