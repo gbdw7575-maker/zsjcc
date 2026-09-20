@@ -1,5 +1,7 @@
 import Post from '../models/Post.js'
 import Comment from '../models/Comment.js'
+import User from '../models/User.js'
+import { escapeRegex } from '../utils/escapeRegex.js'
 
 export const getPosts = async (req, res) => {
   try {
@@ -8,9 +10,10 @@ export const getPosts = async (req, res) => {
     
     if (category) query.category = category
     if (search) {
+      const keyword = escapeRegex(search)
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { content: { $regex: search, $options: 'i' } }
+        { title: { $regex: keyword, $options: 'i' } },
+        { content: { $regex: keyword, $options: 'i' } }
       ]
     }
 
@@ -121,24 +124,29 @@ export const likePost = async (req, res) => {
 
 export const favoritePost = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id)
-    const user = req.user
-
-    const postIndex = post.favorites.indexOf(user._id)
-    const userIndex = user.favorites.indexOf(post._id)
-
-    if (postIndex === -1) {
-      post.favorites.push(user._id)
-      user.favorites.push(post._id)
-    } else {
-      post.favorites.splice(postIndex, 1)
-      user.favorites.splice(userIndex, 1)
+    const post = await Post.findById(req.params.id).select('_id')
+    if (!post) {
+      return res.status(404).json({ success: false, message: '帖子不存在' })
     }
 
-    await post.save()
-    await user.save()
+    const user = await User.findById(req.user._id).select('favorites')
+    const favorited = user.favorites.some(id => id.equals(post._id))
 
-    res.json({ success: true, data: user.favorites })
+    // 双向收藏关系原子更新，并行执行
+    const postUpdate = favorited
+      ? { $pull: { favorites: user._id } }
+      : { $addToSet: { favorites: user._id } }
+    const userUpdate = favorited
+      ? { $pull: { favorites: post._id } }
+      : { $addToSet: { favorites: post._id } }
+
+    await Promise.all([
+      Post.updateOne({ _id: post._id }, postUpdate),
+      User.updateOne({ _id: user._id }, userUpdate)
+    ])
+
+    const updated = await User.findById(req.user._id).select('favorites')
+    res.json({ success: true, data: updated.favorites })
   } catch (error) {
     res.status(500).json({ success: false, message: error.message })
   }

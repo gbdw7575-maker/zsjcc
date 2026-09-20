@@ -3,6 +3,7 @@ import Post from '../models/Post.js'
 import Announcement from '../models/Announcement.js'
 import Feedback from '../models/Feedback.js'
 import GameData from '../models/GameData.js'
+import { escapeRegex } from '../utils/escapeRegex.js'
 
 // 获取用户列表（管理员专用）
 export const getUsers = async (req, res) => {
@@ -11,9 +12,10 @@ export const getUsers = async (req, res) => {
     const query = {}
     
     if (search) {
+      const keyword = escapeRegex(search)
       query.$or = [
-        { username: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } }
+        { username: { $regex: keyword, $options: 'i' } },
+        { email: { $regex: keyword, $options: 'i' } }
       ]
     }
 
@@ -126,7 +128,7 @@ export const getStats = async (req, res) => {
     const unprocessedFeedbacks = await Feedback.countDocuments({ status: { $in: ['pending', 'processing'] } })
 
     // 游戏数据统计
-    const totalTeams = await GameData.countDocuments({ type: 'team', isActive: true })
+    const totalTeams = await GameData.countDocuments({ type: 'metaTeam', isActive: true })
     const totalEquipments = await GameData.countDocuments({ type: 'equipment', isActive: true })
     const totalSynergies = await GameData.countDocuments({ type: 'synergy', isActive: true })
     const totalHeroes = await GameData.countDocuments({ type: 'hero', isActive: true })
@@ -220,7 +222,8 @@ export const getPendingPosts = async (req, res) => {
 export const getAllTeams = async (req, res) => {
   try {
     const { page = 1, limit = 50, version, isActive } = req.query
-    const query = { type: 'team' }
+    // 兼容历史 team 数据
+    const query = { type: { $in: ['metaTeam', 'team'] } }
     if (version) query.version = version
     if (isActive !== undefined) query.isActive = isActive === 'true'
 

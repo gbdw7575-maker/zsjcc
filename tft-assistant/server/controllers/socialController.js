@@ -1,6 +1,7 @@
 import Follow from '../models/Follow.js'
 import User from '../models/User.js'
 import Block from '../models/Block.js'
+import { escapeRegex } from '../utils/escapeRegex.js'
 
 export const followUser = async (req, res) => {
   try {
@@ -61,8 +62,11 @@ export const checkFollowStatus = async (req, res) => {
 export const searchUsers = async (req, res) => {
   try {
     const { q } = req.query
+    if (!q || !q.trim()) {
+      return res.json({ success: true, data: [] })
+    }
     const users = await User.find({
-      username: { $regex: q, $options: 'i' }
+      username: { $regex: escapeRegex(q), $options: 'i' }
     }).select('username avatar bio').limit(10)
     res.json({ success: true, data: users })
   } catch (error) {

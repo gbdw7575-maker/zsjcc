@@ -143,7 +143,7 @@ export const createRecordRules = [
   body('mode')
     .optional()
     .trim()
-    .isIn(['ranked', 'normal', 'hyper', 'double']).withMessage('无效的游戏模式'),
+    .isIn(['ranked', 'normal', 'hyper_roll', 'double']).withMessage('无效的游戏模式'),
   body('traits')
     .optional()
     .isArray({ max: 20 }).withMessage('羁绊最多20个'),
@@ -153,7 +153,7 @@ export const createRecordRules = [
   body('note')
     .optional()
     .trim()
-    .isLength({ max: 1000 }).withMessage('备注最多1000个字符'),
+    .isLength({ max: 200 }).withMessage('备注最多200个字符'),
   body('gameDuration')
     .optional()
     .isInt({ min: 0 }).withMessage('游戏时长必须为非负整数'),
