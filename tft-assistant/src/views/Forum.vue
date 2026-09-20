@@ -70,7 +70,6 @@
                 v-model="searchKeyword" 
                 placeholder="搜索帖子标题..." 
                 class="w-full"
-                @input="handleSearch"
                 clearable
               >
                 <template #prefix>
@@ -156,7 +155,7 @@
                       <span class="text-lg">{{ (post.likes?.length || 0) > 0 ? '❤️' : '🤍' }}</span>
                       {{ post.likes?.length || 0 }}
                     </span>
-                    <span class="flex items-center gap-1"><span class="text-lg">💬</span>0</span>
+                    <span class="flex items-center gap-1"><span class="text-lg">💬</span>{{ post.commentCount || 0 }}</span>
                   </div>
                 </div>
               </div>
@@ -810,7 +809,7 @@ const displayPosts = computed(() => {
       result.sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0))
       break
     case 'comments':
-      result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      result.sort((a, b) => (b.commentCount || 0) - (a.commentCount || 0))
       break
     case 'views':
       result.sort((a, b) => (b.views || 0) - (a.views || 0))
@@ -842,7 +841,6 @@ const getAuthorColor = (lineup) => {
   return `hsl(${hue}, 70%, 50%)`
 }
 
-const handleSearch = () => {}
 const goToPost = (post) => {
   const id = post._id || post.id
   if (!id) {

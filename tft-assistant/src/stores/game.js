@@ -44,17 +44,19 @@ export const useGameStore = defineStore('game', () => {
     const allHeroes = board.value.flat().filter(Boolean)
     
     allHeroes.forEach(hero => {
-      hero.synergies.forEach(synergy => {
+      (hero.synergies || []).forEach(synergy => {
         heroCounts[synergy] = (heroCounts[synergy] || 0) + 1
       })
     })
 
     currentSynergies.value = Object.entries(heroCounts).map(([name, count]) => {
       const synergy = gameData.synergies.value.find(s => s.name === name)
+      // 找不到羁绊定义（数据版本不一致）时给空 levels 兜底，防止模板读 levels 白屏
       return {
         name,
         count,
-        ...synergy
+        levels: [],
+        ...(synergy || {})
       }
     })
   }

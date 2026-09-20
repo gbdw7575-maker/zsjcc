@@ -23,6 +23,17 @@ export const getPosts = async (req, res) => {
       .skip((page - 1) * limit)
       .limit(Number(limit))
 
+    // 一次聚合拿到本页帖子的评论计数，避免 N+1 查询
+    const postIds = posts.map(p => p._id)
+    const commentCounts = await Comment.aggregate([
+      { $match: { post: { $in: postIds } } },
+      { $group: { _id: '$post', count: { $sum: 1 } } }
+    ])
+    const countMap = new Map(commentCounts.map(c => [c._id.toString(), c.count]))
+    posts.forEach(p => {
+      p._doc.commentCount = countMap.get(p._id.toString()) || 0
+    })
+
     const total = await Post.countDocuments(query)
 
     res.json({

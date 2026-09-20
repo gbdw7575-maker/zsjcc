@@ -58,15 +58,15 @@
             <!-- 统计数据 -->
             <div class="grid grid-cols-3 gap-2 mt-6 pt-6 border-t border-white/10">
               <div class="text-center">
-                <div class="text-xl font-bold text-purple-400">{{ matchService.stats.totalGames || '--' }}</div>
+                <div class="text-xl font-bold text-purple-400">{{ matchStats.totalGames || '--' }}</div>
                 <div class="text-xs text-gray-500">对局数</div>
               </div>
               <div class="text-center">
-                <div class="text-xl font-bold text-yellow-400">{{ matchService.stats.wins || '--' }}</div>
+                <div class="text-xl font-bold text-yellow-400">{{ matchStats.wins || '--' }}</div>
                 <div class="text-xs text-gray-500">登顶</div>
               </div>
               <div class="text-center">
-                <div class="text-xl font-bold text-blue-400">{{ matchService.stats.winRate || '--' }}%</div>
+                <div class="text-xl font-bold text-blue-400">{{ matchStats.winRate || '--' }}%</div>
                 <div class="text-xs text-gray-500">胜率</div>
               </div>
             </div>
@@ -160,14 +160,14 @@
                   </select>
                   <button 
                     @click="bindTftAccount"
-                    :disabled="matchService.isLoading"
+                    :disabled="isMatchSyncing"
                     class="w-full px-4 py-2.5 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2"
                   >
-                    <svg v-if="matchService.isLoading" class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg v-if="isMatchSyncing" class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                       <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    {{ matchService.isLoading ? '查询中...' : '绑定并查询战绩' }}
+                    {{ isMatchSyncing ? '查询中...' : '绑定并查询战绩' }}
                   </button>
                 </div>
                 
@@ -232,40 +232,40 @@
               </h3>
               <button 
                 @click="syncMatchData"
-                :disabled="matchService.isSyncing.value"
+                :disabled="isMatchSyncing"
                 class="px-4 py-2 bg-purple-500/20 hover:bg-purple-500/30 disabled:bg-gray-600 text-purple-300 rounded-lg text-sm transition-colors flex items-center gap-2"
               >
-                <svg v-if="matchService.isSyncing.value" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg v-if="isMatchSyncing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                {{ matchService.isSyncing.value ? '刷新中...' : '刷新数据' }}
+                {{ isMatchSyncing ? '刷新中...' : '刷新数据' }}
               </button>
             </div>
             
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               <div class="bg-white/5 rounded-xl p-4 text-center">
-                <div class="text-2xl font-bold text-purple-400">{{ matchService.stats.totalGames }}</div>
+                <div class="text-2xl font-bold text-purple-400">{{ matchStats.totalGames }}</div>
                 <div class="text-xs text-gray-400 mt-1">总对局数</div>
               </div>
               <div class="bg-white/5 rounded-xl p-4 text-center">
-                <div class="text-2xl font-bold text-yellow-400">{{ matchService.stats.wins }}</div>
+                <div class="text-2xl font-bold text-yellow-400">{{ matchStats.wins }}</div>
                 <div class="text-xs text-gray-400 mt-1">第一名</div>
               </div>
               <div class="bg-white/5 rounded-xl p-4 text-center">
-                <div class="text-2xl font-bold text-blue-400">{{ matchService.stats.top4 }}</div>
+                <div class="text-2xl font-bold text-blue-400">{{ matchStats.top4 }}</div>
                 <div class="text-xs text-gray-400 mt-1">前四名</div>
               </div>
               <div class="bg-white/5 rounded-xl p-4 text-center">
-                <div class="text-2xl font-bold text-green-400">{{ matchService.stats.winRate }}%</div>
+                <div class="text-2xl font-bold text-green-400">{{ matchStats.winRate }}%</div>
                 <div class="text-xs text-gray-400 mt-1">胜率</div>
               </div>
               <div class="bg-white/5 rounded-xl p-4 text-center">
-                <div class="text-2xl font-bold text-cyan-400">{{ matchService.stats.top4Rate }}%</div>
+                <div class="text-2xl font-bold text-cyan-400">{{ matchStats.top4Rate }}%</div>
                 <div class="text-xs text-gray-400 mt-1">前四率</div>
               </div>
               <div class="bg-white/5 rounded-xl p-4 text-center">
-                <div class="text-2xl font-bold text-pink-400">{{ matchService.stats.avgPlacement }}</div>
+                <div class="text-2xl font-bold text-pink-400">{{ matchStats.avgPlacement }}</div>
                 <div class="text-xs text-gray-400 mt-1">平均排名</div>
               </div>
             </div>
@@ -278,11 +278,11 @@
               最近战绩
             </h3>
             
-            <div v-if="matchService.isLoading" class="flex items-center justify-center py-12">
+            <div v-if="isMatchSyncing" class="flex items-center justify-center py-12">
               <el-loading text="加载战绩中..." />
             </div>
             
-            <div v-else-if="matchService.matchHistory.length === 0" class="text-center py-12">
+            <div v-else-if="matchHistoryList.length === 0" class="text-center py-12">
               <div class="text-6xl mb-4">📭</div>
               <div class="text-gray-400">暂无战绩数据</div>
               <div class="text-gray-500 text-sm mt-2">绑定游戏账号后可查看真实战绩</div>
@@ -290,7 +290,7 @@
             
             <div v-else class="space-y-3">
               <div 
-                v-for="(match, index) in matchService.matchHistory" 
+                v-for="(match, index) in matchHistoryList" 
                 :key="index"
                 class="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-purple-500/30 transition-colors"
               >
@@ -555,6 +555,13 @@ import { ElMessage } from 'element-plus'
 
 const userStore = useUserStore()
 
+// 战绩服务本地别名：使模板中 ref 作为顶层属性自动解包
+const matchStats = matchService.stats
+const matchHistoryList = matchHistoryList
+const isMatchSyncing = matchService.isSyncing
+// 使用真实用户ID作为本地战绩存储键，不再共用固定字符串
+const matchUserId = computed(() => userStore.userInfo?._id || matchUserId.value)
+
 const formData = reactive({
   nickname: '',
   gender: '',
@@ -655,7 +662,9 @@ const avatarBg = computed(() => {
     'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'
   ]
   if (!userStore.userInfo) return colors[0]
-  const index = userStore.userInfo.id % colors.length
+  // ObjectId 为十六进制字符串，用字符码求和取索引
+  const idStr = String(userStore.userInfo._id || '')
+  const index = idStr.split('').reduce((sum, c) => sum + c.charCodeAt(0), 0) % colors.length
   return colors[index]
 })
 
@@ -682,8 +691,8 @@ const bindTftAccount = async () => {
   }
   
   try {
-    matchService.bindGameAccount('current_user', tftForm.summonerName, tftForm.region, tftForm.region)
-    const result = await matchService.syncMatchData('current_user')
+    matchService.bindGameAccount(matchUserId.value, tftForm.summonerName, tftForm.region, tftForm.region)
+    const result = await matchService.syncMatchData(matchUserId.value)
     
     if (result.success) {
       await userStore.updateProfile({
@@ -704,7 +713,7 @@ const bindTftAccount = async () => {
 const unbindTftAccount = async () => {
   try {
     await userStore.updateProfile({ tftAccount: null })
-    matchService.clearMatchData('current_user')
+    matchService.clearMatchData(matchUserId.value)
     ElMessage.success('账号已解绑')
   } catch (error) {
     ElMessage.error(error.message || '解绑失败')
@@ -717,7 +726,7 @@ const bindJinchanchanAccount = async () => {
     return
   }
   
-  matchService.bindGameAccount('current_user', jinchanchanForm.gameId, 'cn', jinchanchanForm.server)
+  matchService.bindGameAccount(matchUserId.value, jinchanchanForm.gameId, 'cn', jinchanchanForm.server)
   
   try {
     await userStore.updateProfile({
@@ -735,7 +744,7 @@ const bindJinchanchanAccount = async () => {
 const unbindJinchanchanAccount = async () => {
   try {
     await userStore.updateProfile({ jinchanchanAccount: null })
-    matchService.clearMatchData('current_user')
+    matchService.clearMatchData(matchUserId.value)
     ElMessage.success('账号已解绑')
   } catch (error) {
     ElMessage.error(error.message || '解绑失败')
@@ -743,7 +752,7 @@ const unbindJinchanchanAccount = async () => {
 }
 
 const syncMatchData = async () => {
-  const result = await matchService.syncMatchData('current_user')
+  const result = await matchService.syncMatchData(matchUserId.value)
   if (result.success) {
     ElMessage.success('数据同步成功')
   } else {
@@ -806,6 +815,8 @@ const formatDate = (timestamp) => {
 
 onMounted(() => {
   resetForm()
+  // 加载该用户本地已保存的战绩数据
+  matchService.loadMatchData(matchUserId.value)
   if (userStore.userInfo?.tftAccount) {
     tftForm.summonerName = userStore.userInfo.tftAccount.summonerName
     tftForm.region = userStore.userInfo.tftAccount.region

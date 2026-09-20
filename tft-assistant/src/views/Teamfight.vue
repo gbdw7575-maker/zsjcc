@@ -118,7 +118,7 @@
                           <span :class="costClass(cell.cost)" class="text-xs px-1 rounded shrink-0">{{ cell.cost }}</span>
                         </div>
                         <div class="flex flex-wrap gap-0.5 justify-center max-w-full px-1">
-                          <span v-for="s in cell.synergies.slice(0, 2)" :key="s" class="text-xs px-1 py-0.5 bg-purple-500/30 text-purple-300 rounded truncate">{{ s }}</span>
+                          <span v-for="s in (cell.synergies || []).slice(0, 2)" :key="s" class="text-xs px-1 py-0.5 bg-purple-500/30 text-purple-300 rounded truncate">{{ s }}</span>
                         </div>
                       </div>
                     </div>
@@ -139,7 +139,7 @@
               <div v-for="synergy in gameStore.currentSynergies" :key="synergy.name" class="p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl border border-purple-500/30">
                 <div class="flex items-center justify-between mb-2">
                   <span class="text-white font-bold">{{ synergy.name }}</span>
-                  <span class="text-purple-400 font-bold">{{ synergy.count }}/{{ synergy.levels[synergy.levels.length - 1] }}</span>
+                  <span class="text-purple-400 font-bold">{{ synergy.count }}/{{ (synergy.levels || []).at(-1) }}</span>
                 </div>
                 <p class="text-sm text-gray-300">{{ synergy.effect }}</p>
               </div>
@@ -242,7 +242,7 @@ const filteredHeroes = computed(() => {
     heroes = heroes.filter(h => h.cost === parseInt(filterCost.value))
   }
   if (filterSynergy.value) {
-    heroes = heroes.filter(h => h.synergies.includes(filterSynergy.value))
+    heroes = heroes.filter(h => (h.synergies || []).includes(filterSynergy.value))
   }
   return heroes
 })

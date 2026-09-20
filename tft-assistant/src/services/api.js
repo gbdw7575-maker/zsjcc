@@ -1,5 +1,6 @@
 import axios from 'axios'
 import router from '../router'
+import { useUserStore } from '../stores/user'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
@@ -22,8 +23,14 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('userInfo')
+      // 同步重置 Pinia 用户状态，避免 localStorage 清空后 store 仍保留登录态
+      try {
+        useUserStore().logout()
+      } catch (e) {
+        // Pinia 尚未初始化时退回手动清理
+        localStorage.removeItem('token')
+        localStorage.removeItem('userInfo')
+      }
       // 避免重复跳转（多个请求同时 401）
       if (router.currentRoute.value.path !== '/login') {
         router.push('/login')
