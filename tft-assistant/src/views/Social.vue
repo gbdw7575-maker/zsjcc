@@ -149,7 +149,7 @@
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-1">
                   <span class="font-bold text-white">{{ user.username }}</span> 
-                  <span v-if="user.type === 'creator'" class="px-1.5 py-0.5 bg-pink-500/20 text-pink-300 text-xs rounded">创作者</span>
+                  <span v-if="user.type === 'admin'" class="px-1.5 py-0.5 bg-yellow-500/20 text-yellow-300 text-xs rounded">管理员</span>
                 </div>
                 <div class="text-sm text-gray-400">{{ user.bio || '暂无简介' }}</div>
                 <div class="flex gap-4 mt-2 text-xs text-gray-500">
@@ -207,7 +207,7 @@
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-1">
                   <span class="font-bold text-white">{{ user.username }}</span>
-                  <span v-if="user.type === 'creator'" class="px-1.5 py-0.5 bg-pink-500/20 text-pink-300 text-xs rounded">创作者</span>
+                  <span v-if="user.type === 'admin'" class="px-1.5 py-0.5 bg-yellow-500/20 text-yellow-300 text-xs rounded">管理员</span>
                 </div>
                 <div class="text-sm text-gray-400">{{ user.bio || '暂无简介' }}</div>
                 <div class="flex gap-4 mt-2 text-xs text-gray-500">
@@ -274,7 +274,7 @@
           </div>
           <div class="flex items-center justify-center gap-2 mb-2">
             <span class="font-bold text-white text-xl">{{ selectedUser?.username }}</span>
-            <span v-if="selectedUser?.type === 'creator'" class="px-2 py-0.5 bg-pink-500/20 text-pink-300 text-xs rounded">创作者</span>
+            <span v-if="selectedUser?.type === 'admin'" class="px-2 py-0.5 bg-yellow-500/20 text-yellow-300 text-xs rounded">管理员</span>
           </div>
           <div class="text-gray-400 mb-6">{{ selectedUser?.bio || '暂无简介' }}</div>
           
@@ -374,9 +374,9 @@
               <div class="flex-1">
                 <div class="flex items-center gap-2">
                   <span class="text-white">{{ user.username }}</span>
-                  <span v-if="user.type === 'creator'" class="px-1.5 py-0.5 bg-pink-500/20 text-pink-300 text-xs rounded">创作者</span>
+                  <span v-if="user.type === 'admin'" class="px-1.5 py-0.5 bg-yellow-500/20 text-yellow-300 text-xs rounded">管理员</span>
                 </div>
-                <div class="text-xs text-gray-400">{{ user.type === 'creator' ? '内容创作者' : '普通玩家' }} · {{ user.followers }}粉丝</div>
+                <div class="text-xs text-gray-400">{{ user.type === 'admin' ? '管理员' : '普通玩家' }} · {{ user.followers }}粉丝</div>
               </div>
               <button 
                 v-if="!isFollowing(user.id)"
@@ -453,7 +453,7 @@ const loadFollowing = async () => {
     following.value = data.data.map(u => ({
       id: u._id,
       username: u.username,
-      type: u.role === 'admin' ? 'creator' : 'player',
+      type: u.role === 'admin' ? 'admin' : 'player',
       bio: u.bio || '',
       games: 0,
       wins: 0,
@@ -472,7 +472,7 @@ const loadFollowers = async () => {
     followers.value = data.data.map(u => ({
       id: u._id,
       username: u.username,
-      type: u.role === 'admin' ? 'creator' : 'player',
+      type: u.role === 'admin' ? 'admin' : 'player',
       bio: u.bio || '',
       games: 0,
       wins: 0
@@ -505,7 +505,7 @@ const searchUsers = async () => {
     searchResults.value = data.data.map(u => ({
       id: u._id,
       username: u.username,
-      type: 'player',
+      type: u.role === 'admin' ? 'admin' : 'player',
       bio: u.bio || '',
       followers: 0
     }))
@@ -526,7 +526,7 @@ const searchUserForMessage = async () => {
       searchResult.value = {
         id: data.data[0]._id,
         username: data.data[0].username,
-        type: 'player'
+        type: data.data[0].role === 'admin' ? 'admin' : 'player'
       }
     } else {
       searchResult.value = null
