@@ -269,7 +269,10 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { augmentsData } from '../data/augmentsData'
+import { gameData } from '../services/gameDataService'
+
+// 统一数据入口：本地完整兜底，后端 augment 数据可整体覆盖
+const augmentData = gameData.augments
 
 const currentFilter = ref('all')
 const tierFilter = ref('all')
@@ -286,31 +289,31 @@ const tierClass = (tier) => {
 
 // 筛选英雄强化
 const filteredHeroAugments = computed(() => {
-  return augmentsData.heroAugments
+  return augmentData.value.heroAugments
 })
 
 // 筛选银色强化
 const filteredSilverAugments = computed(() => {
   if (tierFilter.value === 'all') {
-    return augmentsData.silverAugments
+    return augmentData.value.silverAugments
   }
-  return augmentsData.silverAugments.filter(augment => augment.tier === tierFilter.value)
+  return augmentData.value.silverAugments.filter(augment => augment.tier === tierFilter.value)
 })
 
 // 筛选金色强化
 const filteredGoldAugments = computed(() => {
   if (tierFilter.value === 'all') {
-    return augmentsData.goldAugments
+    return augmentData.value.goldAugments
   }
-  return augmentsData.goldAugments.filter(augment => augment.tier === tierFilter.value)
+  return augmentData.value.goldAugments.filter(augment => augment.tier === tierFilter.value)
 })
 
 // 筛选棱彩强化
 const filteredPrismaticAugments = computed(() => {
   if (tierFilter.value === 'all') {
-    return augmentsData.prismaticAugments
+    return augmentData.value.prismaticAugments
   }
-  return augmentsData.prismaticAugments.filter(augment => augment.tier === tierFilter.value)
+  return augmentData.value.prismaticAugments.filter(augment => augment.tier === tierFilter.value)
 })
 </script>
 

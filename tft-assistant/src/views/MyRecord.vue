@@ -312,7 +312,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { recordApi } from '../services/api.js'
-import { allHeroes } from '../data/heroesData.js'
+import { gameData } from '../services/gameDataService'
 
 const showForm = ref(false)
 const submitting = ref(false)
@@ -343,7 +343,7 @@ const form = reactive({
   note: ''
 })
 
-const championNames = computed(() => allHeroes.map(h => h.name).sort())
+const championNames = computed(() => gameData.heroes.value.map(h => h.name).sort())
 
 const filteredChampions = (input) => {
   if (!input) return championNames.value.slice(0, 8)

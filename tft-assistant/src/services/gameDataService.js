@@ -14,6 +14,7 @@ import api from './api'
 // ============ 同步加载本地数据作为初始回退值 ============
 import { heroesData, synergyData, equipmentData, metaTeams as localMetaTeams } from '../data/gameData'
 import { POOL_SIZE as LOCAL_POOL_SIZE, ROLL_ODDS as LOCAL_ROLL_ODDS, HERO_COUNT_BY_COST as LOCAL_HERO_COUNT_BY_COST, ALL_POOL_HEROES as LOCAL_ALL_POOL_HEROES } from '../data/poolData'
+import { augmentsData as LOCAL_AUGMENTS } from '../data/augmentsData'
 
 // ============ 数据缓存（响应式，初始化时就用本地数据填充） ============
 const heroes = ref(heroesData)
@@ -25,7 +26,8 @@ const pool = ref({
   heroCountByCost: LOCAL_HERO_COUNT_BY_COST,
   poolHeroes: LOCAL_ALL_POOL_HEROES
 })
-const augments = ref({ heroAugments: [] })
+// 海克斯：本地完整数据兜底，后端 augment 记录可整体覆盖
+const augments = ref(LOCAL_AUGMENTS)
 const metaTeams = ref(localMetaTeams)
 const loaded = ref(false)
 const loading = ref(false)

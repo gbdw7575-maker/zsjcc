@@ -239,16 +239,20 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { gameData } from '../services/gameDataService'
-// 卡池计算直接使用 poolData 导出，不通过 gameData.pool.value 间接获取
-import { POOL_SIZE, ROLL_ODDS, ALL_POOL_HEROES, calcSlotProbability, calcRollProbabilityWithBudget, calcFishingStats } from '../data/poolData'
+// 卡池常量走统一数据入口（本地兜底，后端 pool 数据可覆盖）；纯计算函数仍从 poolData 导入
+import { calcSlotProbability, calcRollProbabilityWithBudget, calcFishingStats } from '../data/poolData'
+
+const POOL_SIZE = gameData.poolSize
+const ROLL_ODDS = gameData.rollOdds
+const ALL_POOL_HEROES = gameData.allPoolHeroes
 
 const heroesByTier = computed(() => {
   return {
-    1: ALL_POOL_HEROES.filter(h => h.cost === 1),
-    2: ALL_POOL_HEROES.filter(h => h.cost === 2),
-    3: ALL_POOL_HEROES.filter(h => h.cost === 3),
-    4: ALL_POOL_HEROES.filter(h => h.cost === 4),
-    5: ALL_POOL_HEROES.filter(h => h.cost === 5),
+    1: ALL_POOL_HEROES.value.filter(h => h.cost === 1),
+    2: ALL_POOL_HEROES.value.filter(h => h.cost === 2),
+    3: ALL_POOL_HEROES.value.filter(h => h.cost === 3),
+    4: ALL_POOL_HEROES.value.filter(h => h.cost === 4),
+    5: ALL_POOL_HEROES.value.filter(h => h.cost === 5),
   }
 })
 
@@ -264,7 +268,7 @@ function ownedCount(hero) { return myOwned[hero.en] || 0 }
 function othersCount(hero) { return othersOwned[hero.en] || 0 }
 
 function getRemaining(hero) {
-  return POOL_SIZE[hero.tier] - (myOwned[hero.en] || 0) - (othersOwned[hero.en] || 0)
+  return POOL_SIZE.value[hero.tier] - (myOwned[hero.en] || 0) - (othersOwned[hero.en] || 0)
 }
 
 function resetAll() {
@@ -315,28 +319,28 @@ function heroNameClass(hero) {
 
 const tierRemaining = computed(() => {
   const result = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
-  ALL_POOL_HEROES.forEach(h => { result[h.tier] += getRemaining(h) })
+  ALL_POOL_HEROES.value.forEach(h => { result[h.tier] += getRemaining(h) })
   return result
 })
 
 const totalPoolByTier = computed(() => {
   const result = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
-  ALL_POOL_HEROES.forEach(h => { result[h.tier] += POOL_SIZE[h.tier] })
+  ALL_POOL_HEROES.value.forEach(h => { result[h.tier] += POOL_SIZE.value[h.tier] })
   return result
 })
 
 const rollOdds = computed(() => {
-  const odds = ROLL_ODDS[currentLevel.value]
+  const odds = ROLL_ODDS.value[currentLevel.value]
   return odds ? { 1: odds[1] || 0, 2: odds[2] || 0, 3: odds[3] || 0, 4: odds[4] || 0, 5: odds[5] || 0 } : { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
 })
 
-const targetHeroObj = computed(() => ALL_POOL_HEROES.find(h => h.en === targetHero.value))
+const targetHeroObj = computed(() => ALL_POOL_HEROES.value.find(h => h.en === targetHero.value))
 const targetHeroCost = computed(() => targetHeroObj.value ? targetHeroObj.value.tier : 1)
 const targetTierCount = computed(() => {
   const tier = targetHeroObj.value ? targetHeroObj.value.tier : 1
   return heroesByTier.value[tier] ? heroesByTier.value[tier].length : 1
 })
-const targetPoolTotal = computed(() => targetHeroObj.value ? POOL_SIZE[targetHeroObj.value.tier] : 0)
+const targetPoolTotal = computed(() => targetHeroObj.value ? POOL_SIZE.value[targetHeroObj.value.tier] : 0)
 const targetRemaining = computed(() => targetHeroObj.value ? getRemaining(targetHeroObj.value) : 0)
 const targetTierRemaining = computed(() => targetHeroObj.value ? tierRemaining.value[targetHeroObj.value.tier] : 0)
 
@@ -359,7 +363,7 @@ const maxTargetOptions = computed(() => {
 
 function updateMyOwned(hero, value) {
   const others = othersOwned[hero.en] || 0
-  const maxAllowed = POOL_SIZE[hero.tier] - others
+  const maxAllowed = POOL_SIZE.value[hero.tier] - others
   const clamped = Math.min(Math.max(0, value), maxAllowed)
   if (clamped === 0) delete myOwned[hero.en]
   else myOwned[hero.en] = clamped
@@ -367,7 +371,7 @@ function updateMyOwned(hero, value) {
 
 function updateOthersOwned(hero, value) {
   const mine = myOwned[hero.en] || 0
-  const maxAllowed = POOL_SIZE[hero.tier] - mine
+  const maxAllowed = POOL_SIZE.value[hero.tier] - mine
   const clamped = Math.min(Math.max(0, value), maxAllowed)
   if (clamped === 0) delete othersOwned[hero.en]
   else othersOwned[hero.en] = clamped
