@@ -188,6 +188,7 @@
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
+import { gameData } from '../services/gameDataService'
 
 const state = reactive({
   gold: 30,
@@ -211,15 +212,22 @@ const levelXP = [
 const levelXPMap = {}
 levelXP.forEach(l => { levelXPMap[l.from] = l })
 
-// S8 抽卡概率
-const rollOdds = {
-  4: { tier1: 55, tier2: 30, tier3: 15, tier4: 0, tier5: 0 },
-  5: { tier1: 45, tier2: 33, tier3: 20, tier4: 2, tier5: 0 },
-  6: { tier1: 25, tier2: 40, tier3: 30, tier4: 5, tier5: 0 },
-  7: { tier1: 19, tier2: 30, tier3: 35, tier4: 15, tier5: 1 },
-  8: { tier1: 16, tier2: 20, tier3: 35, tier4: 25, tier5: 4 },
-  9: { tier1: 9, tier2: 15, tier3: 30, tier4: 30, tier5: 16 }
-}
+// S8 抽卡概率：走统一数据入口（本地兜底，后端 pool 数据可覆盖）
+const rollOdds = computed(() => {
+  const src = gameData.rollOdds.value
+  const result = {}
+  for (const lvl of [4, 5, 6, 7, 8, 9]) {
+    const o = src[lvl] || {}
+    result[lvl] = {
+      tier1: o[1] || 0,
+      tier2: o[2] || 0,
+      tier3: o[3] || 0,
+      tier4: o[4] || 0,
+      tier5: o[5] || 0
+    }
+  }
+  return result
+})
 
 const interestGold = computed(() => Math.min(5, Math.floor(state.gold / 10)))
 
@@ -274,7 +282,8 @@ const goldProjection = computed(() => {
   let gold = state.gold
   for (let i = 1; i <= 8; i++) {
     const interest = Math.min(5, Math.floor(gold / 10))
-    const income = 5 + interest + (streakGold.value > 0 ? streakGold.value : 0)
+    // 按面板假设：仅基础收入+利息，不计连胜/连败（胜负无法预测）
+    const income = 5 + interest
     gold += income
     rounds.push({ round: i, gold, interest, income })
   }
