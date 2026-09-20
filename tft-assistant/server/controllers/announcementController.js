@@ -32,8 +32,9 @@ export const getAnnouncementById = async (req, res) => {
       return res.status(404).json({ success: false, message: '公告不存在' })
     }
 
+    // 浏览量原子自增
+    await Announcement.updateOne({ _id: announcement._id }, { $inc: { viewCount: 1 } })
     announcement.viewCount += 1
-    await announcement.save()
 
     res.json({ success: true, data: announcement })
   } catch (error) {

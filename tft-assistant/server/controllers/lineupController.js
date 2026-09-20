@@ -71,8 +71,9 @@ export const getLineupById = async (req, res) => {
       return res.status(404).json({ success: false, message: '阵容不存在' })
     }
 
+    // 浏览量原子自增
+    await Lineup.updateOne({ _id: lineup._id }, { $inc: { views: 1 } })
     lineup.views += 1
-    await lineup.save()
 
     res.json({ success: true, data: lineup })
   } catch (error) {
@@ -150,20 +151,20 @@ export const deleteLineup = async (req, res) => {
 // 点赞/取消点赞阵容
 export const likeLineup = async (req, res) => {
   try {
-    const lineup = await Lineup.findById(req.params.id)
+    const lineup = await Lineup.findById(req.params.id).select('likes')
     if (!lineup) {
       return res.status(404).json({ success: false, message: '阵容不存在' })
     }
 
-    const index = lineup.likes.indexOf(req.user._id)
-    if (index === -1) {
-      lineup.likes.push(req.user._id)
-    } else {
-      lineup.likes.splice(index, 1)
-    }
-    await lineup.save()
+    const liked = lineup.likes.some(id => id.equals(req.user._id))
+    const update = liked
+      ? { $pull: { likes: req.user._id } }
+      : { $addToSet: { likes: req.user._id } }
 
-    res.json({ success: true, data: { likes: lineup.likes, count: lineup.likes.length } })
+    const updated = await Lineup.findByIdAndUpdate(req.params.id, update, { new: true })
+      .select('likes')
+
+    res.json({ success: true, data: { likes: updated.likes, count: updated.likes.length } })
   } catch (error) {
     res.status(500).json({ success: false, message: error.message })
   }

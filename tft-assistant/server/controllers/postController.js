@@ -51,8 +51,9 @@ export const getPostById = async (req, res) => {
       }
     }
 
+    // 浏览量原子自增，避免 read-modify-write 并发丢数
+    await Post.updateOne({ _id: post._id }, { $inc: { views: 1 } })
     post.views += 1
-    await post.save()
 
     const comments = await Comment.find({ post: req.params.id })
       .populate('author', 'username avatar')
@@ -98,20 +99,21 @@ export const createPost = async (req, res) => {
 
 export const likePost = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id)
+    // 仅取 likes 字段判断当前状态，避免整文档回写
+    const post = await Post.findById(req.params.id).select('likes')
     if (!post) {
       return res.status(404).json({ success: false, message: '帖子不存在' })
     }
 
-    const index = post.likes.indexOf(req.user._id)
-    if (index === -1) {
-      post.likes.push(req.user._id)
-    } else {
-      post.likes.splice(index, 1)
-    }
-    await post.save()
+    const liked = post.likes.some(id => id.equals(req.user._id))
+    const update = liked
+      ? { $pull: { likes: req.user._id } }
+      : { $addToSet: { likes: req.user._id } }
 
-    res.json({ success: true, data: post.likes })
+    const updated = await Post.findByIdAndUpdate(req.params.id, update, { new: true })
+      .select('likes')
+
+    res.json({ success: true, data: updated.likes })
   } catch (error) {
     res.status(500).json({ success: false, message: error.message })
   }
@@ -160,15 +162,20 @@ export const createComment = async (req, res) => {
 
 export const likeComment = async (req, res) => {
   try {
-    const comment = await Comment.findById(req.params.id)
-    const index = comment.likes.indexOf(req.user._id)
-    if (index === -1) {
-      comment.likes.push(req.user._id)
-    } else {
-      comment.likes.splice(index, 1)
+    const comment = await Comment.findById(req.params.id).select('likes')
+    if (!comment) {
+      return res.status(404).json({ success: false, message: '评论不存在' })
     }
-    await comment.save()
-    res.json({ success: true, data: comment.likes })
+
+    const liked = comment.likes.some(id => id.equals(req.user._id))
+    const update = liked
+      ? { $pull: { likes: req.user._id } }
+      : { $addToSet: { likes: req.user._id } }
+
+    const updated = await Comment.findByIdAndUpdate(req.params.id, update, { new: true })
+      .select('likes')
+
+    res.json({ success: true, data: updated.likes })
   } catch (error) {
     res.status(500).json({ success: false, message: error.message })
   }
