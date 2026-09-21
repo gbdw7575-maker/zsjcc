@@ -406,20 +406,30 @@ P2：Equipment(7,部分) / PoolTracker(6,部分) / PostDetail(4) / MyRecord(2) /
 
 #### 改造动作
 
-| # | 改造点 | 涉及文件 |
-|---|---|---|
-| A1 | MatchRecord 新增字段：`aiAdvice`（AI 复盘建议文本）+ `source` enum 加 `'ocr'` + `sourceGameId` 兼容 OCR 帧时间戳 | `server/models/MatchRecord.js` |
-| A2 | 新增后端路由 `POST /api/records/ocr`：前端 OCR 完成后提交，自动 upsert MatchRecord（依据 videoId+timestamp 去重） | `server/routes/matchRecordRoutes.js` + `server/controllers/matchRecordController.js` |
-| A3 | AI 复盘接口返回后，前端调用 `recordsApi.upsertOcrAdvice(gameId, advice)` 持久化 | `src/services/api.js` + `src/views/ScreenShare.vue` |
-| A4 | MyRecord.vue 改造：主入口改为"自动同步战绩"按钮（调 `/api/records/sync`），手动录入入口降级到次级按钮 | `src/views/MyRecord.vue` |
-| A5 | 新增战绩画像聚合：基于 source∈['lcu','ocr'] 的自动数据，输出胜率趋势/常用阵容/短板段位 | `server/services/statsService.js` + `server/controllers/statsController.js` |
-| A6 | 战绩列表显示 AI 复盘卡片：每条 MatchRecord 展开 `aiAdvice` 字段，附"再看一次 AI 建议"按钮 | `src/views/MyRecord.vue` |
+| # | 改造点 | 预期收益 | 实际收益 | 状态 |
+|---|---|---|---|---|
+| A1 | MatchRecord 新增 `aiAdvice` + `source` enum 加 `'ocr'` + `sourceGameId` 兼容 OCR 帧时间戳 | AI 建议可持久化、可去重 | aiAdvice 含 text/suggestions/snapshot/provider/generatedAt；sourceGameId=`${videoId}#${timestamp}` 唯一索引 | ✅ commit 525ff31 |
+| A2 | 新增 `POST /api/records/ocr` upsert 控制器 | OCR 数据自动入库 | upsertOcrRecord 按 user+sourceGameId 去重，`$set` 合并 aiAdvice、`$setOnInsert` 初始化 placement=0 | ✅ commit 525ff31 |
+| A3 | AI 复盘返回后前端调 `upsertOcrAdvice` 持久化 | 三条线（OCR/AI/战绩）串联 | api.js recordApi.upsertOcrAdvice + ScreenShare.vue 提交 videoId+timestamp+aiAdvice | ✅ commit 525ff31 |
+| A4 | MyRecord 主入口改"立即同步本机战绩"，手动录入降级 | 减少手动录入摩擦 | 主按钮 syncLCU + 次级"+ 手动录入"折叠表单 | ✅ commit dfb750d |
+| A5 | statsService 个人画像聚合（含 autoCoverage） | 画像价值可量化 | computeUserProfile 聚合 source 分布/胜率趋势/常用阵容，`GET /api/stats/profile` + 5min 缓存 | ✅ commit dfb750d |
+| A6 | 战绩列表 AI 复盘可展开卡片 | 历史建议可追溯 | expanded Set 控制展开，渲染 snapshot+text+suggestions，附"再看一次 AI 建议" | ✅ commit dfb750d |
+
+#### 预期总效果 vs 实际
+
+| 指标 | 改造前 | 目标 | 实际 | 达标 |
+|---|---|---|---|---|
+| OCR 识别数据入库 | 不入库（孤儿数据） | 自动 upsert | videoId+timestamp 去重 upsert，aiAdvice 合并更新 | ✅ |
+| AI 复盘建议持久化 | 仅 ScreenShare 页内显示 | 沉淀到 MatchRecord | aiAdvice 字段含 5 子字段 + generatedAt 时间戳 | ✅ |
+| 战绩列表主入口 | 手动录入按钮 | 自动同步为主 | "立即同步"主 + 手动录入次级折叠 | ✅ |
+| 个人画像 | 无聚合 | 胜率趋势/常用阵容 | autoCoverage + topTraits + topChampions | ✅ |
+| 历史复盘查阅 | 不可见 | 列表展开回看 | expanded Set + AI 复盘卡片 + 来源标签 | ✅ |
 
 #### 验收标准
 
-- 用户在 ScreenShare 页打完一局 OCR 识别 → AI 复盘 → 自动出现在 MyRecord 列表第一条
-- 不点任何"录入"按钮也能看到战绩
-- 历史复盘建议可追溯查阅
+- ✅ 用户在 ScreenShare 页打完一局 OCR 识别 → AI 复盘 → 自动出现在 MyRecord 列表第一条（`POST /api/records/ocr` upsert + 列表按 `playedAt: -1` 排序）
+- ✅ 不点任何"录入"按钮也能看到战绩（C4 登录后自动触发 + C1 后台 worker 5 分钟扫描活跃用户）
+- ✅ 历史复盘建议可追溯查阅（expanded Set 展开卡片，含 snapshot 快照 + 结构化 suggestions）
 
 ---
 
@@ -433,19 +443,28 @@ P2：Equipment(7,部分) / PoolTracker(6,部分) / PostDetail(4) / MyRecord(2) /
 
 #### 改造动作
 
-| # | 改造点 | 涉及文件 |
-|---|---|---|
-| B1 | GameData 模型扩展为版本化：新增 `season`（如 'S10'）+ `patch`（如 '14.18.1'）字段 + 索引 | `server/models/GameData.js` |
-| B2 | 新增查询接口 `GET /api/game-data?season=S10` 返回当前赛季英雄/羁绊/装备 | `server/controllers/gameDataController.js` |
-| B3 | 前端 gameDataService 改为运行时拉取后端数据 + 本地 fallback（离线仍可用） | `src/services/gameDataService.js` |
-| B4 | AdminGameData 增"赛季切换器"：管理员选当前赛季 → 全站自动跟随 | `src/views/AdminGameData.vue` + `server/controllers/gameDataController.js` |
-| B5 | Home.vue HeroBadge / 标题改为从配置拉取 `当前赛季：{{ currentSeason }}` | `src/views/Home.vue` + `src/stores/game.js` |
-| B6 | 公告支持按赛季过滤展示（避免跨赛季旧公告长期挂首页） | `server/controllers/announcementController.js` |
+| # | 改造点 | 预期收益 | 实际收益 | 状态 |
+|---|---|---|---|---|
+| B1 | GameData 加 `season`+`patch` 字段 + 索引 | 版本化基础 | GameData.js season/patch 字段 + `{season:1,type:1}` 复合索引 | ✅ commit b6a6707 |
+| B2 | `GET /api/game-data?season=S10` 查询 | 按赛季返回 | gameDataController.listRecords 支持 `?season` 过滤 + 默认回退 activeSeason | ✅ commit b6a6707 |
+| B3 | 前端 gameDataService 运行时拉取 + 本地 fallback | 离线仍可用 | gameDataService 优先后端拉取，失败降级本地 gameData 静态文件 | ✅ commit cdc19eb |
+| B4 | AdminGameData 赛季切换器 | 一键切换无需部署 | `POST /api/game-data/active-season` + gameDataController.setActiveSeason + AdminGameData.vue 切换 UI | ✅ commit b6a6707(后端) + cdc19eb(前端) |
+| B5 | Home.vue HeroBadge 从配置拉取 | 不再硬编码 S8 | game.js store currentSeason + Home.vue 显示 `当前赛季：{{ currentSeason }}` | ✅ commit cdc19eb |
+| B6 | 公告按赛季过滤 | 避免旧公告挂首页 | announcementController.listAnnouncements 支持 `?season` 过滤 | ✅ commit cdc19eb |
+
+#### 预期总效果 vs 实际
+
+| 指标 | 改造前 | 目标 | 实际 | 达标 |
+|---|---|---|---|---|
+| 赛季配置方式 | 改前端代码 + 重新部署 | 后台一键切换 | AdminGameData 切换器 + setActiveSeason 端点 | ✅ |
+| 前端数据来源 | 静态 gameData.js 硬编码 | 运行时拉取 | gameDataService 优先后端 + fallback 本地 | ✅ |
+| 公告时效 | 全部展示 | 按赛季过滤 | announcementController `?season` 过滤 | ✅ |
+| 旧赛季数据 | 覆盖丢失 | 保留可查 | season 字段隔离 + 历史阵容按 season 查询 | ✅ |
 
 #### 验收标准
 
-- 管理员在后台一键切换赛季，前端 5 秒内呈现新数据，无需重新部署
-- 旧赛季数据保留可查（历史阵容仍可打开）
+- ✅ 管理员在后台一键切换赛季，前端 5 秒内呈现新数据（gameDataService 运行时拉取，无需重新部署）
+- ✅ 旧赛季数据保留可查（season 字段隔离，历史阵容仍可按 season 查询打开）
 
 ---
 
@@ -459,19 +478,28 @@ P2：Equipment(7,部分) / PoolTracker(6,部分) / PostDetail(4) / MyRecord(2) /
 
 #### 改造动作
 
-| # | 改造点 | 涉及文件 |
-|---|---|---|
-| C1 | 后端新增 syncWorker：定时（每 5 分钟）扫描"上次同步时间 < now - 10min"的活跃用户 → 自动调 lcuSyncService | 新建 `server/services/syncWorker.js` + `server/server.js` 启动时 setInterval |
-| C2 | LCU 失败入 Bull/简单数组队列重试（指数退避 30s/2min/10min） | `server/services/lcuService.js` |
-| C3 | 前端 MyRecord 顶部显示"上次同步: 2 分钟前，自动同步中..."实时状态条 | `src/views/MyRecord.vue` + `server/controllers/matchRecordController.js` 增 `GET /api/records/sync-status` |
-| C4 | 用户登录后 router beforeEach 自动触发一次同步（异步不等结果） | `src/router/index.js` + `src/services/api.js` |
-| C5 | Socket.IO 推送同步完成事件：用户在前台时收到"已同步 3 场新战绩"通知 | `server/services/socketStore.js` + `src/views/MyRecord.vue` 监听 |
+| # | 改造点 | 预期收益 | 实际收益 | 状态 |
+|---|---|---|---|---|
+| C1 | 后端 syncWorker 每 5 分钟扫描活跃用户 | 用户无感同步 | syncWorker.js pollOnce 每 5min 扫 `lastActiveAt >= now-10min` + startSyncWorker 在 server.js 启动 + `.unref()` 不阻塞退出 | ✅ commit 02542b9 |
+| C2 | LCU 失败入队列重试（指数退避） | 自动续传 | retryQueue Map + BACKOFF_SCHEDULE_MS `[30s,2min,10min]` + MAX_ATTEMPTS=3 + 每分钟 drainRetryQueue 扫描 | ✅ commit 02542b9 |
+| C3 | MyRecord 状态条显示"上次同步 X 分钟前" | 同步状态可见 | lastSyncByUser Map 记录每次结果 + `getSyncStatus` 导出 + `GET /api/records/sync-status` + 前端 30s 轮询 + formatRelative 相对时间 | ✅ 本轮补完 |
+| C4 | 登录后 router beforeEach 异步触发同步 | 减少手动操作 | `POST /api/records/sync-now` + triggerSync 控制器调 syncNow + router 动态 import api 触发 + sessionStorage 防重 + logout 清除标记 | ✅ 本轮补完 |
+| C5 | Socket.IO 推送同步完成通知 | 实时反馈 | syncWorker.notifyUser `io.to(user:${userId}).emit('records:synced')` + MyRecord.vue `socket.on('records:synced')` + ElMessage.success 通知 + 自动刷新列表 | ✅ 本轮补完 |
+
+#### 预期总效果 vs 实际
+
+| 指标 | 改造前 | 目标 | 实际 | 达标 |
+|---|---|---|---|---|
+| 同步触发方式 | 仅手动点按钮 | 后台自动 + 登录触发 | C1 周期扫描 5min + C4 登录即触发 fire-and-forget | ✅ |
+| LCU 失败处理 | 无重试，用户反复点 | 队列重试 | 指数退避 3 次重试（30s/2min/10min） | ✅ |
+| 同步状态可见性 | 不可见 | 状态条显示 | "上次同步 X 分钟前" + 失败时红字 error + 30s 轮询刷新 | ✅ |
+| 同步完成通知 | 无 | 实时推送 | Socket.IO records:synced 事件 + ElMessage + 自动刷新战绩列表 | ✅ |
 
 #### 验收标准
 
-- 用户打开客户端并登录后端 → 后台 5 分钟内自动拉取新对局
-- 用户在前台时收到"已同步 N 场新战绩"实时通知
-- LCU 客户端关掉时同步任务入队列，重开自动续传
+- ✅ 用户打开客户端并登录后端 → 后台 5 分钟内自动拉取新对局（C1 pollOnce 5min 周期 + C4 登录即触发 syncNow）
+- ✅ 用户在前台时收到"已同步 N 场新战绩"实时通知（C5 socket 监听 `records:synced` + ElMessage.success + 列表自动刷新）
+- ✅ LCU 客户端关掉时同步任务入队列，重开自动续传（C2 retryQueue 指数退避 30s/2min/10min，重试上限 3 次）
 
 ---
 
