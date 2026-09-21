@@ -5,14 +5,14 @@
       <div class="hero-grid">
         <!-- 左侧竖排赛季标 -->
         <div class="hero-side">
-          <span class="hero-side-text">SEASON&nbsp;08</span>
+          <span class="hero-side-text">SEASON&nbsp;{{ seasonBadge }}</span>
           <span class="hero-side-line"></span>
         </div>
 
         <div class="hero-main">
           <div class="hero-badge animate-fade-up">
             <i class="hero-badge-dot"></i>
-            <span>金铲铲之战 · S8 怪兽入侵 · 数据实时同步</span>
+            <span>金铲铲之战 · {{ seasonLabel }} · 数据实时同步</span>
           </div>
 
           <h1 class="hero-title animate-fade-up" style="animation-delay:.08s">
@@ -118,10 +118,10 @@
     <!-- ============ 赛季横幅 ============ -->
     <section class="block">
       <div class="season-banner">
-        <div class="season-glyph">S8</div>
+        <div class="season-glyph">{{ seasonBadge }}</div>
         <div class="season-info">
-          <h2>怪兽入侵赛季返场</h2>
-          <p>英雄强化、机甲羁绊、地下魔盗团 —— 经典赛季重磅回归</p>
+          <h2>{{ seasonTitle }}</h2>
+          <p>{{ seasonSubtitle }}</p>
         </div>
         <button class="hud-btn hud-btn--gold" @click="openUpdateDetails">
           更新详情
@@ -164,12 +164,54 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { gameData } from '../services/gameDataService'
 import { announcementApi } from '../services/api'
 
 const hotTeams = computed(() => (gameData.metaTeams.value || []).slice(0, 8))
 const announcements = ref([])
+
+// B5: 赛季动态渲染
+// currentVersion 形如 "S8 怪兽入侵（本地数据）" / 后端 version 字段；currentSeason 形如 "S8"
+const seasonBadge = computed(() => {
+  // 取 season 数字部分，如 "S8" → "08"；无 season 时回退到 version 解析
+  const s = gameData.currentSeason.value
+  if (s) {
+    const m = /S(\d+)/i.exec(s)
+    return m ? String(m[1]).padStart(2, '0') : s
+  }
+  // 回退：从 currentVersion 取数字
+  const v = gameData.currentVersion.value || ''
+  const m2 = /S(\d+)/i.exec(v)
+  return m2 ? String(m2[1]).padStart(2, '0') : '08'
+})
+
+// HeroBadge 文案：S8 怪兽入侵（如有），无 season 显示 currentVersion
+const seasonLabel = computed(() => {
+  if (gameData.currentSeason.value) {
+    // 若 version 中已包含赛季名（如 "S8 怪兽入侵"），直接用 version；否则用 season
+    const v = gameData.currentVersion.value || ''
+    if (v && v.toUpperCase().includes(gameData.currentSeason.value.toUpperCase())) return v
+    return gameData.currentSeason.value
+  }
+  return gameData.currentVersion.value || 'S8 怪兽入侵'
+})
+
+// 赛季横幅标题
+const seasonTitle = computed(() => {
+  const v = gameData.currentVersion.value || ''
+  // 提取 "S8 怪兽入侵" 中的 "怪兽入侵"
+  const m = /S\d+\s*([^\n（(]+)/.exec(v)
+  return m ? `${m[1].trim()}赛季` : '怪兽入侵赛季返场'
+})
+
+// 赛季横幅副标题（保持品牌文案，未来可由后端 announcement 配置）
+const seasonSubtitle = computed(() => {
+  if (gameData.fromFallback.value) {
+    return '英雄强化、机甲羁绊、地下魔盗团 —— 经典赛季重磅回归'
+  }
+  return '当前赛季数据已同步，阵容 / 装备 / 羁绊实时更新'
+})
 
 // Hero 数据计数，数据加载后响应式更新
 const heroStats = computed(() => ({
@@ -243,7 +285,12 @@ const formatDate = (date) => new Date(date).toLocaleDateString('zh-CN')
 
 const loadAnnouncements = async () => {
   try {
-    const { data } = await announcementApi.getAnnouncements()
+    // B6: 拉公告时传当前 season（后端返回该赛季 + 全赛季通用）
+    const params = {}
+    if (gameData.currentSeason.value) {
+      params.season = gameData.currentSeason.value
+    }
+    const { data } = await announcementApi.getAnnouncements(params)
     announcements.value = data.data
   } catch (error) {
     console.error('加载公告失败:', error)
@@ -253,6 +300,9 @@ const loadAnnouncements = async () => {
 const openUpdateDetails = () => {
   window.open('https://www.taptap.cn/moment/816001859008335622?group_id=213275', '_blank')
 }
+
+// B6: 赛季切换后重新拉公告（onMounted + watch season）
+watch(() => gameData.currentSeason.value, () => loadAnnouncements())
 
 onMounted(() => loadAnnouncements())
 </script>

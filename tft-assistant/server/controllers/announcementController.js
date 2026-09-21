@@ -1,16 +1,24 @@
 import Announcement from '../models/Announcement.js'
 
 // 获取所有公告（公开）
+// B6: 支持 ?season=S8 过滤；未传 season 时返回全部（含全赛季通用）
+//   传 season 时返回：该赛季公告 + season 字段为空的通用公告
 export const getAnnouncements = async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.query
-    const announcements = await Announcement.find({ isActive: true })
+    const { page = 1, limit = 10, season } = req.query
+    const filter = { isActive: true }
+    if (season) {
+      // 命中指定赛季 + 全赛季通用（season 为空字符串/null/undefined 的记录）
+      filter.$or = [{ season }, { season: { $in: ['', null] } }]
+    }
+
+    const announcements = await Announcement.find(filter)
       .populate('author', 'username')
       .sort({ isPinned: -1, createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(Number(limit))
 
-    const total = await Announcement.countDocuments({ isActive: true })
+    const total = await Announcement.countDocuments(filter)
 
     res.json({
       success: true,
@@ -45,12 +53,13 @@ export const getAnnouncementById = async (req, res) => {
 // 创建公告（需管理员权限）
 export const createAnnouncement = async (req, res) => {
   try {
-    const { title, content, type, isPinned } = req.body
+    const { title, content, type, isPinned, season } = req.body
     const announcement = await Announcement.create({
       title,
       content,
       type: type || 'normal',
       isPinned: isPinned || false,
+      season: season || '',
       author: req.user._id
     })
     await announcement.populate('author', 'username')
@@ -63,10 +72,10 @@ export const createAnnouncement = async (req, res) => {
 // 更新公告
 export const updateAnnouncement = async (req, res) => {
   try {
-    const { title, content, type, isPinned, isActive } = req.body
+    const { title, content, type, isPinned, isActive, season } = req.body
     const announcement = await Announcement.findByIdAndUpdate(
       req.params.id,
-      { title, content, type, isPinned, isActive },
+      { title, content, type, isPinned, isActive, season },
       { new: true }
     ).populate('author', 'username')
 

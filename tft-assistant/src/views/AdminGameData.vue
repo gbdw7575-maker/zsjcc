@@ -16,10 +16,49 @@
         </div>
       </div>
 
+      <!-- B4-UI: 赛季切换器 -->
+      <div class="hud-card p-4 mb-6 flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-gray-400 text-sm">当前赛季</span>
+          <span class="chip chip--accent">{{ seasons.activeSeason || 'S8' }}</span>
+          <span v-if="seasons.activePatch" class="text-gray-500 text-xs">补丁 {{ seasons.activePatch }}</span>
+        </div>
+        <div class="flex-1" />
+        <div class="flex items-center gap-2">
+          <label class="text-gray-400 text-sm">切换至</label>
+          <select
+            v-model="pendingSeason"
+            class="px-3 py-1.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white text-sm"
+          >
+            <option value="">-- 选择赛季 --</option>
+            <option
+              v-for="s in seasons.list"
+              :key="s.season"
+              :value="s.season"
+            >
+              {{ s.season }}{{ s.patch ? `（${s.patch}）` : '' }}{{ s.isActive ? ' · 当前' : '' }}
+            </option>
+          </select>
+          <button
+            @click="setActiveSeason"
+            :disabled="!pendingSeason || pendingSeason === seasons.activeSeason || switching"
+            class="hud-btn hud-btn--gold text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {{ switching ? '切换中...' : '设为当前赛季' }}
+          </button>
+          <button
+            @click="loadSeasons"
+            class="hud-btn text-sm"
+          >
+            刷新赛季列表
+          </button>
+        </div>
+      </div>
+
       <!-- 数据类型筛选 -->
-      <div class="flex gap-4 mb-6">
-        <button 
-          v-for="t in dataTypes" 
+      <div class="flex flex-wrap gap-4 mb-6">
+        <button
+          v-for="t in dataTypes"
           :key="t.value"
           @click="activeType = t.value"
           class="px-4 py-2 rounded-lg transition-colors"
@@ -34,21 +73,22 @@
         <div v-if="loading" class="text-center py-12">
           <div class="text-gray-400">加载中...</div>
         </div>
-        
+
         <div v-else-if="filteredData.length === 0" class="text-center py-12">
           <div class="text-6xl mb-4">📊</div>
           <div class="text-gray-400">暂无数据</div>
         </div>
 
         <div v-else class="space-y-4">
-          <div 
-            v-for="item in filteredData" 
+          <div
+            v-for="item in filteredData"
             :key="item._id"
             class="flex items-center gap-4 p-4 bg-[var(--bg-card-hover)] rounded-lg hover:bg-[var(--bg-elevated)] transition-colors"
           >
             <div class="flex-1">
               <div class="flex items-center gap-2 mb-1">
                 <span class="text-white font-bold">{{ item.version }}</span>
+                <span v-if="item.season" class="chip chip--gold text-xs">{{ item.season }}</span>
                 <span class="text-xs px-2 py-0.5 rounded-full bg-[rgba(var(--accent-rgb),0.12)] text-[var(--accent-color)]">{{ getTypeLabel(item.type) }}</span>
                 <span v-if="item.isActive" class="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-300">活跃</span>
               </div>
@@ -73,6 +113,14 @@
       <!-- 添加/编辑数据对话框 -->
       <el-dialog v-model="showAddDialog" :title="editingId ? '编辑版本数据' : '添加版本数据'" width="600px">
         <div class="space-y-4">
+          <div>
+            <label class="text-gray-400 text-sm mb-1">赛季标识</label>
+            <input v-model="newItem.season" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="如: S8 / S10（留空将归入 active 赛季）" />
+          </div>
+          <div>
+            <label class="text-gray-400 text-sm mb-1">补丁号</label>
+            <input v-model="newItem.patch" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="如: 14.5（可选）" />
+          </div>
           <div>
             <label class="text-gray-400 text-sm mb-1">版本号</label>
             <input v-model="newItem.version" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="如: S8怪兽入侵返厂" />
@@ -101,6 +149,16 @@
       <!-- 批量导入对话框 -->
       <el-dialog v-model="showBulkDialog" title="批量导入数据" width="700px">
         <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="text-gray-400 text-sm mb-1">赛季标识</label>
+              <input v-model="bulkSeason" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="如: S8" />
+            </div>
+            <div>
+              <label class="text-gray-400 text-sm mb-1">补丁号</label>
+              <input v-model="bulkPatch" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="如: 14.5" />
+            </div>
+          </div>
           <div>
             <label class="text-gray-400 text-sm mb-1">版本号</label>
             <input v-model="bulkVersion" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="如: S8怪兽入侵返厂" />
@@ -161,8 +219,20 @@ const showDetailDialog = ref(false)
 const selectedItem = ref(null)
 const bulkVersion = ref('S8怪兽入侵返厂')
 const bulkJson = ref('')
+// B4-UI: 赛季切换器状态
+const bulkSeason = ref('S8')
+const bulkPatch = ref('')
+const pendingSeason = ref('')
+const switching = ref(false)
+const seasons = ref({
+  list: [],
+  activeSeason: '',
+  activePatch: ''
+})
 
 const newItem = ref({
+  season: '',
+  patch: '',
   version: 'S8怪兽入侵返厂',
   type: 'metaTeam',
   source: '',
@@ -210,6 +280,45 @@ const loadGameData = async () => {
   }
 }
 
+// B4-UI: 拉取可选赛季列表 + 当前 active 赛季/补丁
+const loadSeasons = async () => {
+  try {
+    const { data } = await gameDataApi.listSeasons()
+    const list = data?.data || []
+    seasons.value.list = list
+    const active = list.find(s => s.isActive)
+    if (active) {
+      seasons.value.activeSeason = active.season
+      seasons.value.activePatch = active.patch || ''
+    } else if (list.length > 0) {
+      // 无 active 标记时取第一条
+      seasons.value.activeSeason = list[0].season
+      seasons.value.activePatch = list[0].patch || ''
+    }
+  } catch (error) {
+    console.error('加载赛季列表失败:', error)
+  }
+}
+
+// B4-UI: 一键设为当前赛季
+const setActiveSeason = async () => {
+  if (!pendingSeason.value || pendingSeason.value === seasons.value.activeSeason) return
+  switching.value = true
+  try {
+    await gameDataApi.setActiveSeason(pendingSeason.value)
+    ElMessage.success(`已切换为 ${pendingSeason.value} 赛季`)
+    pendingSeason.value = ''
+    await loadSeasons()
+    await loadGameData()
+    // 同步刷新全局 gameData 服务（后端 active 已切换，refresh 会拉到新赛季数据）
+    await gameDataStore.refresh()
+  } catch (error) {
+    ElMessage.error(error.response?.data?.message || '切换赛季失败')
+  } finally {
+    switching.value = false
+  }
+}
+
 const addItem = async () => {
   try {
     const dataObj = JSON.parse(newItem.value.dataJson)
@@ -217,6 +326,8 @@ const addItem = async () => {
     const normalizedType = newItem.value.type === 'team' ? 'metaTeam' : newItem.value.type
     if (editingId.value) {
       await gameDataApi.updateGameData(editingId.value, {
+        season: newItem.value.season || undefined,
+        patch: newItem.value.patch || undefined,
         version: newItem.value.version,
         type: normalizedType,
         data: dataObj,
@@ -225,6 +336,8 @@ const addItem = async () => {
       ElMessage.success('保存成功')
     } else {
       await gameDataApi.createGameData({
+        season: newItem.value.season || undefined,
+        patch: newItem.value.patch || undefined,
         version: newItem.value.version,
         type: normalizedType,
         data: dataObj,
@@ -234,8 +347,9 @@ const addItem = async () => {
     }
     showAddDialog.value = false
     editingId.value = null
-    newItem.value = { version: 'S8怪兽入侵返厂', type: 'metaTeam', source: '', dataJson: '' }
+    newItem.value = { season: '', patch: '', version: 'S8怪兽入侵返厂', type: 'metaTeam', source: '', dataJson: '' }
     await loadGameData()
+    await loadSeasons()
     // 通知全局游戏数据服务重新拉取，用户无需手动刷新页面
     await gameDataStore.refresh()
   } catch (error) {
@@ -247,6 +361,8 @@ const bulkImport = async () => {
   try {
     const items = JSON.parse(bulkJson.value)
     await gameDataApi.bulkCreateGameData({
+      season: bulkSeason.value || undefined,
+      patch: bulkPatch.value || undefined,
       version: bulkVersion.value,
       items
     })
@@ -254,6 +370,7 @@ const bulkImport = async () => {
     showBulkDialog.value = false
     bulkJson.value = ''
     await loadGameData()
+    await loadSeasons()
     await gameDataStore.refresh()
   } catch (error) {
     ElMessage.error('导入失败，请检查JSON格式')
@@ -269,6 +386,8 @@ const editItem = (item) => {
   editingId.value = item._id
   selectedItem.value = item
   newItem.value = {
+    season: item.season || '',
+    patch: item.patch || '',
     version: item.version,
     type: item.type,
     source: item.source || '',
@@ -282,6 +401,7 @@ const deleteItem = async (id) => {
     await gameDataApi.deleteGameData(id)
     ElMessage.success('删除成功')
     await loadGameData()
+    await loadSeasons()
     await gameDataStore.refresh()
   } catch (error) {
     ElMessage.error('删除失败')
@@ -290,5 +410,6 @@ const deleteItem = async (id) => {
 
 onMounted(() => {
   loadGameData()
+  loadSeasons()
 })
 </script>

@@ -10,6 +10,11 @@ export const useGameStore = defineStore('game', () => {
   const currentPopulation = ref(0)
   const savedTeams = ref(JSON.parse(localStorage.getItem('savedTeams') || '[]'))
 
+  // B3: 当前赛季（持久化到 localStorage，刷新页面后保留选择）
+  const currentSeason = ref(localStorage.getItem('currentSeason') || null)
+  // B3: 后端可选赛季列表（来自 gameData.availableSeasons）
+  const availableSeasons = computed(() => gameData.availableSeasons.value)
+
   const getHeroes = computed(() => gameData.heroes.value)
   const getEquipment = computed(() => gameData.equipments.value)
   const getSynergies = computed(() => gameData.synergies.value)
@@ -98,6 +103,19 @@ export const useGameStore = defineStore('game', () => {
     return gameData.heroes.value.find(h => h.name === name)
   }
 
+  // B3: 切换当前赛季（写入 localStorage + 调 gameData.setCurrentSeason 刷新数据）
+  async function setSeason(season) {
+    if (!season || season === currentSeason.value) return
+    currentSeason.value = season
+    localStorage.setItem('currentSeason', season)
+    await gameData.setCurrentSeason(season)
+  }
+
+  // B3: 刷新后端可选赛季列表（admin 页面初始化时调用）
+  async function refreshSeasons() {
+    return await gameData.loadSeasons()
+  }
+
   return {
     board,
     selectedHero,
@@ -105,6 +123,11 @@ export const useGameStore = defineStore('game', () => {
     currentSynergies,
     currentPopulation,
     savedTeams,
+    // B3: 赛季状态 + 切换方法
+    currentSeason,
+    availableSeasons,
+    setSeason,
+    refreshSeasons,
     getHeroes,
     getEquipment,
     getSynergies,

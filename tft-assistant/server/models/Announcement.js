@@ -33,12 +33,19 @@ const announcementSchema = new mongoose.Schema({
   viewCount: {
     type: Number,
     default: 0
+  },
+  // B6: 公告所属赛季（null/undefined 表示全赛季通用）
+  season: {
+    type: String,
+    default: '',
+    trim: true
   }
 }, {
   timestamps: true
 })
 
-announcementSchema.index({ isActive: 1, createdAt: -1 })
+// B6: 赛季筛选 + 活跃排序联合索引
+announcementSchema.index({ isActive: 1, season: 1, createdAt: -1 })
 
 const Announcement = mongoose.model('Announcement', announcementSchema)
 export default Announcement

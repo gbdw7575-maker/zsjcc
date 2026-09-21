@@ -21,6 +21,7 @@ import lineupRoutes from './routes/lineupRoutes.js'
 import tftDataRoutes from './routes/tftDataRoutes.js'
 import matchRecordRoutes from './routes/matchRecordRoutes.js'
 import aiRoutes from './routes/aiRoutes.js'
+import statsRoutes from './routes/statsRoutes.js'
 
 dotenv.config()
 
@@ -80,6 +81,7 @@ app.use('/api/lineups', lineupRoutes)
 app.use('/api/tft', tftDataRoutes)
 app.use('/api/records', matchRecordRoutes)
 app.use('/api/ai', aiRoutes)
+app.use('/api/stats', statsRoutes)
 
 // 健康检查：报告数据库连接、运行时长与内存，供运维/答辩演示观测
 app.get('/api/health', (req, res) => {
