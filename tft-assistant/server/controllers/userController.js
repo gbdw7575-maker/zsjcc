@@ -51,6 +51,10 @@ export const login = async (req, res) => {
       return res.status(403).json({ success: false, message: '账号已被封禁，请联系管理员' })
     }
 
+    // C1 syncWorker 用：登录瞬间更新活跃时间，便于后台判断是否值得拉取本机战绩
+    user.lastActiveAt = new Date()
+    await user.save()
+
     res.json({
       success: true,
       data: {

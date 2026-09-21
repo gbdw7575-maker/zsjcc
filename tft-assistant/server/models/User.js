@@ -92,6 +92,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: '',
     maxlength: [50, '目标阵容最多50个字符']
+  },
+  // C1 syncWorker 用：每次登录/活跃时更新，用于判断"活跃用户"是否值得后台同步战绩
+  lastActiveAt: {
+    type: Date,
+    default: null,
+    index: true
   }
 }, {
   timestamps: true

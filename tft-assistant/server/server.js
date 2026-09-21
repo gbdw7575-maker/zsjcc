@@ -10,6 +10,7 @@ import { setIo } from './services/socketStore.js'
 import { createAndDeliverMessage } from './services/messageService.js'
 import { FixedWindowRateLimiter } from './services/messagePolicy.js'
 import { corsOrigin } from './config/cors.js'
+import { startSyncWorker } from './services/syncWorker.js'
 
 const PORT = process.env.PORT || 3000
 const server = createServer(app)
@@ -30,6 +31,11 @@ const start = async () => {
   
   // 初始化管理员账户
   await initAdmin()
+
+  // C1: 启动后台战绩同步 worker（每 5 分钟扫描活跃用户）
+  //   - 同步本机 LCU 客户端的最近对局到 MatchRecord
+  //   - LCU 不可用时入重试队列（指数退避 30s/2min/10min）
+  startSyncWorker()
   
   // 启动服务器
   server.listen(PORT, () => {
