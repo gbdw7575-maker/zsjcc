@@ -4,8 +4,11 @@ import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import dotenv from 'dotenv'
 import path from 'path'
+import mongoose from 'mongoose'
 import { fileURLToPath } from 'url'
 import { corsOrigin } from './config/cors.js'
+import { requestLogger } from './middleware/requestLogger.js'
+import { notFound } from './middleware/notFound.js'
 import userRoutes from './routes/userRoutes.js'
 import postRoutes from './routes/postRoutes.js'
 import socialRoutes from './routes/socialRoutes.js'
@@ -34,6 +37,9 @@ app.use(cors({
   origin: corsOrigin,
   credentials: true
 }))
+
+// 请求日志（在限流之前，429 也能观测到）
+app.use(requestLogger)
 
 // 全局频率限制
 const globalLimiter = rateLimit({
@@ -75,9 +81,26 @@ app.use('/api/tft', tftDataRoutes)
 app.use('/api/records', matchRecordRoutes)
 app.use('/api/ai', aiRoutes)
 
+// 健康检查：报告数据库连接、运行时长与内存，供运维/答辩演示观测
 app.get('/api/health', (req, res) => {
-  res.json({ success: true, message: '服务正常运行' })
+  const dbState = ['disconnected', 'connected', 'connecting', 'disconnecting'][mongoose.connection.readyState] || 'unknown'
+  const mem = process.memoryUsage()
+  res.json({
+    success: true,
+    message: '服务正常运行',
+    data: {
+      status: dbState === 'connected' ? 'ok' : 'degraded',
+      db: dbState,
+      uptime: Math.floor(process.uptime()),
+      memory: { rssMB: Math.round(mem.rss / 1048576), heapUsedMB: Math.round(mem.heapUsed / 1048576) },
+      node: process.version,
+      time: new Date().toISOString()
+    }
+  })
 })
+
+// 404 兜底（路由表之后、错误处理之前）
+app.use(notFound)
 
 // 全局错误处理
 app.use((err, req, res, next) => {
