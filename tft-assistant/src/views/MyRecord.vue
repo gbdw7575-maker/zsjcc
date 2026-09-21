@@ -1,7 +1,7 @@
 <template>
   <div class="p-4 md:p-6 max-w-6xl mx-auto min-h-screen">
     <!-- 页面标题 -->
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between mb-3">
       <h1 class="text-2xl font-bold text-white flex items-center gap-3">
         <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center">
           <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -11,21 +11,35 @@
         我的战绩
       </h1>
       <div class="flex items-center gap-2">
+        <!-- A4: 主入口为"立即同步"，手动录入降级为次级按钮 -->
         <button
           @click="syncFromClient"
           :disabled="syncing"
-          class="px-4 py-2 rounded-xl font-semibold text-sm bg-[var(--bg-card-hover)] text-gray-200 hover:bg-white/15 disabled:opacity-40 transition-all"
+          class="px-4 py-2 rounded-xl font-semibold text-sm transition-all disabled:opacity-40"
+          :class="syncing ? 'bg-[var(--bg-card-hover)] text-gray-300' : 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white hover:opacity-90'"
         >
-          {{ syncing ? '同步中...' : '同步本机战绩' }}
+          {{ syncing ? '同步中...' : '立即同步本机战绩' }}
         </button>
         <button
-        @click="showForm = !showForm"
-        class="px-4 py-2 rounded-xl font-semibold text-sm transition-all"
-        :class="showForm ? 'bg-[var(--bg-card-hover)] text-gray-300 hover:bg-white/15' : 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white hover:opacity-90'"
-      >
-        {{ showForm ? '收起' : '+ 录入战绩' }}
-      </button>
+          @click="showForm = !showForm"
+          class="px-3 py-2 rounded-xl text-xs font-medium text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+          title="手动录入（次级入口，自动同步未覆盖时使用）"
+        >
+          {{ showForm ? '收起录入' : '+ 手动录入' }}
+        </button>
       </div>
+    </div>
+
+    <!-- A4+C3: 自动同步状态条 -->
+    <div class="hud-card px-4 py-2 mb-4 flex items-center justify-between text-xs">
+      <div class="flex items-center gap-2 text-gray-400">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>自动同步运行中（后端每 5 分钟扫描活跃用户）</span>
+      </div>
+      <span class="text-gray-500">
+        自动数据占比：
+        <span class="text-emerald-400 font-mono">{{ profile?.overview?.autoCoverage ?? 0 }}%</span>
+      </span>
     </div>
 
     <!-- 录入表单 -->
@@ -255,43 +269,114 @@
         <div
           v-for="r in records"
           :key="r._id"
-          class="px-5 py-3 flex items-center gap-3 hover:bg-white/5 transition-colors group"
+          class="px-5 hover:bg-white/5 transition-colors group"
         >
-          <!-- 排名 -->
-          <span
-            class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
-            :class="placementBadge(r.placement)"
+          <!-- 行主体（点击可展开 AI 复盘卡片） -->
+          <div
+            class="py-3 flex items-center gap-3 cursor-pointer"
+            @click="r.aiAdvice?.text && toggleAdvice(r._id)"
           >
-            #{{ r.placement }}
-          </span>
+            <!-- 排名 -->
+            <span
+              class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
+              :class="placementBadge(r.placement)"
+            >
+              {{ r.placement === 0 ? '?' : '#' + r.placement }}
+            </span>
 
-          <!-- 信息 -->
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="text-white text-sm truncate">
-                {{ r.traits?.length ? r.traits.slice(0, 3).map(traitName).join('、') : '未记录羁绊' }}
-              </span>
-              <span
-                v-if="r.placement === 1"
-                class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-yellow-400/15 text-yellow-400"
-              >吃鸡</span>
+            <!-- 信息 -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-white text-sm truncate">
+                  {{ r.traits?.length ? r.traits.slice(0, 3).map(traitName).join('、') : '未记录羁绊' }}
+                </span>
+                <span
+                  v-if="r.placement === 1"
+                  class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-yellow-400/15 text-yellow-400"
+                >吃鸡</span>
+                <!-- A6: AI 复盘标记 -->
+                <span
+                  v-if="r.aiAdvice?.text"
+                  class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[rgba(var(--accent-rgb),0.15)] text-[var(--accent-color)] flex items-center gap-1"
+                >
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                  </svg>
+                  AI 复盘
+                </span>
+                <!-- 来源标记 -->
+                <span
+                  v-if="r.source && r.source !== 'manual'"
+                  class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white/5 text-gray-400"
+                >{{ r.source === 'lcu' ? '客户端同步' : r.source === 'ocr' ? 'OCR' : r.source }}</span>
+              </div>
+              <div class="text-gray-500 text-[11px] mt-0.5 flex items-center gap-2 flex-wrap">
+                <span>{{ modeLabel(r.mode) }}</span>
+                <span v-if="r.units?.length">{{ r.units.map(u => `${unitName(u.champion)}${'★'.repeat(u.star)}`).join(' ') }}</span>
+              </div>
             </div>
-            <div class="text-gray-500 text-[11px] mt-0.5 flex items-center gap-2 flex-wrap">
-              <span>{{ modeLabel(r.mode) }}</span>
-              <span v-if="r.units?.length">{{ r.units.map(u => `${unitName(u.champion)}${'★'.repeat(u.star)}`).join(' ') }}</span>
+
+            <!-- 日期 + 删除 -->
+            <div class="text-right flex-shrink-0 flex items-center gap-2">
+              <span class="text-gray-600 text-[10px] hidden sm:inline">{{ fmtDate(r.playedAt) }}</span>
+              <button
+                v-if="r.aiAdvice?.text"
+                class="text-gray-500 hover:text-[var(--accent-color)] text-[10px] px-1 transition-all"
+                title="查看 AI 复盘"
+              >{{ expanded.has(r._id) ? '收起' : '展开' }}</button>
+              <button
+                @click.stop="deleteRecord(r._id)"
+                class="text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all text-sm px-1"
+                title="删除"
+              >
+                🗑
+              </button>
             </div>
           </div>
 
-          <!-- 日期 + 删除 -->
-          <div class="text-right flex-shrink-0 flex items-center gap-2">
-            <span class="text-gray-600 text-[10px] hidden sm:inline">{{ fmtDate(r.playedAt) }}</span>
-            <button
-              @click="deleteRecord(r._id)"
-              class="text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all text-sm px-1"
-              title="删除"
-            >
-              🗑
-            </button>
+          <!-- A6: AI 复盘卡片（可展开） -->
+          <div
+            v-if="r.aiAdvice?.text && expanded.has(r._id)"
+            class="pb-4 pt-1 pl-10 pr-2"
+          >
+            <div class="hud-card p-4 bg-[var(--bg-card)] border border-[rgba(var(--accent-rgb),0.2)]">
+              <!-- 快照信息 -->
+              <div v-if="r.aiAdvice.snapshot" class="flex items-center gap-3 mb-3 text-xs flex-wrap">
+                <span v-if="r.aiAdvice.snapshot.phase" class="text-gray-400">阶段: <span class="text-white">{{ r.aiAdvice.snapshot.phase }}</span></span>
+                <span v-if="r.aiAdvice.snapshot.gold" class="text-yellow-400">金币 {{ r.aiAdvice.snapshot.gold }}</span>
+                <span v-if="r.aiAdvice.snapshot.health" class="text-red-400">血量 {{ r.aiAdvice.snapshot.health }}</span>
+                <span v-if="r.aiAdvice.snapshot.level" class="text-cyan-400">等级 {{ r.aiAdvice.snapshot.level }}</span>
+                <span v-if="r.aiAdvice.snapshot.teamName" class="text-[var(--accent-color)]">阵容: {{ r.aiAdvice.snapshot.teamName }}</span>
+                <span v-if="r.aiAdvice.provider" class="text-gray-500 ml-auto">{{ r.aiAdvice.provider }}</span>
+              </div>
+
+              <!-- 建议文本 -->
+              <p class="text-gray-300 text-xs leading-relaxed mb-3">{{ r.aiAdvice.text }}</p>
+
+              <!-- 结构化建议条目 -->
+              <div v-if="r.aiAdvice.suggestions?.length" class="space-y-2">
+                <div
+                  v-for="(s, idx) in r.aiAdvice.suggestions"
+                  :key="idx"
+                  class="flex gap-2 text-xs"
+                >
+                  <span class="text-[var(--accent-color)] font-bold flex-shrink-0">▸</span>
+                  <div>
+                    <span class="text-white font-semibold">{{ s.title }}</span>
+                    <span class="text-gray-400 ml-2">{{ s.content }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-3 pt-2 border-t border-white/5 flex items-center justify-between text-[10px] text-gray-600">
+                <span>生成于 {{ fmtDateTime(r.aiAdvice.generatedAt) }}</span>
+                <button
+                  v-if="r.aiAdvice.suggestions?.length"
+                  @click.stop
+                  class="text-gray-500 hover:text-[var(--accent-color)] transition-colors"
+                >再看一次 AI 建议</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -333,6 +418,23 @@ const stats = ref(null)
 const total = ref(0)
 const page = ref(1)
 const pages = ref(1)
+// A4+C3: 个人画像数据（含 autoCoverage 用于状态条显示）
+const profile = ref(null)
+// A6: 展开状态记录——记录哪些行展开了 AI 复盘卡片
+const expanded = ref(new Set())
+const toggleAdvice = (id) => {
+  const next = new Set(expanded.value)
+  if (next.has(id)) next.delete(id)
+  else next.add(id)
+  expanded.value = next
+}
+// 时间戳格式化（含时分）
+const fmtDateTime = (d) => {
+  if (!d) return ''
+  const t = new Date(d)
+  if (isNaN(t.getTime())) return ''
+  return `${t.getMonth() + 1}/${t.getDate()} ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`
+}
 
 const modes = [
   { value: 'ranked', label: '排位赛' },
@@ -428,6 +530,9 @@ const loadRecords = async (p = 1) => {
     total.value = res.data.data.total
     page.value = res.data.data.page
     pages.value = res.data.data.pages
+    // A5: 同时拉取个人画像聚合（含 autoCoverage、最近 AI 复盘）
+    // 失败不阻塞主流程（仅状态条数据缺失）
+    recordApi.getProfile().then(p => { profile.value = p.data.data }).catch(() => {})
   } catch {
     // 无数据
   } finally {

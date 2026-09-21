@@ -155,7 +155,9 @@ export const recordApi = {
   syncLCU: () => api.post('/records/sync-lcu'),
   // A3: ScreenShare OCR + AI 复盘自动入库（upsert by videoId+timestamp）
   // 用于把 ScreenShare 页识别完的 AI 建议持久化到 MatchRecord，便于 MyRecord 列表回看
-  upsertOcrAdvice: (payload) => api.post('/records/ocr', payload)
+  upsertOcrAdvice: (payload) => api.post('/records/ocr', payload),
+  // A5: 个人战绩画像聚合（含自动数据占比、近 14 天趋势、最近 AI 复盘）
+  getProfile: (params) => api.get('/stats/profile', { params })
 }
 
 export const aiApi = {

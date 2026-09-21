@@ -1,5 +1,6 @@
 import MatchRecord from '../models/MatchRecord.js'
 import { syncFromLCU } from '../services/lcuSyncService.js'
+import { statsService } from '../services/statsService.js'
 
 /**
  * 从本机金铲铲客户端自动同步最近对局
@@ -8,6 +9,7 @@ import { syncFromLCU } from '../services/lcuSyncService.js'
 export const syncLCU = async (req, res) => {
   try {
     const result = await syncFromLCU(req.user._id)
+    statsService.invalidateUser(req.user._id)
     res.json({ success: true, data: result })
   } catch (error) {
     if (error.message === 'LCU_CLIENT_NOT_FOUND') {
@@ -102,6 +104,8 @@ export const upsertOcrRecord = async (req, res) => {
 
     const opts = { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true }
     const record = await MatchRecord.findOneAndUpdate(filter, update, opts).lean()
+    // 失效该用户画像缓存，下次请求重算
+    statsService.invalidateUser(req.user._id)
 
     res.status(201).json({ success: true, data: record })
   } catch (error) {
@@ -131,6 +135,7 @@ export const createRecord = async (req, res) => {
       gameDuration: gameDuration || 0,
       playedAt: playedAt || new Date()
     })
+    statsService.invalidateUser(req.user._id)
 
     res.status(201).json({ success: true, data: record })
   } catch (error) {
@@ -183,6 +188,7 @@ export const deleteRecord = async (req, res) => {
     if (!record) {
       return res.status(404).json({ success: false, message: '记录不存在' })
     }
+    statsService.invalidateUser(req.user._id)
 
     res.json({ success: true, message: '已删除' })
   } catch (error) {
