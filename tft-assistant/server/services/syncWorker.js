@@ -27,11 +27,48 @@ const BACKOFF_SCHEDULE_MS = [30 * 1000, 2 * 60 * 1000, 10 * 60 * 1000] // 指数
 // 内存重试队列：userId -> { attempts, nextAttemptAt, lastError }
 const retryQueue = new Map()
 
+// C3: 最近一次同步状态：userId -> { at: Date, synced, total, account, ok, error? }
+// 仅存内存（进程重启即清空），用于前端状态条显示"上次同步 X 分钟前"
+const lastSyncByUser = new Map()
+
 let pollTimer = null
 let retryTimer = null
 let running = false // 防止并发同步（同一周期内不重复进入）
 
 const log = (msg) => console.log(`[syncWorker] ${msg}`)
+
+/**
+ * 记录一次同步结果（成功/失败均记录），供 getSyncStatus 查询
+ */
+function recordSync(userId, result) {
+  lastSyncByUser.set(String(userId), {
+    at: new Date(),
+    synced: result.synced ?? 0,
+    total: result.total ?? 0,
+    account: result.account ?? '',
+    ok: result.ok,
+    error: result.error || null
+  })
+}
+
+/**
+ * C3: 查询某用户最近一次同步状态
+ * @returns {{ lastSyncAt: string|null, synced: number, total: number, account: string, ok: boolean|null, error: string|null }}
+ */
+export function getSyncStatus(userId) {
+  const entry = lastSyncByUser.get(String(userId))
+  if (!entry) {
+    return { lastSyncAt: null, synced: 0, total: 0, account: '', ok: null, error: null }
+  }
+  return {
+    lastSyncAt: entry.at.toISOString(),
+    synced: entry.synced,
+    total: entry.total,
+    account: entry.account,
+    ok: entry.ok,
+    error: entry.error
+  }
+}
 
 /**
  * 通知前台用户战绩已同步（如果在线）
@@ -54,9 +91,13 @@ function notifyUser(userId, payload) {
 async function attemptSync(userId) {
   try {
     const result = await syncFromLCU(userId)
-    return { ok: true, synced: result?.synced ?? 0, total: result?.total ?? 0, account: result?.account ?? '' }
+    const payload = { ok: true, synced: result?.synced ?? 0, total: result?.total ?? 0, account: result?.account ?? '' }
+    recordSync(userId, payload)
+    return payload
   } catch (err) {
-    return { ok: false, error: err?.message || String(err) }
+    const payload = { ok: false, error: err?.message || String(err) }
+    recordSync(userId, payload)
+    return payload
   }
 }
 

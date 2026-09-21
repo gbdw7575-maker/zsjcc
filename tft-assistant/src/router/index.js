@@ -138,7 +138,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}')
-  
+
   if (to.meta.requiresAuth && !token) {
     next('/login')
   } else if (to.meta.requiresAdmin && userInfo.role !== 'admin') {
@@ -149,6 +149,16 @@ router.beforeEach((to, from, next) => {
   } else if (to.path === '/register' && token) {
     next('/')
   } else {
+    // C4: 登录态进入受保护页面时异步触发一次后台战绩同步
+    //   - 用 sessionStorage 标记防重，每个浏览器会话只触发一次
+    //   - 动态 import api.js 避免循环依赖（api.js 顶部静态 import router）
+    //   - fire-and-forget：不 await，不阻塞路由跳转
+    if (to.meta.requiresAuth && token && !sessionStorage.getItem('syncTriggered')) {
+      sessionStorage.setItem('syncTriggered', '1')
+      import('../services/api.js')
+        .then(({ recordApi }) => recordApi.triggerSync())
+        .catch(() => { /* 静默：同步失败不影响正常浏览 */ })
+    }
     next()
   }
 })

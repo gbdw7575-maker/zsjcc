@@ -34,7 +34,11 @@
     <div class="hud-card px-4 py-2 mb-4 flex items-center justify-between text-xs">
       <div class="flex items-center gap-2 text-gray-400">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span>自动同步运行中（后端每 5 分钟扫描活跃用户）</span>
+        <span v-if="syncStatus?.lastSyncAt">
+          自动同步运行中 · 上次同步 {{ formatRelative(syncStatus.lastSyncAt) }}
+          <span v-if="syncStatus.ok === false" class="text-red-400 ml-1">（{{ syncStatus.error || '失败' }}）</span>
+        </span>
+        <span v-else>自动同步运行中（后端每 5 分钟扫描活跃用户）</span>
       </div>
       <span class="text-gray-500">
         自动数据占比：
@@ -404,8 +408,11 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
+import { ElMessage } from 'element-plus'
 import { recordApi } from '../services/api.js'
+import { socketService } from '../services/socket.js'
+import { useUserStore } from '../stores/user'
 import { gameData } from '../services/gameDataService'
 import { unitName, traitName } from '../services/tftNameMap'
 
@@ -420,6 +427,9 @@ const page = ref(1)
 const pages = ref(1)
 // A4+C3: 个人画像数据（含 autoCoverage 用于状态条显示）
 const profile = ref(null)
+// C3: 后台 worker 最近一次同步状态（lastSyncAt / synced / total / ok / error）
+const syncStatus = ref(null)
+let syncStatusTimer = null
 // A6: 展开状态记录——记录哪些行展开了 AI 复盘卡片
 const expanded = ref(new Set())
 const toggleAdvice = (id) => {
@@ -434,6 +444,28 @@ const fmtDateTime = (d) => {
   const t = new Date(d)
   if (isNaN(t.getTime())) return ''
   return `${t.getMonth() + 1}/${t.getDate()} ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`
+}
+
+// C3: 把 ISO 时间转成"X 分钟前 / X 小时前 / 刚刚"
+const formatRelative = (iso) => {
+  if (!iso) return ''
+  const t = new Date(iso)
+  if (isNaN(t.getTime())) return ''
+  const diff = Date.now() - t.getTime()
+  if (diff < 60 * 1000) return '刚刚'
+  const mins = Math.floor(diff / 60000)
+  if (mins < 60) return `${mins} 分钟前`
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return `${hours} 小时前`
+  const days = Math.floor(hours / 24)
+  return `${days} 天前`
+}
+
+// C3: 拉取后台同步状态（失败不阻塞主流程）
+const loadSyncStatus = () => {
+  recordApi.getSyncStatus()
+    .then(res => { syncStatus.value = res.data.data })
+    .catch(() => {})
 }
 
 const modes = [
@@ -557,6 +589,8 @@ const syncFromClient = async () => {
     const { synced, total } = res.data.data
     alert(`同步完成：新增 ${synced} 场，累计 ${total} 场`)
     await loadRecords(1)
+    // C3: 同步后立即刷新状态条
+    loadSyncStatus()
   } catch (err) {
     alert(err.response?.data?.message || '同步失败，请确认金铲铲客户端已启动并登录')
   } finally {
@@ -564,5 +598,56 @@ const syncFromClient = async () => {
   }
 }
 
-onMounted(() => loadRecords())
+// C5: socket 收到后台同步完成事件时的回调
+const onRecordsSynced = (payload) => {
+  if (!payload) return
+  if (payload.synced > 0) {
+    ElMessage.success(`已同步 ${payload.synced} 场新战绩${payload.account ? ' · ' + payload.account : ''}`)
+    // 自动刷新战绩列表 + 状态条
+    loadRecords(page.value)
+    loadSyncStatus()
+  } else if (payload.ok === false) {
+    // 后台同步失败：用 warning 提示，不阻塞用户
+    ElMessage.warning(`后台自动同步失败：${payload.error || '未知原因'}`)
+    loadSyncStatus()
+  }
+}
+
+const userStore = useUserStore()
+
+// C5: 确保 socket 已连接 + 绑定 records:synced 监听
+const ensureSocketListener = () => {
+  // 用 token 连接 socket（如果未连接或已断开则重连）
+  const token = userStore.token || localStorage.getItem('token')
+  if (!token) return
+  if (!socketService.connected.value || !socketService.socket) {
+    try { socketService.connect(token) } catch { /* 静默 */ }
+  }
+  if (socketService.socket) {
+    // off 再 on，避免重复监听（HMR / 路由切换）
+    socketService.socket.off('records:synced', onRecordsSynced)
+    socketService.socket.on('records:synced', onRecordsSynced)
+  }
+}
+
+onMounted(() => {
+  loadRecords()
+  // C3: 进入页面立即拉一次同步状态 + 每 30s 轮询刷新
+  loadSyncStatus()
+  syncStatusTimer = setInterval(loadSyncStatus, 30 * 1000)
+  // C5: 绑定 socket 监听后台同步完成事件
+  ensureSocketListener()
+})
+
+onUnmounted(() => {
+  // C3: 清理轮询定时器
+  if (syncStatusTimer) {
+    clearInterval(syncStatusTimer)
+    syncStatusTimer = null
+  }
+  // C5: 移除 socket 监听（socket 实例为单例，不主动 disconnect 以免影响其他页面）
+  if (socketService.socket) {
+    socketService.socket.off('records:synced', onRecordsSynced)
+  }
+})
 </script>

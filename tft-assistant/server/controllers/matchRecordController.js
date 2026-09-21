@@ -1,6 +1,39 @@
 import MatchRecord from '../models/MatchRecord.js'
 import { syncFromLCU } from '../services/lcuSyncService.js'
 import { statsService } from '../services/statsService.js'
+import { syncNow, getSyncStatus as getSyncStatusFromWorker } from '../services/syncWorker.js'
+
+/**
+ * C3: 查询当前用户最近一次后台同步状态
+ * GET /api/records/sync-status
+ *
+ * 返回 { lastSyncAt, synced, total, account, ok, error }
+ * lastSyncAt 为 null 表示尚未同步过（前端显示兜底文案）
+ */
+export const getSyncStatus = (req, res) => {
+  try {
+    const status = getSyncStatusFromWorker(String(req.user._id))
+    res.json({ success: true, data: status })
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message })
+  }
+}
+
+/**
+ * C4: 立即触发后台异步同步（fire-and-forget）
+ * POST /api/records/sync-now
+ *
+ * 前端 router beforeEach 在登录态调用一次，不等待结果；
+ * 后端 syncNow 内部异步执行，失败入重试队列。
+ */
+export const triggerSync = (req, res) => {
+  try {
+    syncNow(String(req.user._id))
+    res.json({ success: true, message: '同步任务已触发' })
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message })
+  }
+}
 
 /**
  * 从本机金铲铲客户端自动同步最近对局

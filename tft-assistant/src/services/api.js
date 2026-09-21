@@ -160,7 +160,11 @@ export const recordApi = {
   // 用于把 ScreenShare 页识别完的 AI 建议持久化到 MatchRecord，便于 MyRecord 列表回看
   upsertOcrAdvice: (payload) => api.post('/records/ocr', payload),
   // A5: 个人战绩画像聚合（含自动数据占比、近 14 天趋势、最近 AI 复盘）
-  getProfile: (params) => api.get('/stats/profile', { params })
+  getProfile: (params) => api.get('/stats/profile', { params }),
+  // C3: 查询后台 worker 最近一次同步状态（lastSyncAt / synced / total）
+  getSyncStatus: () => api.get('/records/sync-status'),
+  // C4: 登录后立即触发后台异步同步（fire-and-forget，不等结果）
+  triggerSync: () => api.post('/records/sync-now')
 }
 
 export const aiApi = {

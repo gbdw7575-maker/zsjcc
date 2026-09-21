@@ -47,6 +47,8 @@ export const useUserStore = defineStore('user', () => {
     userInfo.value = null
     localStorage.removeItem('token')
     localStorage.removeItem('userInfo')
+    // C4: 登出时清除"已触发同步"标记，下次登录后会重新触发后台同步
+    sessionStorage.removeItem('syncTriggered')
   }
 
   const fetchUserInfo = async () => {
