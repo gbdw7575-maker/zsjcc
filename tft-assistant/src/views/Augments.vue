@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto">
       <!-- 返回按钮 -->
       <div class="mb-6">
-        <router-link to="/" class="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors">
+        <router-link to="/" class="inline-flex items-center gap-2 text-[var(--accent-color)] hover:text-[var(--accent-hover)] transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
@@ -12,7 +12,7 @@
       </div>
 
       <!-- 页面标题 -->
-      <div class="bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 rounded-2xl p-6 border border-white/10 mb-6">
+      <div class="bg-gradient-to-r from-[rgba(var(--accent-rgb),0.15)] via-[rgba(var(--gold-rgb),0.1)] to-[rgba(59,130,246,0.1)] rounded-2xl p-6 border border-[var(--line-soft)] mb-6">
         <div class="flex items-center justify-between">
           <div>
             <h1 class="text-3xl font-bold text-white mb-2 flex items-center gap-2">
@@ -29,42 +29,42 @@
       </div>
 
       <!-- 筛选器 -->
-      <div class="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10 mb-6">
+      <div class="hud-card p-4 mb-6">
         <div class="flex flex-wrap gap-4 items-center justify-between">
           <!-- 类型筛选 -->
           <div class="flex flex-wrap gap-2">
             <button 
               @click="currentFilter = 'all'"
-              :class="currentFilter === 'all' ? 'bg-purple-500 text-white' : 'bg-white/10 text-gray-300'"
-              class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hover:bg-purple-500/50"
+              :class="currentFilter === 'all' ? 'bg-[var(--accent-color)] text-[#03201d]' : 'bg-[var(--bg-card-hover)] text-gray-300'"
+              class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hover:bg-[rgba(var(--accent-rgb),0.35)]"
             >
               全部
             </button>
             <button 
               @click="currentFilter = 'hero'"
-              :class="currentFilter === 'hero' ? 'bg-yellow-500 text-black' : 'bg-white/10 text-gray-300'"
+              :class="currentFilter === 'hero' ? 'bg-yellow-500 text-black' : 'bg-[var(--bg-card-hover)] text-gray-300'"
               class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hover:bg-yellow-500/50"
             >
               ⭐ 英雄强化
             </button>
             <button 
               @click="currentFilter = 'silver'"
-              :class="currentFilter === 'silver' ? 'bg-gray-400 text-black' : 'bg-white/10 text-gray-300'"
+              :class="currentFilter === 'silver' ? 'bg-gray-400 text-black' : 'bg-[var(--bg-card-hover)] text-gray-300'"
               class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hover:bg-gray-400/50"
             >
               🥈 银色
             </button>
             <button 
               @click="currentFilter = 'gold'"
-              :class="currentFilter === 'gold' ? 'bg-yellow-600 text-black' : 'bg-white/10 text-gray-300'"
+              :class="currentFilter === 'gold' ? 'bg-yellow-600 text-black' : 'bg-[var(--bg-card-hover)] text-gray-300'"
               class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hover:bg-yellow-600/50"
             >
               🥇 金色
             </button>
             <button 
               @click="currentFilter = 'prismatic'"
-              :class="currentFilter === 'prismatic' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' : 'bg-white/10 text-gray-300'"
-              class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hover:bg-purple-500/50"
+              :class="currentFilter === 'prismatic' ? 'bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d]' : 'bg-[var(--bg-card-hover)] text-gray-300'"
+              class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hover:bg-[rgba(var(--accent-rgb),0.35)]"
             >
               💎 棱彩
             </button>
@@ -74,28 +74,28 @@
           <div class="flex gap-2">
             <button 
               @click="tierFilter = 'all'"
-              :class="tierFilter === 'all' ? 'bg-blue-500 text-white' : 'bg-white/10 text-gray-300'"
+              :class="tierFilter === 'all' ? 'bg-blue-500 text-white' : 'bg-[var(--bg-card-hover)] text-gray-300'"
               class="px-2 py-1 rounded text-xs transition-all"
             >
               全部强度
             </button>
             <button 
               @click="tierFilter = 'T0'"
-              :class="tierFilter === 'T0' ? 'bg-red-500 text-white' : 'bg-white/10 text-gray-300'"
+              :class="tierFilter === 'T0' ? 'bg-red-500 text-white' : 'bg-[var(--bg-card-hover)] text-gray-300'"
               class="px-2 py-1 rounded text-xs transition-all"
             >
               T0
             </button>
             <button 
               @click="tierFilter = 'T1'"
-              :class="tierFilter === 'T1' ? 'bg-orange-500 text-white' : 'bg-white/10 text-gray-300'"
+              :class="tierFilter === 'T1' ? 'bg-orange-500 text-white' : 'bg-[var(--bg-card-hover)] text-gray-300'"
               class="px-2 py-1 rounded text-xs transition-all"
             >
               T1
             </button>
             <button 
               @click="tierFilter = 'T2'"
-              :class="tierFilter === 'T2' ? 'bg-blue-400 text-white' : 'bg-white/10 text-gray-300'"
+              :class="tierFilter === 'T2' ? 'bg-blue-400 text-white' : 'bg-[var(--bg-card-hover)] text-gray-300'"
               class="px-2 py-1 rounded text-xs transition-all"
             >
               T2
@@ -115,7 +115,7 @@
           <div 
             v-for="heroAugment in filteredHeroAugments" 
             :key="heroAugment.hero"
-            class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-yellow-500/50 transition-all"
+            class="hud-card p-6 hover:border-yellow-500/50 transition-all"
           >
             <!-- 英雄信息 -->
             <div class="flex items-center justify-between mb-4">
@@ -136,7 +136,7 @@
                 v-for="augment in heroAugment.augments" 
                 :key="augment.name"
                 v-show="tierFilter === 'all' || augment.tier === tierFilter"
-                class="p-4 bg-white/5 rounded-xl border border-white/10"
+                class="p-4 bg-[var(--bg-card-hover)] rounded-lg border border-[var(--line-soft)]"
               >
                 <div class="flex items-center justify-between mb-2">
                   <span class="font-bold text-yellow-300">{{ augment.name }}</span>
@@ -145,7 +145,7 @@
                   </span>
                 </div>
                 <div class="mb-2">
-                  <span class="text-xs px-2 py-1 bg-purple-500/20 text-purple-300 rounded">{{ augment.type }}</span>
+                  <span class="text-xs px-2 py-1 bg-[rgba(var(--accent-rgb),0.12)] text-[var(--accent-color)] rounded">{{ augment.type }}</span>
                 </div>
                 <p class="text-sm text-gray-300 mb-2">{{ augment.effect }}</p>
                 <p class="text-xs text-gray-400 mb-2">{{ augment.description }}</p>
@@ -232,10 +232,10 @@
           <div 
             v-for="augment in filteredPrismaticAugments" 
             :key="augment.name"
-            class="bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-blue-500/10 rounded-xl p-4 border border-purple-500/30 hover:border-purple-500/50 transition-all"
+            class="bg-gradient-to-br from-[rgba(var(--accent-rgb),0.12)] via-[rgba(var(--gold-rgb),0.08)] to-[rgba(59,130,246,0.06)] rounded-xl p-4 border border-[rgba(var(--accent-rgb),0.3)] hover:border-[rgba(var(--accent-rgb),0.5)] transition-all"
           >
             <div class="flex items-center justify-between mb-3">
-              <span class="font-bold text-purple-200">{{ augment.name }}</span>
+              <span class="font-bold text-[var(--accent-color)]">{{ augment.name }}</span>
               <span :class="tierClass(augment.tier)" class="px-2 py-1 rounded text-xs font-bold">
                 {{ augment.tier }}
               </span>
@@ -243,7 +243,7 @@
             <p class="text-sm text-gray-300 mb-3">{{ augment.effect }}</p>
             <div class="flex flex-wrap gap-1">
               <span v-for="team in augment.suitableTeams" :key="team" 
-                class="text-xs px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded-full">
+                class="text-xs px-2 py-0.5 bg-[rgba(var(--accent-rgb),0.12)] text-[var(--accent-color)] rounded-full">
                 {{ team }}
               </span>
             </div>
@@ -252,7 +252,7 @@
       </div>
 
       <!-- 数据来源说明 -->
-      <div class="bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 rounded-2xl p-6 border border-white/10">
+      <div class="bg-gradient-to-r from-[rgba(var(--accent-rgb),0.15)] via-[rgba(var(--gold-rgb),0.1)] to-[rgba(59,130,246,0.1)] rounded-2xl p-6 border border-[var(--line-soft)]">
         <div class="flex items-center gap-2 mb-4">
           <span class="text-2xl">📚</span>
           <h2 class="text-xl font-bold text-white">数据来源</h2>

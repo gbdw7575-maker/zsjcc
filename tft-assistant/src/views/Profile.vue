@@ -12,7 +12,7 @@
       </div>
 
       <!-- 页面标题 -->
-      <div class="bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 rounded-2xl p-6 border border-white/10 mb-6">
+      <div class="bg-gradient-to-r from-[rgba(var(--accent-rgb),0.15)] via-[rgba(var(--gold-rgb),0.1)] to-[rgba(59,130,246,0.1)] rounded-2xl p-6 border border-[var(--line-soft)] mb-6">
         <h1 class="text-3xl font-bold text-white mb-2 flex items-center gap-2">
           <span class="text-3xl">👤</span>
           个人中心
@@ -25,7 +25,7 @@
         <!-- 左侧：头像和统计信息 -->
         <div class="lg:col-span-1 space-y-6">
           <!-- 头像卡片 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+          <div class="hud-card p-6">
             <div class="text-center">
               <div class="relative inline-block mb-4">
                 <div 
@@ -34,7 +34,7 @@
                 >
                   {{ userStore.userInfo?.avatar || userStore.userInfo?.username?.charAt(0)?.toUpperCase() || '?' }}
                 </div>
-                <label class="absolute bottom-0 right-0 w-10 h-10 bg-purple-500 hover:bg-purple-600 rounded-full flex items-center justify-center cursor-pointer transition-colors">
+                <label class="absolute bottom-0 right-0 w-10 h-10 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] rounded-full flex items-center justify-center cursor-pointer transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                   </svg>
@@ -44,7 +44,7 @@
               <h2 class="text-xl font-bold text-white mb-1">{{ userStore.userInfo?.username }}</h2>
               <!-- 角色标识 -->
               <div class="flex items-center justify-center gap-2 mb-2">
-                <span v-if="userStore.userInfo?.type === 'creator'" class="px-2 py-0.5 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs font-bold rounded-full flex items-center gap-1">
+                <span v-if="userStore.userInfo?.type === 'creator'" class="px-2 py-0.5 bg-gradient-to-r from-[var(--accent-gold)] to-[var(--accent-color)] text-[#03201d] text-xs font-bold rounded-full flex items-center gap-1">
                   <span>🎨</span>
                   内容创作者
                 </span>
@@ -56,9 +56,9 @@
             </div>
             
             <!-- 统计数据 -->
-            <div class="grid grid-cols-3 gap-2 mt-6 pt-6 border-t border-white/10">
+            <div class="grid grid-cols-3 gap-2 mt-6 pt-6 border-t border-[var(--line-soft)]">
               <div class="text-center">
-                <div class="text-xl font-bold text-purple-400">{{ matchStats.totalGames || '--' }}</div>
+                <div class="text-xl font-bold text-[var(--accent-color)]">{{ matchStats.totalGames || '--' }}</div>
                 <div class="text-xs text-gray-500">对局数</div>
               </div>
               <div class="text-center">
@@ -73,29 +73,29 @@
           </div>
 
           <!-- 快捷操作 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+          <div class="hud-card p-6">
             <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <span class="text-lg">⚡</span>
               快捷操作
             </h3>
             <div class="space-y-2">
               <!-- 创作者专属功能 -->
-              <div v-if="userStore.userInfo?.type === 'creator'" class="mb-4 p-3 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-lg border border-pink-500/30">
-                <p class="text-pink-300 text-xs font-medium mb-2 flex items-center gap-1">
+              <div v-if="userStore.userInfo?.type === 'creator'" class="mb-4 p-3 bg-gradient-to-r from-[rgba(var(--gold-rgb),0.12)] to-[rgba(var(--accent-rgb),0.12)] rounded-lg border border-[rgba(var(--gold-rgb),0.3)]">
+                <p class="text-[var(--accent-gold)] text-xs font-medium mb-2 flex items-center gap-1">
                   <span>🎨</span>
                   创作者专属功能
                 </p>
-                <router-link to="/teamfight" class="w-full px-4 py-2.5 bg-pink-500/30 hover:bg-pink-500/40 text-pink-200 rounded-lg text-left transition-colors flex items-center gap-3 mb-2">
+                <router-link to="/teamfight" class="w-full px-4 py-2.5 bg-[rgba(var(--gold-rgb),0.18)] hover:bg-[rgba(var(--gold-rgb),0.25)] text-[var(--accent-gold)] rounded-lg text-left transition-colors flex items-center gap-3 mb-2">
                   <span>📝</span>
                   <span>发布阵容攻略</span>
                 </router-link>
-                <button class="w-full px-4 py-2.5 bg-purple-500/30 hover:bg-purple-500/40 text-purple-200 rounded-lg text-left transition-colors flex items-center gap-3">
+                <button class="w-full px-4 py-2.5 bg-[rgba(var(--accent-rgb),0.18)] hover:bg-[rgba(var(--accent-rgb),0.25)] text-[var(--accent-color)] rounded-lg text-left transition-colors flex items-center gap-3">
                   <span>📊</span>
                   <span>编辑阵容数据</span>
                 </button>
               </div>
               <!-- 普通功能 -->
-              <router-link to="/teamfight" class="w-full px-4 py-2.5 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 rounded-lg transition-colors flex items-center gap-3">
+              <router-link to="/teamfight" class="w-full px-4 py-2.5 bg-[rgba(var(--accent-rgb),0.12)] hover:bg-[rgba(var(--accent-rgb),0.18)] text-[var(--accent-color)] rounded-lg transition-colors flex items-center gap-3">
                 <span>📁</span>
                 <span>我的阵容收藏</span>
               </router-link>
@@ -112,7 +112,7 @@
                 <span>修改密码</span>
               </button>
               <!-- 社交功能 -->
-              <router-link to="/social" class="w-full px-4 py-2.5 bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 rounded-lg transition-colors flex items-center gap-3">
+              <router-link to="/social" class="w-full px-4 py-2.5 bg-[rgba(var(--gold-rgb),0.12)] hover:bg-[rgba(var(--gold-rgb),0.18)] text-[var(--accent-gold)] rounded-lg transition-colors flex items-center gap-3">
                 <span>💬</span>
                 <span>私信消息</span>
                 <span v-if="unreadMessages > 0" class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">{{ unreadMessages }}</span>
@@ -124,7 +124,7 @@
         <!-- 右侧：编辑表单和战绩 -->
         <div class="lg:col-span-3 space-y-6">
           <!-- 战绩同步 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+          <div class="hud-card p-6">
             <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <span class="text-lg">🎮</span>
               战绩同步
@@ -136,7 +136,7 @@
             <button
               @click="syncMatchData"
               :disabled="isMatchSyncing"
-              class="w-full px-4 py-2.5 bg-purple-500 hover:bg-purple-600 disabled:bg-gray-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2"
+              class="w-full px-4 py-2.5 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] disabled:bg-gray-600 disabled:text-white text-[#03201d] rounded-lg transition-colors flex items-center justify-center gap-2"
             >
               <svg v-if="isMatchSyncing" class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -150,7 +150,7 @@
           </div>
 
           <!-- 战绩统计详情 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+          <div class="hud-card p-6">
             <div class="flex items-center justify-between mb-6">
               <h3 class="text-lg font-bold text-white flex items-center gap-2">
                 <span class="text-lg">📊</span>
@@ -159,7 +159,7 @@
               <button 
                 @click="syncMatchData"
                 :disabled="isMatchSyncing"
-                class="px-4 py-2 bg-purple-500/20 hover:bg-purple-500/30 disabled:bg-gray-600 text-purple-300 rounded-lg text-sm transition-colors flex items-center gap-2"
+                class="px-4 py-2 bg-[rgba(var(--accent-rgb),0.12)] hover:bg-[rgba(var(--accent-rgb),0.18)] disabled:bg-gray-600 text-[var(--accent-color)] rounded-lg text-sm transition-colors flex items-center gap-2"
               >
                 <svg v-if="isMatchSyncing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -170,42 +170,42 @@
             </div>
             
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              <div class="bg-white/5 rounded-xl p-4 text-center">
-                <div class="text-2xl font-bold text-purple-400">{{ matchStats.totalGames }}</div>
+              <div class="bg-[var(--bg-card-hover)] rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-[var(--accent-color)]">{{ matchStats.totalGames }}</div>
                 <div class="text-xs text-gray-400 mt-1">总对局数</div>
               </div>
-              <div class="bg-white/5 rounded-xl p-4 text-center">
+              <div class="bg-[var(--bg-card-hover)] rounded-lg p-4 text-center">
                 <div class="text-2xl font-bold text-yellow-400">{{ matchStats.wins }}</div>
                 <div class="text-xs text-gray-400 mt-1">第一名</div>
               </div>
-              <div class="bg-white/5 rounded-xl p-4 text-center">
+              <div class="bg-[var(--bg-card-hover)] rounded-lg p-4 text-center">
                 <div class="text-2xl font-bold text-blue-400">{{ matchStats.top4 }}</div>
                 <div class="text-xs text-gray-400 mt-1">前四名</div>
               </div>
-              <div class="bg-white/5 rounded-xl p-4 text-center">
+              <div class="bg-[var(--bg-card-hover)] rounded-lg p-4 text-center">
                 <div class="text-2xl font-bold text-green-400">{{ matchStats.winRate }}%</div>
                 <div class="text-xs text-gray-400 mt-1">胜率</div>
               </div>
-              <div class="bg-white/5 rounded-xl p-4 text-center">
+              <div class="bg-[var(--bg-card-hover)] rounded-lg p-4 text-center">
                 <div class="text-2xl font-bold text-cyan-400">{{ matchStats.top4Rate }}%</div>
                 <div class="text-xs text-gray-400 mt-1">前四率</div>
               </div>
-              <div class="bg-white/5 rounded-xl p-4 text-center">
-                <div class="text-2xl font-bold text-pink-400">{{ matchStats.avgPlacement }}</div>
+              <div class="bg-[var(--bg-card-hover)] rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-[var(--accent-gold)]">{{ matchStats.avgPlacement }}</div>
                 <div class="text-xs text-gray-400 mt-1">平均排名</div>
               </div>
             </div>
           </div>
 
           <!-- 最近战绩列表 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+          <div class="hud-card p-6">
             <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
               <span class="text-lg">🎯</span>
               最近战绩
             </h3>
             
             <div v-if="isMatchSyncing" class="flex items-center justify-center py-12">
-              <div class="animate-spin w-6 h-6 border-2 border-purple-400 border-t-transparent rounded-full"></div>
+              <div class="animate-spin w-6 h-6 border-2 border-[var(--accent-color)] border-t-transparent rounded-full"></div>
             </div>
 
             <div v-else-if="matchHistoryList.length === 0" class="text-center py-12">
@@ -218,7 +218,7 @@
               <div
                 v-for="match in matchHistoryList"
                 :key="match._id"
-                class="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-purple-500/30 transition-colors"
+                class="bg-[var(--bg-card-hover)] rounded-lg p-4 border border-[var(--line-soft)] hover:border-[rgba(var(--accent-rgb),0.3)] transition-colors"
               >
                 <div class="flex items-center justify-between flex-wrap gap-3">
                   <div class="flex items-center gap-4">
@@ -244,7 +244,7 @@
                     <span
                       v-for="trait in (match.traits || []).slice(0, 3)"
                       :key="trait"
-                      class="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-xs"
+                      class="px-2 py-1 bg-[rgba(var(--accent-rgb),0.12)] text-[var(--accent-color)] rounded text-xs"
                     >
                       {{ traitName(trait) }}
                     </span>
@@ -255,7 +255,7 @@
           </div>
 
           <!-- 基本信息编辑 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+          <div class="hud-card p-6">
             <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
               <span class="text-lg">📝</span>
               编辑资料
@@ -268,7 +268,7 @@
                 <input 
                   v-model="formData.nickname"
                   type="text"
-                  class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
+                  class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-soft)] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[var(--accent-color)] transition-colors"
                   placeholder="请输入昵称"
                 />
               </div>
@@ -282,7 +282,7 @@
                       v-model="formData.gender"
                       type="radio" 
                       value="male"
-                      class="w-4 h-4 text-purple-500 bg-white/5 border-white/20 focus:ring-purple-500"
+                      class="w-4 h-4 text-[var(--accent-color)] bg-white/5 border-[var(--line-strong)] focus:ring-[var(--accent-color)]"
                     />
                     <span class="text-gray-300">男</span>
                   </label>
@@ -291,7 +291,7 @@
                       v-model="formData.gender"
                       type="radio" 
                       value="female"
-                      class="w-4 h-4 text-purple-500 bg-white/5 border-white/20 focus:ring-purple-500"
+                      class="w-4 h-4 text-[var(--accent-color)] bg-white/5 border-[var(--line-strong)] focus:ring-[var(--accent-color)]"
                     />
                     <span class="text-gray-300">女</span>
                   </label>
@@ -300,7 +300,7 @@
                       v-model="formData.gender"
                       type="radio" 
                       value="secret"
-                      class="w-4 h-4 text-purple-500 bg-white/5 border-white/20 focus:ring-purple-500"
+                      class="w-4 h-4 text-[var(--accent-color)] bg-white/5 border-[var(--line-strong)] focus:ring-[var(--accent-color)]"
                     />
                     <span class="text-gray-300">保密</span>
                   </label>
@@ -312,7 +312,7 @@
                 <label class="block text-sm font-medium text-gray-300 mb-2">年龄段</label>
                 <select 
                   v-model="formData.ageGroup"
-                  class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500/50 transition-colors appearance-none cursor-pointer"
+                  class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-soft)] rounded-lg text-white focus:outline-none focus:border-[var(--accent-color)] transition-colors appearance-none cursor-pointer"
                 >
                   <option value="" class="bg-slate-900">请选择年龄段</option>
                   <option value="12-17" class="bg-slate-900">12-17岁</option>
@@ -329,7 +329,7 @@
                 <input 
                   v-model="formData.region"
                   type="text"
-                  class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
+                  class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-soft)] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[var(--accent-color)] transition-colors"
                   placeholder="请输入所在地区"
                 />
               </div>
@@ -339,7 +339,7 @@
                 <label class="block text-sm font-medium text-gray-300 mb-2">游戏段位</label>
                 <select 
                   v-model="formData.rank"
-                  class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500/50 transition-colors appearance-none cursor-pointer"
+                  class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-soft)] rounded-lg text-white focus:outline-none focus:border-[var(--accent-color)] transition-colors appearance-none cursor-pointer"
                 >
                   <option value="" class="bg-slate-900">请选择段位</option>
                   <option value="unranked" class="bg-slate-900">无段位</option>
@@ -359,7 +359,7 @@
                 <textarea 
                   v-model="formData.bio"
                   rows="3"
-                  class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors resize-none"
+                  class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-soft)] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[var(--accent-color)] transition-colors resize-none"
                   placeholder="分享你的游戏心得..."
                 ></textarea>
               </div>
@@ -371,10 +371,10 @@
                   <span 
                     v-for="(tag, index) in formData.tags" 
                     :key="index"
-                    class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm flex items-center gap-1"
+                    class="px-3 py-1 bg-[rgba(var(--accent-rgb),0.12)] text-[var(--accent-color)] rounded-full text-sm flex items-center gap-1"
                   >
                     {{ tag }}
-                    <button @click="removeTag(index)" class="hover:text-purple-200">
+                    <button @click="removeTag(index)" class="hover:text-[var(--accent-hover)]">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                       </svg>
@@ -385,11 +385,11 @@
                   <input 
                     v-model="newTag"
                     type="text"
-                    class="flex-1 px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
+                    class="flex-1 px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-soft)] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[var(--accent-color)] transition-colors"
                     placeholder="输入标签后按回车"
                     @keyup.enter="addTag"
                   />
-                  <button @click="addTag" class="px-4 py-2.5 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors">
+                  <button @click="addTag" class="px-4 py-2.5 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] rounded-lg transition-colors">
                     添加
                   </button>
                 </div>
@@ -399,13 +399,13 @@
               <div class="md:col-span-2 flex gap-3 pt-4">
                 <button 
                   @click="resetForm"
-                  class="px-6 py-2.5 border border-white/20 hover:bg-white/5 text-gray-300 rounded-lg transition-colors"
+                  class="px-6 py-2.5 border border-[var(--line-strong)] hover:bg-white/5 text-gray-300 rounded-lg transition-colors"
                 >
                   重置
                 </button>
                 <button 
                   @click="saveProfile"
-                  class="px-6 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-lg transition-colors flex items-center gap-2"
+                  class="px-6 py-2.5 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] rounded-lg transition-colors flex items-center gap-2"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
@@ -423,7 +423,7 @@
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">目标段位</label>
-            <select v-model="targetForm.rank" class="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white">
+            <select v-model="targetForm.rank" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white">
               <option value="" class="bg-slate-900">请选择目标段位</option>
               <option value="diamond" class="bg-slate-900">钻石</option>
               <option value="master" class="bg-slate-900">大师</option>
@@ -434,13 +434,13 @@
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">目标胜率</label>
             <div class="flex items-center gap-3">
-              <input v-model.number="targetForm.winRate" type="number" min="0" max="100" class="flex-1 px-4 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white" placeholder="例如: 60" />
+              <input v-model.number="targetForm.winRate" type="number" min="0" max="100" class="flex-1 px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="例如: 60" />
               <span class="text-gray-400">%</span>
             </div>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">目标阵容</label>
-            <input v-model="targetForm.favoriteTeam" type="text" class="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white" placeholder="例如: 机甲贾克斯" />
+            <input v-model="targetForm.favoriteTeam" type="text" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="例如: 机甲贾克斯" />
           </div>
         </div>
         <template #footer>
@@ -454,20 +454,20 @@
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">当前密码</label>
-            <input v-model="passwordForm.oldPassword" type="password" class="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white" placeholder="请输入当前密码" />
+            <input v-model="passwordForm.oldPassword" type="password" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="请输入当前密码" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">新密码</label>
-            <input v-model="passwordForm.newPassword" type="password" class="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white" placeholder="请输入新密码" />
+            <input v-model="passwordForm.newPassword" type="password" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="请输入新密码" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">确认新密码</label>
-            <input v-model="passwordForm.confirmPassword" type="password" class="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white" placeholder="请再次输入新密码" />
+            <input v-model="passwordForm.confirmPassword" type="password" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="请再次输入新密码" />
           </div>
         </div>
         <template #footer>
           <el-button @click="showPasswordDialog = false" class="text-gray-400">取消</el-button>
-          <el-button type="primary" @click="changePassword" class="bg-gradient-to-r from-red-500 to-pink-500 border-none">修改密码</el-button>
+          <el-button type="danger" @click="changePassword">修改密码</el-button>
         </template>
       </el-dialog>
     </div>

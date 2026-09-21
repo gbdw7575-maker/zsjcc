@@ -17,7 +17,7 @@
       </div>
       
       <div class="flex flex-col 2xl:flex-row gap-6">
-        <div class="2xl:w-80 bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 2xl:shrink-0 order-2 2xl:order-1">
+        <div class="2xl:w-80 hud-card p-6 2xl:shrink-0 order-2 2xl:order-1">
           <div class="mb-6">
             <h3 class="text-lg font-bold text-white mb-4">筛选条件</h3>
             <div class="flex flex-wrap gap-3">
@@ -42,8 +42,8 @@
               <div 
                 v-for="hero in filteredHeroes" 
                 :key="hero.id"
-                class="hero-card p-4 bg-white/5 rounded-xl cursor-pointer transition-all border border-white/10"
-                :class="{ 'ring-2 ring-purple-500 bg-purple-500/20': selectedHero?.id === hero.id, 'hover:bg-white/10 hover:border-white/20': selectedHero?.id !== hero.id }"
+                class="hero-card p-4 bg-[var(--bg-card-hover)] rounded-lg cursor-pointer transition-all border border-[var(--line-soft)]"
+                :class="{ 'ring-2 ring-[var(--accent-color)] bg-[rgba(var(--accent-rgb),0.12)]': selectedHero?.id === hero.id, 'hover:bg-[var(--bg-elevated)] hover:border-[var(--line-strong)]': selectedHero?.id !== hero.id }"
                 draggable="true"
                 @click="addHeroToBoard(hero)"
                 @dragstart="handleDragStart($event, hero)"
@@ -62,7 +62,7 @@
                   </div>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                  <span v-for="s in hero.synergies" :key="s" class="text-xs px-2 py-0.5 bg-purple-500/30 text-purple-300 rounded-full">{{ s }}</span>
+                  <span v-for="s in hero.synergies" :key="s" class="text-xs px-2 py-0.5 bg-[rgba(var(--accent-rgb),0.18)] text-[var(--accent-color)] rounded-full">{{ s }}</span>
                 </div>
               </div>
             </div>
@@ -70,14 +70,14 @@
         </div>
         
         <div class="flex-1 min-w-0 order-1 2xl:order-2">
-          <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 mb-6">
+          <div class="hud-card p-6 mb-6">
             <div class="flex items-center justify-between mb-6">
               <div class="flex items-center gap-4">
                 <span class="text-white">当前人口:</span>
-                <span class="text-2xl font-bold" :class="gameStore.currentPopulation >= 9 ? 'text-red-400' : 'text-purple-400'">{{ gameStore.currentPopulation }}/9</span>
+                <span class="text-2xl font-bold" :class="gameStore.currentPopulation >= 9 ? 'text-red-400' : 'text-[var(--accent-color)]'">{{ gameStore.currentPopulation }}/9</span>
               </div>
-              <div v-if="selectedHero" class="flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-xl ml-4">
-                <span class="text-purple-300">已选择:</span>
+              <div v-if="selectedHero" class="flex items-center gap-2 px-4 py-2 bg-[rgba(var(--accent-rgb),0.12)] rounded-xl ml-4">
+                <span class="text-[var(--accent-color)]">已选择:</span>
                 <span class="text-white font-bold">{{ selectedHero.name }}</span>
                 <button @click="selectedHero = null" class="text-gray-400 hover:text-white">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -118,7 +118,7 @@
                           <span :class="costClass(cell.cost)" class="text-xs px-1 rounded shrink-0">{{ cell.cost }}</span>
                         </div>
                         <div class="flex flex-wrap gap-0.5 justify-center max-w-full px-1">
-                          <span v-for="s in (cell.synergies || []).slice(0, 2)" :key="s" class="text-xs px-1 py-0.5 bg-purple-500/30 text-purple-300 rounded truncate">{{ s }}</span>
+                          <span v-for="s in (cell.synergies || []).slice(0, 2)" :key="s" class="text-xs px-1 py-0.5 bg-[rgba(var(--accent-rgb),0.18)] text-[var(--accent-color)] rounded truncate">{{ s }}</span>
                         </div>
                       </div>
                     </div>
@@ -128,7 +128,7 @@
             </div>
           </div>
           
-          <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+          <div class="hud-card p-6">
             <h3 class="text-lg font-bold text-white mb-4">当前羁绊</h3>
             <div v-if="gameStore.currentSynergies.length === 0" class="text-center py-8">
               <div class="text-4xl mb-4">🔗</div>
@@ -136,10 +136,10 @@
               <p class="text-gray-500 text-sm mt-2">选择棋子放置到棋盘查看羁绊效果</p>
             </div>
             <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div v-for="synergy in gameStore.currentSynergies" :key="synergy.name" class="p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl border border-purple-500/30">
+              <div v-for="synergy in gameStore.currentSynergies" :key="synergy.name" class="p-4 bg-gradient-to-br from-[rgba(var(--accent-rgb),0.12)] to-[rgba(var(--gold-rgb),0.12)] rounded-xl border border-[rgba(var(--accent-rgb),0.3)]">
                 <div class="flex items-center justify-between mb-2">
                   <span class="text-white font-bold">{{ synergy.name }}</span>
-                  <span class="text-purple-400 font-bold">{{ synergy.count }}/{{ (synergy.levels || []).at(-1) }}</span>
+                  <span class="text-[var(--accent-color)] font-bold">{{ synergy.count }}/{{ (synergy.levels || []).at(-1) }}</span>
                 </div>
                 <p class="text-sm text-gray-300">{{ synergy.effect }}</p>
               </div>
@@ -147,7 +147,7 @@
           </div>
         </div>
         
-        <div class="lg:w-72 bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="lg:w-72 hud-card p-6">
           <h3 class="text-lg font-bold text-white mb-4">已保存阵容</h3>
           <div v-if="gameStore.savedTeams.length === 0" class="text-center py-8">
             <div class="text-4xl mb-4">💾</div>
@@ -155,7 +155,7 @@
             <p class="text-gray-500 text-sm mt-2">配置好阵容后点击保存</p>
           </div>
           <div v-else class="space-y-3">
-            <div v-for="team in gameStore.savedTeams" :key="team.id" class="p-4 bg-white/5 rounded-xl border border-white/10 hover:border-white/20 transition-colors">
+            <div v-for="team in gameStore.savedTeams" :key="team.id" class="p-4 bg-[var(--bg-card-hover)] rounded-lg border border-[var(--line-soft)] hover:border-[var(--line-strong)] transition-colors">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-white font-bold">{{ team.name }}</span>
                 <div class="flex gap-2">
@@ -173,7 +173,7 @@
               </div>
               <div class="text-sm text-gray-400">人口: {{ team.population }}</div>
               <div class="flex flex-wrap gap-1 mt-2">
-                <span v-for="s in team.synergies.slice(0, 3)" :key="s.name" class="text-xs px-2 py-0.5 bg-purple-500/30 text-purple-300 rounded">{{ s.name }}</span>
+                <span v-for="s in team.synergies.slice(0, 3)" :key="s.name" class="text-xs px-2 py-0.5 bg-[rgba(var(--accent-rgb),0.18)] text-[var(--accent-color)] rounded">{{ s.name }}</span>
               </div>
             </div>
           </div>
@@ -183,12 +183,12 @@
       <el-dialog v-model="showSaveDialog" title="保存阵容" width="500px">
         <el-form :model="saveForm" :rules="saveRules" ref="saveFormRef">
           <el-form-item prop="name">
-            <el-input v-model="saveForm.name" placeholder="请输入阵容名称" class="bg-white/10 border-white/20 text-white" />
+            <el-input v-model="saveForm.name" placeholder="请输入阵容名称" class="bg-[var(--bg-card-hover)] border-[var(--line-strong)] text-white" />
           </el-form-item>
           <!-- 创作者专属：发布攻略 -->
           <el-form-item v-if="userStore.userInfo?.type === 'creator'" class="mt-4">
-            <div class="p-3 bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-lg border border-pink-500/20">
-              <p class="text-pink-300 text-sm font-medium mb-2">🎨 创作者专属功能</p>
+            <div class="p-3 bg-gradient-to-r from-[rgba(var(--gold-rgb),0.08)] to-[rgba(var(--accent-rgb),0.08)] rounded-lg border border-[rgba(var(--gold-rgb),0.2)]">
+              <p class="text-[var(--accent-gold)] text-sm font-medium mb-2">🎨 创作者专属功能</p>
               <el-checkbox v-model="saveForm.publishAsGuide" class="text-gray-300">
                 发布为阵容攻略（公开分享给所有玩家）
               </el-checkbox>
@@ -198,14 +198,14 @@
                 type="textarea" 
                 :rows="4"
                 placeholder="输入攻略内容：运营思路、装备推荐、站位技巧..."
-                class="mt-3 bg-white/10 border-white/20 text-white"
+                class="mt-3 bg-[var(--bg-card-hover)] border-[var(--line-strong)] text-white"
               />
             </div>
           </el-form-item>
         </el-form>
         <template #footer>
           <el-button @click="showSaveDialog = false" class="text-gray-400">取消</el-button>
-          <el-button type="primary" @click="handleSave" class="bg-gradient-to-r from-purple-500 to-pink-500 border-none">
+          <el-button type="primary" @click="handleSave">
             {{ saveForm.publishAsGuide ? '发布攻略' : '保存' }}
           </el-button>
         </template>
@@ -251,7 +251,7 @@ const costClass = (cost) => {
   const classes = {
     1: 'bg-gray-500 text-white',
     2: 'bg-blue-500 text-white',
-    3: 'bg-purple-500 text-white',
+    3: 'bg-[#a855f7] text-white',
     4: 'bg-orange-500 text-white',
     5: 'bg-red-500 text-white'
   }
@@ -263,7 +263,7 @@ const costBorderClass = (cost) => {
     1: 'border-2 border-gray-500/50 rounded-lg',
     2: 'border-2 border-green-500/50 rounded-lg',
     3: 'border-2 border-blue-500/50 rounded-lg',
-    4: 'border-2 border-purple-500/50 rounded-lg',
+    4: 'border-2 border-[rgba(168,85,247,0.5)] rounded-lg',
     5: 'border-2 border-yellow-500/50 rounded-lg'
   }[cost] || 'border-2 border-gray-500/30 rounded-lg'
 }

@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto">
       <!-- 返回按钮 -->
       <div class="mb-6">
-        <router-link to="/" class="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors">
+        <router-link to="/" class="inline-flex items-center gap-2 text-[var(--accent-color)] hover:text-[var(--accent-hover)] transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
@@ -17,7 +17,7 @@
         <div class="text-6xl mb-4">😿</div>
         <h2 class="text-2xl font-bold text-white mb-2">阵容不存在</h2>
         <p class="text-gray-400 mb-6">该阵容详情尚未收录，敬请期待后续更新</p>
-        <router-link to="/" class="px-6 py-3 bg-purple-500 hover:bg-purple-400 text-white rounded-xl transition-colors font-medium">
+        <router-link to="/" class="px-6 py-3 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] rounded-xl transition-colors font-medium">
           返回首页浏览其他阵容
         </router-link>
       </div>
@@ -28,7 +28,7 @@
 
       <template v-else>
         <!-- 阵容标题 -->
-        <div class="bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 rounded-3xl p-8 border border-white/10 mb-8">
+        <div class="bg-gradient-to-r from-[rgba(var(--accent-rgb),0.15)] via-[rgba(var(--gold-rgb),0.1)] to-[rgba(59,130,246,0.1)] rounded-3xl p-8 border border-[var(--line-soft)] mb-8">
           <div class="flex items-center justify-between">
             <div>
               <div class="flex items-center gap-4 mb-3">
@@ -55,7 +55,7 @@
         <!-- 主要内容 -->
         <div class="space-y-6">
           <!-- 第一部分：阵容组成 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+          <div class="hud-card p-6">
             <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
               <span class="text-2xl">🎮</span>
               阵容组成
@@ -64,7 +64,7 @@
             <!-- 英雄网格布局 -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-6">
               <div v-for="hero in teamDetail.heroes" :key="hero.name" 
-                class="p-3 bg-white/5 rounded-xl border border-white/10 hover:border-purple-500/30 transition-all">
+                class="p-3 bg-[var(--bg-card-hover)] rounded-lg border border-[var(--line-soft)] hover:border-[rgba(var(--accent-rgb),0.3)] transition-all">
                 <!-- 英雄图标 -->
                 <div class="flex items-center gap-3 mb-2">
                   <div class="relative">
@@ -72,7 +72,7 @@
                       :class="costBorderClass(hero.cost)"
                       :style="{ backgroundImage: `url(${getHeroIcon(hero.name)})`, backgroundSize: 'cover' }"
                     ></div>
-                    <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                    <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-[var(--accent-color)] to-[var(--accent-gold)] rounded-full flex items-center justify-center">
                       <span class="text-white font-bold text-xs">{{ hero.cost }}</span>
                     </div>
                   </div>
@@ -83,7 +83,7 @@
                 </div>
                 <!-- 羁绊标签 -->
                 <div class="flex flex-wrap gap-1">
-                  <span v-for="s in hero.synergies" :key="s" class="text-xs px-1.5 py-0.5 bg-purple-500/30 text-purple-300 rounded">
+                  <span v-for="s in hero.synergies" :key="s" class="text-xs px-1.5 py-0.5 bg-[rgba(var(--accent-rgb),0.18)] text-[var(--accent-color)] rounded">
                     {{ s }}
                   </span>
                 </div>
@@ -92,18 +92,18 @@
             
             <!-- 羁绊效果 - 折叠式布局 -->
             <div class="space-y-2">
-              <h3 class="text-lg font-semibold text-purple-300 mb-3 flex items-center gap-2">
+              <h3 class="text-lg font-semibold text-[var(--accent-color)] mb-3 flex items-center gap-2">
                 <span class="text-xl">🔗</span>
                 核心羁绊
               </h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div v-for="synergyDetail in synergyDetails" :key="synergyDetail.name" 
-                  class="p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                  class="p-3 bg-[rgba(var(--accent-rgb),0.08)] rounded-lg border border-[rgba(var(--accent-rgb),0.2)]">
                   <!-- 羁绊标题 -->
                   <div class="flex items-center justify-between mb-2">
                     <div class="flex items-center gap-2">
-                      <span class="text-lg font-bold text-purple-300">{{ synergyDetail.count }} {{ synergyDetail.name }}</span>
-                      <span class="text-xs px-1.5 py-0.5 bg-purple-500/30 text-purple-200 rounded">{{ synergyDetail.type }}</span>
+                      <span class="text-lg font-bold text-[var(--accent-color)]">{{ synergyDetail.count }} {{ synergyDetail.name }}</span>
+                      <span class="text-xs px-1.5 py-0.5 bg-[rgba(var(--accent-rgb),0.18)] text-[var(--accent-color)] rounded">{{ synergyDetail.type }}</span>
                     </div>
                   </div>
                   
@@ -130,7 +130,7 @@
           </div>
 
           <!-- 第二部分：装备推荐 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+          <div class="hud-card p-6">
             <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
               <span class="text-2xl">⚔️</span>
               装备推荐
@@ -225,7 +225,7 @@
           </div>
 
           <!-- 第三部分：运营思路 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+          <div class="hud-card p-6">
             <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
               <span class="text-2xl">📊</span>
               运营思路
@@ -258,12 +258,12 @@
               </div>
 
               <!-- 后期 -->
-              <div class="p-4 bg-gradient-to-br from-purple-500/10 to-purple-500/5 rounded-xl border border-purple-500/20">
+              <div class="p-4 bg-gradient-to-br from-[rgba(var(--accent-rgb),0.08)] to-[rgba(var(--accent-rgb),0.03)] rounded-xl border border-[rgba(var(--accent-rgb),0.2)]">
                 <div class="flex items-center gap-2 mb-2">
-                  <div class="w-8 h-8 bg-purple-500/30 rounded-full flex items-center justify-center">
-                    <span class="text-purple-300 font-bold text-sm">3</span>
+                  <div class="w-8 h-8 bg-[rgba(var(--accent-rgb),0.18)] rounded-full flex items-center justify-center">
+                    <span class="text-[var(--accent-color)] font-bold text-sm">3</span>
                   </div>
-                  <h3 class="text-lg font-bold text-purple-300">后期</h3>
+                  <h3 class="text-lg font-bold text-[var(--accent-color)]">后期</h3>
                   <span class="text-xs text-gray-400">成型阶段</span>
                 </div>
                 <p class="text-gray-300 text-sm leading-relaxed">{{ teamDetail.operation.late }}</p>
@@ -272,7 +272,7 @@
           </div>
 
           <!-- 第四部分：海克斯推荐 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+          <div class="hud-card p-6">
             <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
               <span class="text-2xl">✨</span>
               海克斯强化推荐
@@ -325,7 +325,7 @@
           </div>
 
           <!-- 第五部分：克制关系 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+          <div class="hud-card p-6">
             <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
               <span class="text-2xl">⚖️</span>
               克制关系
@@ -353,7 +353,7 @@
           </div>
 
           <!-- 第六部分：实战技巧 -->
-          <div class="bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 rounded-2xl p-6 border border-white/10">
+          <div class="bg-gradient-to-r from-[rgba(var(--accent-rgb),0.15)] via-[rgba(var(--gold-rgb),0.1)] to-[rgba(59,130,246,0.1)] rounded-2xl p-6 border border-[var(--line-soft)]">
             <div class="flex items-center gap-2 mb-3">
               <span class="text-2xl">💡</span>
               <h2 class="text-2xl font-bold text-white">实战技巧</h2>
@@ -386,7 +386,7 @@ const notFound = ref(false)
 const tierClass = (tier) => {
   const classes = {
     'T0': 'bg-gradient-to-r from-yellow-400 to-orange-500 text-black',
-    'T0.5': 'bg-gradient-to-r from-purple-400 to-pink-500 text-white',
+    'T0.5': 'bg-gradient-to-r from-[#c084fc] to-[#ec4899] text-white',
     'T1': 'bg-gradient-to-r from-blue-400 to-cyan-500 text-white',
     'T2': 'bg-gradient-to-r from-gray-400 to-gray-500 text-white'
   }
@@ -398,9 +398,9 @@ const costBorderClass = (cost) => {
     1: 'border-2 border-gray-500/50 rounded-lg',
     2: 'border-2 border-green-500/50 rounded-lg',
     3: 'border-2 border-blue-500/50 rounded-lg',
-    4: 'border-2 border-purple-500/50 rounded-lg',
+    4: 'border-2 border-[rgba(168,85,247,0.5)] rounded-lg',
     5: 'border-2 border-yellow-500/50 rounded-lg'
-  }[cost] || 'border-2 border-purple-500/30 rounded-lg'
+  }[cost] || 'border-2 border-[rgba(168,85,247,0.3)] rounded-lg'
 }
 
 // 解析羁绊字符串，提取羁绊名称和数量

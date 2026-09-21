@@ -18,7 +18,7 @@
         <button 
           @click="activeTab = 'follows'"
           class="px-6 py-3 rounded-xl font-medium transition-colors"
-          :class="activeTab === 'follows' ? 'bg-purple-500 text-white' : 'bg-white/10 text-gray-400 hover:bg-white/20'"
+          :class="activeTab === 'follows' ? 'bg-[var(--accent-color)] text-[#03201d]' : 'bg-[var(--bg-card-hover)] text-gray-400 hover:bg-[var(--bg-elevated)]'"
         >
           💬 私信消息
           <span v-if="unreadCount > 0" class="ml-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">{{ unreadCount }}</span>
@@ -26,21 +26,21 @@
         <button 
           @click="activeTab = 'following'"
           class="px-6 py-3 rounded-xl font-medium transition-colors"
-          :class="activeTab === 'following' ? 'bg-purple-500 text-white' : 'bg-white/10 text-gray-400 hover:bg-white/20'"
+          :class="activeTab === 'following' ? 'bg-[var(--accent-color)] text-[#03201d]' : 'bg-[var(--bg-card-hover)] text-gray-400 hover:bg-[var(--bg-elevated)]'"
         >
           👥 我的关注
         </button>
         <button 
           @click="activeTab = 'followers'"
           class="px-6 py-3 rounded-xl font-medium transition-colors"
-          :class="activeTab === 'followers' ? 'bg-purple-500 text-white' : 'bg-white/10 text-gray-400 hover:bg-white/20'"
+          :class="activeTab === 'followers' ? 'bg-[var(--accent-color)] text-[#03201d]' : 'bg-[var(--bg-card-hover)] text-gray-400 hover:bg-[var(--bg-elevated)]'"
         >
           👥 我的粉丝
         </button>
         <button 
           @click="activeTab = 'blocklist'"
           class="px-6 py-3 rounded-xl font-medium transition-colors"
-          :class="activeTab === 'blocklist' ? 'bg-purple-500 text-white' : 'bg-white/10 text-gray-400 hover:bg-white/20'"
+          :class="activeTab === 'blocklist' ? 'bg-[var(--accent-color)] text-[#03201d]' : 'bg-[var(--bg-card-hover)] text-gray-400 hover:bg-[var(--bg-elevated)]'"
         >
           🚫 黑名单
         </button>
@@ -58,12 +58,12 @@
             v-for="conv in conversations" 
             :key="conv.id"
             @click="openConversation(conv)"
-            class="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 cursor-pointer hover:border-purple-500/30 transition-colors"
+            class="hud-card p-4 cursor-pointer hover:border-[rgba(var(--accent-rgb),0.3)] transition-colors"
             :class="{ 'border-red-500/50 bg-red-500/10': conv.unread }"
           >
             <div class="flex items-center gap-4">
               <div class="relative">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--accent-color)] to-[var(--accent-gold)] flex items-center justify-center text-white font-bold">
                   {{ conv.user.username.charAt(0).toUpperCase() }}
                 </div>
                 <div v-if="conv.unread" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-slate-900"></div>
@@ -82,35 +82,35 @@
         </div>
 
         <!-- 搜索用户发送私信 -->
-        <div class="mt-6 bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="mt-6 hud-card p-6">
           <h3 class="text-lg font-bold text-white mb-4">📨 发送私信</h3>
           <div class="space-y-4">
             <input 
               v-model="searchUsername"
               @input="searchUserForMessage"
               type="text"
-              class="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50"
+              class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[var(--accent-color)]"
               placeholder="输入用户名搜索..."
             />
-            <div v-if="searchResult" class="flex items-center gap-4 p-3 bg-white/5 rounded-xl">
-              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">
+            <div v-if="searchResult" class="flex items-center gap-4 p-3 bg-[var(--bg-card-hover)] rounded-lg">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--accent-color)] to-[var(--accent-gold)] flex items-center justify-center text-white font-bold text-sm">
                 {{ searchResult.username.charAt(0).toUpperCase() }}
               </div>
               <span class="flex-1 text-white">{{ searchResult.username }}</span>
-              <button @click="startChat(searchResult)" class="px-4 py-1.5 bg-purple-500 hover:bg-purple-600 text-white rounded-lg text-sm">
+              <button @click="startChat(searchResult)" class="px-4 py-1.5 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] rounded-lg text-sm">
                 发消息
               </button>
             </div>
             <textarea 
               v-model="newMessage"
               rows="3"
-              class="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 resize-none"
+              class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[var(--accent-color)] resize-none"
               placeholder="输入私信内容..."
             ></textarea>
             <button 
               v-if="chatTarget"
               @click="sendMessage"
-              class="w-full px-6 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl transition-colors"
+              class="w-full px-6 py-2.5 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] rounded-xl transition-colors"
             >
               发送私信
             </button>
@@ -122,7 +122,7 @@
       <div v-if="activeTab === 'following'" class="space-y-4">
         <div class="flex items-center justify-between mb-4">
           <span class="text-gray-400">共 {{ following.length }} 个关注</span>
-          <button @click="showSearchDialog = true" class="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg text-sm">
+          <button @click="showSearchDialog = true" class="px-4 py-2 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] rounded-lg text-sm">
             + 添加关注
           </button>
         </div>
@@ -130,7 +130,7 @@
         <div v-if="following.length === 0" class="text-center py-12">
           <div class="text-6xl mb-4">👥</div>
           <div class="text-gray-400">还没有关注任何人</div>
-          <button @click="showSearchDialog = true" class="mt-4 px-6 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg">
+          <button @click="showSearchDialog = true" class="mt-4 px-6 py-2 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] rounded-lg">
             搜索用户
           </button>
         </div>
@@ -139,11 +139,11 @@
           <div
             v-for="user in following"
             :key="user.id"
-            class="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 cursor-pointer hover:border-purple-500/30 transition-colors"
+            class="hud-card p-4 cursor-pointer hover:border-[rgba(var(--accent-rgb),0.3)] transition-colors"
             @click="showUserDetail(user)"
           >
             <div class="flex items-center gap-4">
-              <div class="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-xl">  
+              <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[var(--accent-color)] to-[var(--accent-gold)] flex items-center justify-center text-white font-bold text-xl">  
                 {{ user.username.charAt(0).toUpperCase() }}
               </div>
               <div class="flex-1">
@@ -161,19 +161,19 @@
               <div class="flex gap-2">
                 <button
                   @click.stop="startChat(user)"
-                  class="px-3 py-1.5 bg-purple-500 hover:bg-purple-600 text-white rounded-lg text-sm transition-colors"
+                  class="px-3 py-1.5 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] rounded-lg text-sm transition-colors"
                 >
                   💬 私信
                 </button>
                 <button
                   @click.stop="unfollow(user.id)"
-                  class="px-3 py-1.5 border border-white/20 text-gray-400 hover:border-red-500/50 hover:text-red-400 rounded-lg text-sm transition-colors"        
+                  class="px-3 py-1.5 border border-[var(--line-strong)] text-gray-400 hover:border-red-500/50 hover:text-red-400 rounded-lg text-sm transition-colors"        
                 >
                   取消关注
                 </button>
                 <button
                   @click.stop="block(user.id)"
-                  class="px-3 py-1.5 border border-white/20 text-gray-400 hover:border-orange-500/50 hover:text-orange-400 rounded-lg text-sm transition-colors"
+                  class="px-3 py-1.5 border border-[var(--line-strong)] text-gray-400 hover:border-orange-500/50 hover:text-orange-400 rounded-lg text-sm transition-colors"
                 >
                   🚫 拉黑
                 </button>
@@ -198,7 +198,7 @@
           <div 
             v-for="user in followers" 
             :key="user.id"
-            class="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10"
+            class="hud-card p-4"
           >
             <div class="flex items-center gap-4">
               <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xl">
@@ -218,7 +218,7 @@
               <button 
                 v-if="!isFollowing(user.id)"
                 @click="follow(user)"
-                class="px-3 py-1.5 bg-purple-500 hover:bg-purple-600 text-white rounded-lg text-sm"
+                class="px-3 py-1.5 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] rounded-lg text-sm"
               >
                 回关
               </button>
@@ -243,7 +243,7 @@
           <div 
             v-for="user in blocklist" 
             :key="user.id"
-            class="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10"
+            class="hud-card p-4"
           >
             <div class="flex items-center gap-4">
               <div class="w-14 h-14 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white font-bold text-xl">
@@ -257,7 +257,7 @@
               </div>
               <button 
                 @click="unblock(user.id)"
-                class="px-3 py-1.5 border border-white/20 text-gray-400 hover:border-green-500/50 hover:text-green-400 rounded-lg text-sm transition-colors"
+                class="px-3 py-1.5 border border-[var(--line-strong)] text-gray-400 hover:border-green-500/50 hover:text-green-400 rounded-lg text-sm transition-colors"
               >
                 解除拉黑
               </button>
@@ -269,7 +269,7 @@
       <!-- 用户详情对话框 -->
       <el-dialog v-model="showUserDetailDialog" :title="selectedUser?.username" width="450px">
         <div class="text-center">
-          <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-3xl mb-4">
+          <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-[var(--accent-color)] to-[var(--accent-gold)] flex items-center justify-center text-white font-bold text-3xl mb-4">
             {{ selectedUser?.username?.charAt(0)?.toUpperCase() }}
           </div>
           <div class="flex items-center justify-center gap-2 mb-2">
@@ -279,16 +279,16 @@
           <div class="text-gray-400 mb-6">{{ selectedUser?.bio || '暂无简介' }}</div>
           
           <div class="grid grid-cols-3 gap-4 mb-6">
-            <div class="bg-white/5 rounded-xl p-4">
+            <div class="bg-[var(--bg-card-hover)] rounded-lg p-4">
               <div class="text-2xl font-bold text-white">{{ selectedUser?.games || 0 }}</div>
               <div class="text-xs text-gray-500">对局数</div>
             </div>
-            <div class="bg-white/5 rounded-xl p-4">
+            <div class="bg-[var(--bg-card-hover)] rounded-lg p-4">
               <div class="text-2xl font-bold text-green-400">{{ selectedUser?.wins || 0 }}</div>
               <div class="text-xs text-gray-500">胜利数</div>
             </div>
-            <div class="bg-white/5 rounded-xl p-4">
-              <div class="text-2xl font-bold text-purple-400">{{ selectedUser?.followers || 0 }}</div>
+            <div class="bg-[var(--bg-card-hover)] rounded-lg p-4">
+              <div class="text-2xl font-bold text-[var(--accent-color)]">{{ selectedUser?.followers || 0 }}</div>
               <div class="text-xs text-gray-500">粉丝数</div>
             </div>
           </div>
@@ -296,7 +296,7 @@
           <div class="flex gap-3">
             <button
               @click="startChatFromDetail"
-              class="flex-1 px-4 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl transition-colors"
+              class="flex-1 px-4 py-2.5 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] rounded-xl transition-colors"
             >
               💬 发送私信
             </button>
@@ -328,8 +328,8 @@
             <div 
               class="max-w-xs px-4 py-2 rounded-2xl"
               :class="msg.from === 'me' 
-                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-br-sm' 
-                : 'bg-white/10 text-white rounded-bl-sm'"
+                ? 'bg-[var(--accent-color)] text-[#03201d] rounded-br-sm'
+                : 'bg-[var(--bg-card-hover)] text-white rounded-bl-sm'"
             >
               {{ msg.content }}
             </div>
@@ -339,12 +339,12 @@
           <input 
             v-model="chatInput"
             @keyup.enter="sendChatMessage"
-            class="flex-1 px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50"
+            class="flex-1 px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[var(--accent-color)]"
             placeholder="输入消息..."
           />
           <button 
             @click="sendChatMessage"
-            class="px-6 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl transition-colors"
+            class="px-6 py-2.5 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] rounded-xl transition-colors"
           >
             发送
           </button>
@@ -358,7 +358,7 @@
             v-model="searchQuery"
             @input="searchUsers"
             type="text"
-            class="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50"
+            class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[var(--accent-color)]"
             placeholder="输入用户名搜索..."
           />
           <div v-if="searchResults.length > 0" class="space-y-2 max-h-60 overflow-y-auto">
@@ -366,9 +366,9 @@
               v-for="user in searchResults" 
               :key="user.id"
               @click="handleUserSelect(user)"
-              class="flex items-center gap-3 p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10"
+              class="flex items-center gap-3 p-3 bg-[var(--bg-card-hover)] rounded-lg cursor-pointer hover:bg-[var(--bg-elevated)]"
             >
-              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--accent-color)] to-[var(--accent-gold)] flex items-center justify-center text-white font-bold">
                 {{ user.username.charAt(0).toUpperCase() }}
               </div>
               <div class="flex-1">
@@ -381,7 +381,7 @@
               <button 
                 v-if="!isFollowing(user.id)"
                 @click.stop="follow(user)"
-                class="px-3 py-1 bg-purple-500 hover:bg-purple-600 text-white rounded-lg text-sm"
+                class="px-3 py-1 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] rounded-lg text-sm"
               >
                 关注
               </button>

@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 py-8 px-4">
+  <div class="min-h-screen py-8 px-4">
     <div class="max-w-7xl mx-auto">
       <!-- 返回按钮 -->
       <div class="mb-6">
-        <router-link to="/" class="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors">
+        <router-link to="/" class="inline-flex items-center gap-2 text-[var(--accent-color)] hover:text-[var(--accent-hover)] transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
@@ -13,9 +13,9 @@
       </div>
 
       <!-- 页面标题 -->
-      <div class="bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 rounded-3xl p-8 border border-white/10 mb-8">
+      <div class="bg-gradient-to-r from-[rgba(var(--accent-rgb),0.15)] via-[rgba(var(--gold-rgb),0.1)] to-[rgba(59,130,246,0.1)] rounded-3xl p-8 border border-[var(--line-soft)] mb-8">
         <h1 class="text-4xl font-bold text-white mb-4">
-          <span class="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">羁绊大全</span>
+          <span class="bg-gradient-to-r from-[#4aefe0] via-[#ffc857] to-[#60a5fa] bg-clip-text text-transparent">羁绊大全</span>
         </h1>
         <p class="text-xl text-gray-300 mb-2">S8怪兽入侵赛季所有羁绊效果详解</p>
         <div class="text-sm text-gray-500 mt-3">
@@ -25,7 +25,7 @@
       </div>
 
       <!-- 筛选器 -->
-      <div class="mb-6 bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10">
+      <div class="mb-6 hud-card p-4">
         <div class="flex flex-wrap gap-4 items-center">
           <el-select v-model="selectedType" placeholder="选择羁绊类型" class="w-48" @change="filterSynergies">
             <el-option label="全部" value="all" />
@@ -40,7 +40,7 @@
           </el-input>
           
           <div class="text-sm text-gray-400">
-            共 <span class="font-bold text-purple-300">{{ Object.keys(filteredTraits).length + Object.keys(filteredClasses).length }}</span> 个羁绊
+            共 <span class="font-bold text-[var(--accent-color)]">{{ Object.keys(filteredTraits).length + Object.keys(filteredClasses).length }}</span> 个羁绊
           </div>
         </div>
       </div>
@@ -49,14 +49,14 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- 特质羁绊 -->
         <div v-for="(synergy, name) in filteredTraits" :key="'trait-' + name" 
-          class="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:border-purple-500/30 transition-all">
+          class="hud-card p-4 hover:border-[rgba(var(--accent-rgb),0.3)] transition-all">
           <!-- 羁绊标题 -->
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
               <span class="text-xl">✨</span>
-              <h3 class="text-lg font-bold text-purple-300">{{ name }}</h3>
+              <h3 class="text-lg font-bold text-[var(--accent-color)]">{{ name }}</h3>
             </div>
-            <span class="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-xs font-medium">特质</span>
+            <span class="px-2 py-1 bg-[rgba(var(--accent-rgb),0.12)] text-[var(--accent-color)] rounded text-xs font-medium">特质</span>
           </div>
           
           <!-- 羁绊描述 -->
@@ -72,8 +72,8 @@
             </h4>
             <div class="space-y-1.5">
               <div v-for="level in synergy.levels" :key="level.count"
-                class="flex items-start gap-2.5 px-2.5 py-2 bg-purple-500/10 rounded-lg border border-purple-500/20 transition-all hover:bg-purple-500/20 hover:border-purple-500/40">
-                <span class="flex-shrink-0 px-2 py-0.5 bg-purple-500/30 rounded text-xs font-bold text-purple-100 min-w-[2.8rem] text-center leading-relaxed">
+                class="flex items-start gap-2.5 px-2.5 py-2 bg-[rgba(var(--accent-rgb),0.08)] rounded-lg border border-[rgba(var(--accent-rgb),0.2)] transition-all hover:bg-[rgba(var(--accent-rgb),0.12)] hover:border-[rgba(var(--accent-rgb),0.4)]">
+                <span class="flex-shrink-0 px-2 py-0.5 bg-[rgba(var(--accent-rgb),0.18)] rounded text-xs font-bold text-[#d9f7f2] min-w-[2.8rem] text-center leading-relaxed">
                   {{ level.count }}人
                 </span>
                 <span class="text-sm text-gray-200 leading-relaxed flex-1 break-words">{{ level.effect }}</span>
@@ -102,7 +102,7 @@
 
         <!-- 职业羁绊 -->
         <div v-for="(synergy, name) in filteredClasses" :key="'class-' + name" 
-          class="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:border-blue-500/30 transition-all">
+          class="hud-card p-4 hover:border-blue-500/30 transition-all">
           <!-- 羁绊标题 -->
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
@@ -195,7 +195,7 @@ const costBorderClass = (cost) => {
     1: 'border-2 border-gray-500/50 rounded',
     2: 'border-2 border-green-500/50 rounded',
     3: 'border-2 border-blue-500/50 rounded',
-    4: 'border-2 border-purple-500/50 rounded',
+    4: 'border-2 border-[rgba(168,85,247,0.5)] rounded',
     5: 'border-2 border-yellow-500/50 rounded'
   }[cost] || 'border-2 border-gray-500/30 rounded'
 }

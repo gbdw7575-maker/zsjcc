@@ -17,7 +17,7 @@
 
       <!-- 版本热门阵容强度排行 -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="hud-card p-6">
           <div class="flex items-center justify-between mb-6">
             <h3 class="text-xl font-bold text-white">🏆 阵容强度排行</h3>
             <span class="text-xs text-gray-500">数据来源: 游侠网攻略</span>
@@ -26,7 +26,7 @@
             <div 
               v-for="(team, index) in teamRanking" 
               :key="team.id" 
-              class="flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer"
+              class="flex items-center gap-4 p-4 bg-[var(--bg-card-hover)] rounded-lg hover:bg-[var(--bg-elevated)] transition-colors cursor-pointer"
               @click="openTeamDetail(team)"
             >
               <div :class="rankClass(index)" class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
@@ -41,7 +41,7 @@
                   <span class="text-gray-400 text-sm">{{ team.description }}</span>
                 </div>
                 <div class="flex items-center gap-2 mt-2">
-                  <span v-for="synergy in team.synergies" :key="synergy" class="text-xs px-2 py-0.5 rounded-full bg-white/10 text-gray-300">
+                  <span v-for="synergy in team.synergies" :key="synergy" class="text-xs px-2 py-0.5 rounded-full bg-[var(--bg-card-hover)] text-gray-300">
                     {{ synergy }}
                   </span>
                 </div>
@@ -55,19 +55,19 @@
           </div>
         </div>
         
-        <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="hud-card p-6">
           <div class="flex items-center justify-between mb-6">
             <h3 class="text-xl font-bold text-white">🎯 装备推荐</h3>
             <span class="text-xs text-gray-500">数据来源: 头条攻略</span>
           </div>
           <div class="space-y-4">
-            <div v-for="equip in equipmentRecommendations" :key="equip.hero" class="p-4 bg-white/5 rounded-xl">
+            <div v-for="equip in equipmentRecommendations" :key="equip.hero" class="p-4 bg-[var(--bg-card-hover)] rounded-lg">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-white font-bold">{{ equip.hero }}</span>
                 <span class="text-gray-400 text-sm">{{ equip.role }}</span>
               </div>
               <div class="flex items-center gap-2">
-                <span v-for="item in equip.items" :key="item" class="text-sm px-3 py-1 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-purple-300">
+                <span v-for="item in equip.items" :key="item" class="text-sm px-3 py-1 rounded-full bg-gradient-to-r from-[rgba(var(--accent-rgb),0.12)] to-[rgba(var(--gold-rgb),0.12)] border border-[rgba(var(--accent-rgb),0.3)] text-[var(--accent-color)]">
                   {{ item }}
                 </span>
               </div>
@@ -79,7 +79,7 @@
       
       <!-- 羁绊排行与运营思路 -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div class="lg:col-span-2 bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="lg:col-span-2 hud-card p-6">
           <div class="flex items-center justify-between mb-6">
             <h3 class="text-xl font-bold text-white">📊 羁绊效果强度排行</h3>
             <span class="text-xs text-gray-500">基于当前版本胜率统计</span>
@@ -88,7 +88,7 @@
             <div 
               v-for="(synergy, index) in synergyRanking" 
               :key="synergy.name" 
-              class="flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer"
+              class="flex items-center gap-4 p-4 bg-[var(--bg-card-hover)] rounded-lg hover:bg-[var(--bg-elevated)] transition-colors cursor-pointer"
               @click="openSynergyDetail(synergy)"
             >
               <div :class="rankClass(index)" class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
@@ -101,7 +101,7 @@
                 </div>
                 <p class="text-gray-500 text-sm mt-1">{{ synergy.effect }}</p>
                 <div class="flex items-center gap-4 mt-2">
-                  <span class="text-gray-400 text-xs">热门阵容: <span class="text-purple-400">{{ synergy.popularTeams }}</span></span>
+                  <span class="text-gray-400 text-xs">热门阵容: <span class="text-[var(--accent-color)]">{{ synergy.popularTeams }}</span></span>
                 </div>
               </div>
               <div class="w-32">
@@ -118,7 +118,7 @@
           </div>
         </div>
         
-        <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="hud-card p-6">
           <div class="flex items-center justify-between mb-6">
             <h3 class="text-xl font-bold text-white">💡 版本运营思路</h3>
             <span class="text-xs text-gray-500">攻略汇总</span>
@@ -139,10 +139,10 @@
               <p class="text-gray-400 text-sm">3-5/4-1拉7大D，追三星贾克斯，火炮+羊刀+水银三件套，前排扛住=贾克斯乱杀</p>
             </div>
             <div 
-              class="p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl border border-purple-500/20 cursor-pointer hover:bg-purple-500/20 transition-colors"
+              class="p-4 bg-gradient-to-r from-[rgba(var(--accent-rgb),0.08)] to-[rgba(var(--gold-rgb),0.08)] rounded-xl border border-[rgba(var(--accent-rgb),0.2)] cursor-pointer hover:bg-[rgba(var(--accent-rgb),0.12)] transition-colors"
               @click="openTeamDetail(teamRanking[2])"
             >
-              <h4 class="text-purple-400 font-bold mb-2">💰 爽玩阵容: 金币流德莱文</h4>
+              <h4 class="text-[var(--accent-color)] font-bold mb-2">💰 爽玩阵容: 金币流德莱文</h4>
               <p class="text-gray-400 text-sm">刚需德莱文英雄强化"德莱文联盟"，3星德莱文+前排3星，装备掉落金币，经济爆炸</p>
             </div>
             <div 
@@ -157,13 +157,13 @@
       </div>
 
       <!-- 英雄出装速查 -->
-      <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 mb-8">
+      <div class="hud-card p-6 mb-8">
         <div class="flex items-center justify-between mb-6">
           <h3 class="text-xl font-bold text-white">⚔️ 主C英雄出装速查</h3>
           <span class="text-xs text-gray-500">数据来源: 游侠网、头条攻略</span>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div v-for="hero in heroBuilds" :key="hero.name" class="p-4 bg-white/5 rounded-xl">
+          <div v-for="hero in heroBuilds" :key="hero.name" class="p-4 bg-[var(--bg-card-hover)] rounded-lg">
             <div class="flex items-center gap-2 mb-3">
               <div class="w-10 h-10 bg-center bg-no-repeat"
                 :class="costBorderClass(hero.cost)"
@@ -177,7 +177,7 @@
             <div class="space-y-2">
               <div v-for="(item, idx) in hero.items" :key="idx" class="flex items-center gap-2">
                 <span class="text-xs text-gray-500 w-8">{{ idx === 0 ? '必备' : '备选' }}</span>
-                <span class="text-sm text-purple-300">{{ item }}</span>
+                <span class="text-sm text-[var(--accent-color)]">{{ item }}</span>
               </div>
             </div>
           </div>
@@ -206,7 +206,7 @@
         <div>
           <h4 class="text-gray-400 text-sm mb-3">核心羁绊</h4>
           <div class="flex flex-wrap gap-2">
-            <span v-for="synergy in selectedTeam.synergies" :key="synergy" class="px-3 py-1 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-purple-300">
+            <span v-for="synergy in selectedTeam.synergies" :key="synergy" class="px-3 py-1 rounded-full bg-gradient-to-r from-[rgba(var(--accent-rgb),0.12)] to-[rgba(var(--gold-rgb),0.12)] border border-[rgba(var(--accent-rgb),0.3)] text-[var(--accent-color)]">
               {{ synergy }}
             </span>
           </div>
@@ -215,7 +215,7 @@
         <div>
           <h4 class="text-gray-400 text-sm mb-3">棋子搭配</h4>
           <div class="grid grid-cols-4 gap-2">
-            <div v-for="hero in selectedTeam.heroes" :key="hero" class="p-2 bg-white/5 rounded-lg text-center">
+            <div v-for="hero in selectedTeam.heroes" :key="hero" class="p-2 bg-[var(--bg-card-hover)] rounded-lg text-center">
               <div class="text-white font-medium">{{ hero }}</div>
             </div>
           </div>
@@ -224,10 +224,10 @@
         <div>
           <h4 class="text-gray-400 text-sm mb-3">装备推荐</h4>
           <div class="space-y-2">
-            <div v-for="(build, idx) in selectedTeam.builds" :key="idx" class="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
+            <div v-for="(build, idx) in selectedTeam.builds" :key="idx" class="flex items-center gap-3 p-3 bg-[var(--bg-card-hover)] rounded-lg">
               <span class="text-yellow-400 font-bold w-16">{{ build.role }}</span>
               <div class="flex gap-2">
-                <span v-for="item in build.items" :key="item" class="px-2 py-1 rounded bg-purple-500/20 text-purple-300 text-sm">
+                <span v-for="item in build.items" :key="item" class="px-2 py-1 rounded bg-[rgba(var(--accent-rgb),0.12)] text-[var(--accent-color)] text-sm">
                   {{ item }}
                 </span>
               </div>
@@ -282,7 +282,7 @@
         <div>
           <h4 class="text-gray-400 text-sm mb-3">等级效果</h4>
           <div class="space-y-2">
-            <div v-for="(level, idx) in selectedSynergy.levels" :key="idx" class="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
+            <div v-for="(level, idx) in selectedSynergy.levels" :key="idx" class="flex items-center gap-3 p-3 bg-[var(--bg-card-hover)] rounded-lg">
               <span class="text-yellow-400 font-bold w-8">{{ level.count }}个</span>
               <span class="text-gray-300">{{ level.effect }}</span>
             </div>
@@ -292,7 +292,7 @@
         <div>
           <h4 class="text-gray-400 text-sm mb-3">关联英雄</h4>
           <div class="grid grid-cols-4 gap-2">
-            <div v-for="hero in selectedSynergy.heroes" :key="hero" class="p-2 bg-white/5 rounded-lg text-center">
+            <div v-for="hero in selectedSynergy.heroes" :key="hero" class="p-2 bg-[var(--bg-card-hover)] rounded-lg text-center">
               <div class="text-white font-medium text-sm">{{ hero }}</div>
             </div>
           </div>
@@ -301,8 +301,8 @@
         <div>
           <h4 class="text-gray-400 text-sm mb-3">热门阵容</h4>
           <div class="space-y-2">
-            <div v-for="team in selectedSynergy.popularTeams" :key="team" class="flex items-center gap-2 p-2 bg-purple-500/10 rounded-lg cursor-pointer hover:bg-purple-500/20 transition-colors" @click="openTeamBySynergy(team)">
-              <span class="text-purple-400">📋</span>
+            <div v-for="team in selectedSynergy.popularTeams" :key="team" class="flex items-center gap-2 p-2 bg-[rgba(var(--accent-rgb),0.08)] rounded-lg cursor-pointer hover:bg-[rgba(var(--accent-rgb),0.12)] transition-colors" @click="openTeamBySynergy(team)">
+              <span class="text-[var(--accent-color)]">📋</span>
               <span class="text-gray-300">{{ team }}</span>
             </div>
           </div>
@@ -326,7 +326,7 @@ const costBorderClass = (cost) => {
     1: 'border-2 border-gray-500/50 rounded-lg',
     2: 'border-2 border-green-500/50 rounded-lg',
     3: 'border-2 border-blue-500/50 rounded-lg',
-    4: 'border-2 border-purple-500/50 rounded-lg',
+    4: 'border-2 border-[rgba(168,85,247,0.5)] rounded-lg',
     5: 'border-2 border-yellow-500/50 rounded-lg'
   }[cost] || 'border-2 border-gray-500/30 rounded-lg'
 }
@@ -614,7 +614,7 @@ const rankClass = (index) => {
 const tierClass = (tier) => {
   const classes = {
     'T0': 'bg-gradient-to-r from-yellow-400 to-orange-500 text-black',
-    'T0.5': 'bg-gradient-to-r from-purple-400 to-pink-500 text-white',
+    'T0.5': 'bg-gradient-to-r from-[#c084fc] to-[#ec4899] text-white',
     'T1': 'bg-gradient-to-r from-blue-400 to-cyan-500 text-white'
   }
   return classes[tier] || 'bg-gray-500 text-white'
@@ -626,7 +626,7 @@ const barClass = (index) => {
     'bg-gradient-to-r from-gray-300 to-gray-400',
     'bg-gradient-to-r from-orange-400 to-orange-600',
     'bg-gradient-to-r from-blue-400 to-blue-600',
-    'bg-gradient-to-r from-purple-400 to-purple-600'
+    'bg-gradient-to-r from-[#c084fc] to-[#9333ea]'
   ]
   return classes[index] || 'bg-gray-500'
 }
