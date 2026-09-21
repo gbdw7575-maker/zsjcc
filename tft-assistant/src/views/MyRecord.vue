@@ -453,7 +453,7 @@ const syncFromClient = async () => {
     alert(`同步完成：新增 ${synced} 场，累计 ${total} 场`)
     await loadRecords(1)
   } catch (err) {
-    alert(err.response?.data?.message || '同步失败，请确认英雄联盟客户端已启动并登录')
+    alert(err.response?.data?.message || '同步失败，请确认金铲铲客户端已启动并登录')
   } finally {
     syncing.value = false
   }

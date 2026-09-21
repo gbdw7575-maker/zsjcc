@@ -3,7 +3,7 @@
 // 1. 金铲铲之战官方公告：https://jcc.qq.com
 // 2. 金铲铲之战官方微博 - 怪兽入侵赛季返场公告（2025年6月17日）
 // 3. TapTap金铲铲之战官方社区 - S8怪兽入侵返场阵容推荐
-// 4. lolchess.gg - TFT Set 8 Team Comps 官方数据
+// 4. 云顶之弈数据站 - TFT Set 8 Team Comps 官方数据
 // 5. 虎扑游戏电竞资讯 - 云顶之弈S8赛季怪兽来袭羁绊明细
 
 export const teamDetailsData = [

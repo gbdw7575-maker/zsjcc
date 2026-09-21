@@ -2,7 +2,7 @@
 // 数据来源：
 // 1. 金铲铲之战官方公告：https://jcc.qq.com
 // 2. 金铲铲之战官方微博 - 怪兽入侵赛季返场公告（2025年6月17日）
-// 3. lolchess.gg - TFT Set 8 Augments 官方数据
+// 3. 云顶之弈数据站 - TFT Set 8 Augments 官方数据
 // 4. 虎扑游戏电竞资讯 - 云顶之弈S8赛季怪兽来袭英雄强化明细
 
 export const augmentsData = {

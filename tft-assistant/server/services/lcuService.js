@@ -1,6 +1,6 @@
 /**
- * LCU (League Client Update) API 服务
- * 自动发现本地英雄联盟客户端进程，提取连接凭证，并代理 API 请求
+ * LCU API 服务
+ * 自动发现本地金铲铲客户端进程，提取连接凭证，并代理 API 请求
  */
 import { exec } from 'child_process'
 import https from 'https'
@@ -114,7 +114,7 @@ async function lcuRequest(method, path, body = null) {
 async function checkClientReady() {
   try {
     const creds = await findClientCredentials()
-    if (!creds) return { connected: false, reason: '未检测到运行中的英雄联盟客户端' }
+    if (!creds) return { connected: false, reason: '未检测到运行中的金铲铲客户端' }
 
     const { status } = await lcuRequest('GET', '/lol-summoner/v1/current-summoner')
     return { connected: status === 200, reason: status === 200 ? '' : '客户端未就绪' }

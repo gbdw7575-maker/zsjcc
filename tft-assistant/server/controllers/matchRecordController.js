@@ -2,7 +2,7 @@ import MatchRecord from '../models/MatchRecord.js'
 import { syncFromLCU } from '../services/lcuSyncService.js'
 
 /**
- * 从本机英雄联盟客户端自动同步最近对局
+ * 从本机金铲铲客户端自动同步最近对局
  * POST /api/records/sync-lcu
  */
 export const syncLCU = async (req, res) => {
@@ -13,7 +13,7 @@ export const syncLCU = async (req, res) => {
     if (error.message === 'LCU_CLIENT_NOT_FOUND') {
       return res.status(503).json({
         success: false,
-        message: '未检测到运行中的英雄联盟客户端，请先启动客户端并登录'
+        message: '未检测到运行中的金铲铲客户端，请先启动客户端并登录'
       })
     }
     res.status(500).json({ success: false, message: error.message })

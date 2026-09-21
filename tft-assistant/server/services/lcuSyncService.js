@@ -1,6 +1,6 @@
 /**
  * LCU 战绩同步服务
- * 自动发现本机英雄联盟客户端 → 拉取最近 TFT 对局详情 → 落 MatchRecord
+ * 自动发现本机金铲铲客户端 → 拉取最近 TFT 对局详情 → 落 MatchRecord
  * 数据只存语言中立标识（去赛季前缀的英文 ID），中文映射由前端展示层完成
  */
 import MatchRecord from '../models/MatchRecord.js'

@@ -3,7 +3,7 @@
 // 1. 金铲铲之战官方公告：https://jcc.qq.com
 // 2. 虎扑游戏电竞资讯 - 云顶之弈S8赛季怪兽来袭羁绊明细
 // 3. 金铲铲之战官方微博 - 怪兽入侵赛季返场公告
-// 4. lolchess.gg - TFT Set 8: Monsters Attack! 官方数据
+// 4. 云顶之弈数据站 - TFT Set 8: Monsters Attack! 官方数据
 
 export const synergiesData = {
   // ==================== 特质羁绊 ====================

@@ -130,7 +130,7 @@
               战绩同步
             </h3>
             <p class="text-sm text-gray-400 mb-4 leading-relaxed">
-              本系统会自动发现本机运行中的英雄联盟客户端，无需手动填写账号信息。
+              本系统会自动发现本机运行中的金铲铲客户端，无需手动填写账号信息。
               请先在电脑上启动客户端并登录，再点击下方按钮。
             </p>
             <button
@@ -632,7 +632,7 @@ const loadRecordData = async () => {
 }
 
 /**
- * 触发服务端从本机英雄联盟客户端同步，然后刷新本页数据
+ * 触发服务端从本机金铲铲客户端同步，然后刷新本页数据
  */
 const syncMatchData = async () => {
   isMatchSyncing.value = true

@@ -20,7 +20,7 @@
         <p class="text-xl text-gray-300 mb-2">S8怪兽入侵赛季所有羁绊效果详解</p>
         <div class="text-sm text-gray-500 mt-3">
           <span class="font-semibold text-gray-400">数据来源：</span>
-          <span>金铲铲之战官方公告、虎扑游戏电竞资讯、lolchess.gg官方数据</span>
+          <span>金铲铲之战官方公告、虎扑游戏电竞资讯、云顶之弈数据站</span>
         </div>
       </div>
 

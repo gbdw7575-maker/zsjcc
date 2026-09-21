@@ -151,7 +151,7 @@ export const recordApi = {
   getList: (params) => api.get('/records', { params }),
   getDetail: (id) => api.get(`/records/${id}`),
   delete: (id) => api.delete(`/records/${id}`),
-  // 从本机英雄联盟客户端自动同步最近对局
+  // 从本机金铲铲客户端自动同步最近对局
   syncLCU: () => api.post('/records/sync-lcu')
 }
 
