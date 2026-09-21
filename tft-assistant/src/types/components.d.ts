@@ -21,6 +21,10 @@ declare module 'vue' {
     ElLoading: typeof import('element-plus/es')['ElLoading']
     ElOption: typeof import('element-plus/es')['ElOption']
     ElSelect: typeof import('element-plus/es')['ElSelect']
+    ForumLineups: typeof import('./../components/forum/ForumLineups.vue')['default']
+    ForumPosts: typeof import('./../components/forum/ForumPosts.vue')['default']
+    ForumTournament: typeof import('./../components/forum/ForumTournament.vue')['default']
+    ForumTutorials: typeof import('./../components/forum/ForumTutorials.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
