@@ -105,6 +105,9 @@
       </router-view>
     </main>
 
+    <!-- 路由切换加载进度条 -->
+    <div class="route-loading" :class="{ 'is-active': routeLoading }"></div>
+
     <!-- 主题设置对话框 -->
     <el-dialog v-model="showThemeDialog" title="主题设置" width="540px" :close-on-click-modal="false">
       <div class="space-y-6">
@@ -195,6 +198,17 @@ const router = useRouter()
 
 const showThemeDialog = ref(false)
 const mobileNavOpen = ref(false)
+
+// 路由切换 loading 指示（路由均为懒加载，跳转期间显示顶部进度条）
+const routeLoading = ref(false)
+router.beforeEach((to, from, next) => {
+  if (to.path !== from.path) routeLoading.value = true
+  next()
+})
+router.afterEach(() => {
+  setTimeout(() => { routeLoading.value = false }, 180)
+})
+router.onError(() => { routeLoading.value = false })
 
 const showNav = computed(() => {
   const hideRoutes = ['/login', '/register']

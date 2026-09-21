@@ -108,9 +108,10 @@
                 class="relative aspect-video rounded-lg overflow-hidden bg-black/50 border border-[var(--line-soft)] group"
               >
                 <!-- 图片预览 -->
-                <img 
+                <img
                   v-if="file.type.startsWith('image/')"
                   :src="file.preview"
+                  loading="lazy"
                   class="w-full h-full object-cover"
                 />
                 <!-- 视频预览 -->
@@ -151,7 +152,7 @@
             <!-- 文件预览 -->
             <div v-if="uploadFiles.length > 0" class="grid grid-cols-3 gap-2 mt-3">
               <div v-for="(file, i) in uploadFiles" :key="i" class="aspect-video rounded-lg overflow-hidden bg-black/30 border border-white/5">
-                <img v-if="file.type.startsWith('image/')" :src="file.preview" class="w-full h-full object-cover" />
+                <img v-if="file.type.startsWith('image/')" :src="file.preview" loading="lazy" class="w-full h-full object-cover" />
                 <video v-else :src="file.preview" class="w-full h-full object-cover" muted />
               </div>
             </div>
