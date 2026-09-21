@@ -524,4 +524,29 @@ onMounted(() => {
 .page-leave-to {
   opacity: 0;
 }
+
+/* ---- 路由加载进度条 ---- */
+.route-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(90deg, var(--accent-color), var(--accent-gold));
+  box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.8);
+  transition: opacity 0.2s ease;
+}
+.route-loading.is-active {
+  opacity: 1;
+  animation: route-load 1.1s ease-in-out infinite;
+}
+@keyframes route-load {
+  0% { transform: scaleX(0); transform-origin: left; }
+  45% { transform: scaleX(0.72); transform-origin: left; }
+  55% { transform: scaleX(0.72); transform-origin: right; }
+  100% { transform: scaleX(0); transform-origin: right; }
+}
 </style>
