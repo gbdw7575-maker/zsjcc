@@ -1,65 +1,86 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center overflow-hidden relative">
-    <div class="bg-container"></div>
-    <div class="gradient-overlay"></div>
-    <div class="stars-container">
-      <div v-for="i in 80" :key="'star-' + i" class="star" :style="starStyle(i)"></div>
+  <div class="login-page">
+    <!-- 背景：同心瞄准环 + 扫描网格（纯CSS） -->
+    <div class="login-bg">
+      <div class="bg-rings"></div>
+      <div class="bg-grid"></div>
+      <div class="bg-sweep"></div>
     </div>
-    <div class="particles-container">
-      <div v-for="i in 20" :key="'particle-' + i" class="particle" :style="particleStyle(i)"></div>
-    </div>
-    <div class="floating-items">
-      <div class="float-item item-1">🪙</div>
-      <div class="float-item item-2">⚔️</div>
-      <div class="float-item item-3">🛡️</div>
-      <div class="float-item item-4">💎</div>
-      <div class="float-item item-5">✨</div>
-      <div class="float-item item-6">🐉</div>
-      <div class="float-item item-7">🦊</div>
-      <div class="float-item item-8">🤖</div>
-    </div>
-    
-    <div class="relative z-10 login-box">
-      <div class="text-center mb-8">
-        <div class="logo-container">
-          <div class="logo-shape">
-            <span class="logo-icon">⚔️</span>
-            <span class="logo-crown">👑</span>
-          </div>
-        </div>
-        <h1 class="game-title">金铲铲之战</h1>
-        <p class="game-subtitle">云顶之弈 · 掌上对决</p>
+
+    <div class="login-card animate-fade-up">
+      <!-- 四角准星 -->
+      <i class="corner corner--tl"></i>
+      <i class="corner corner--tr"></i>
+      <i class="corner corner--bl"></i>
+      <i class="corner corner--br"></i>
+
+      <!-- 顶部状态条 -->
+      <div class="card-topbar">
+        <span class="topbar-label">SYSTEM LOGIN</span>
+        <span class="topbar-status">
+          <i class="topbar-dot"></i>
+          身份验证
+        </span>
       </div>
-      
-      <el-form :model="form" :rules="rules" ref="formRef" class="login-form">
+
+      <!-- 品牌 -->
+      <div class="brand">
+        <div class="brand-mark">
+          <span>TFT</span>
+          <i class="brand-dot"></i>
+        </div>
+        <h1 class="brand-title">掌上金铲铲</h1>
+        <p class="brand-sub">云顶之弈 · 掌上对决</p>
+      </div>
+
+      <!-- 表单 -->
+      <el-form :model="form" :rules="rules" ref="formRef" class="login-form" @submit.prevent>
         <el-form-item prop="username">
-          <div class="input-wrapper">
-            <span class="input-icon">👤</span>
-            <el-input v-model="form.username" placeholder="召唤师名称" class="custom-input" />
-          </div>
+            <el-input v-model="form.username" placeholder="召唤师名称" size="large">
+              <template #prefix>
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="8" r="4"/>
+                  <path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>
+                </svg>
+              </template>
+            </el-input>
         </el-form-item>
-        
+
         <el-form-item prop="password">
-          <div class="input-wrapper">
-            <span class="input-icon">🔑</span>
-            <el-input v-model="form.password" type="password" placeholder="密码" class="custom-input" />
-          </div>
+            <el-input v-model="form.password" type="password" placeholder="密码" size="large" show-password @keyup.enter="handleLogin">
+              <template #prefix>
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="4" y="10" width="16" height="11" rx="2"/>
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+                </svg>
+              </template>
+            </el-input>
         </el-form-item>
-        
+
         <el-form-item>
-          <el-button type="primary" @click="handleLogin" :loading="loading" class="login-btn">
-            开始游戏
-          </el-button>
+          <button class="submit-btn" :disabled="loading" @click="handleLogin">
+            <span v-if="!loading">登 录</span>
+            <span v-else class="flex items-center gap-2">
+              <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M21 12a9 9 0 1 1-6.2-8.6" stroke-linecap="round"/>
+              </svg>
+              验证中
+            </span>
+          </button>
         </el-form-item>
       </el-form>
-      
-      <div class="text-center mt-6">
-        <span class="text-gray-400">还没有账号？</span>
-        <router-link to="/register" class="register-link">创建账号</router-link>
+
+      <div class="switch-line">
+        <span>还没有账号？</span>
+        <router-link to="/register" class="switch-link">创建账号</router-link>
       </div>
-      
+
       <div v-if="lockMessage" class="lock-message">
-        <p>{{ lockMessage }}</p>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="4" y="10" width="16" height="11" rx="2"/>
+          <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+        </svg>
+        <span>{{ lockMessage }}</span>
       </div>
     </div>
   </div>
@@ -95,42 +116,18 @@ const lockMessage = computed(() => {
   return ''
 })
 
-const starStyle = (i) => {
-  return {
-    left: `${Math.random() * 100}%`,
-    top: `${Math.random() * 100}%`,
-    width: `${2 + Math.random() * 4}px`,
-    height: `${2 + Math.random() * 4}px`,
-    animationDelay: `${Math.random() * 4}s`,
-    animationDuration: `${2 + Math.random() * 3}s`
-  }
-}
-
-const particleStyle = (i) => {
-  const colors = ['#a855f7', '#ec4899', '#3b82f6', '#fbbf24', '#22d3ee']
-  return {
-    left: `${Math.random() * 100}%`,
-    top: `${Math.random() * 100}%`,
-    width: `${4 + Math.random() * 8}px`,
-    height: `${4 + Math.random() * 8}px`,
-    backgroundColor: colors[Math.floor(Math.random() * colors.length)],
-    animationDelay: `${Math.random() * 5}s`,
-    animationDuration: `${5 + Math.random() * 5}s`
-  }
-}
-
 const handleLogin = async () => {
   if (userStore.isLocked()) {
     ElMessage.error(lockMessage.value)
     return
   }
-  
+
   await formRef.value.validate()
-  
+
   try {
     loading.value = true
     await userStore.login(form.value)
-    ElMessage.success('登录成功，欢迎来到金铲铲之战！')
+    ElMessage.success('登录成功，欢迎回来！')
     router.push('/')
   } catch (error) {
     ElMessage.error(error.message)
@@ -141,267 +138,291 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
-.bg-container {
-  position: absolute;
-  inset: 0;
-  background: 
-    radial-gradient(circle at 20% 80%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 70%),
-    linear-gradient(135deg, #0f0f1a 0%, #1a0a2e 25%, #16213e 50%, #0f3460 75%, #1a0a2e 100%);
-  background-size: 400% 400%;
-  animation: gradientShift 20s ease infinite;
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.gradient-overlay {
-  position: absolute;
-  inset: 0;
-  background: 
-    linear-gradient(180deg, transparent 0%, rgba(168, 85, 247, 0.05) 50%, transparent 100%),
-    linear-gradient(90deg, transparent 0%, rgba(236, 72, 153, 0.05) 50%, transparent 100%);
-  pointer-events: none;
-}
-
-.stars-container {
-  position: absolute;
-  inset: 0;
+.login-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
   overflow: hidden;
 }
 
-.star {
+/* ============ 背景 ============ */
+.login-bg {
   position: absolute;
-  background: white;
+  inset: 0;
+  pointer-events: none;
+}
+.bg-rings {
+  position: absolute;
+  width: 760px;
+  height: 760px;
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%);
   border-radius: 50%;
-  animation: twinkle 3s ease-in-out infinite;
+  background:
+    radial-gradient(circle, transparent 60%, rgba(var(--accent-rgb), 0.05) 60.5%, transparent 62%),
+    radial-gradient(circle, transparent 68%, rgba(var(--accent-rgb), 0.04) 68.5%, transparent 70%),
+    radial-gradient(circle, transparent 78%, rgba(var(--gold-rgb), 0.05) 78.5%, transparent 80%);
 }
-
-@keyframes twinkle {
-  0%, 100% { opacity: 0.2; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.3); }
-}
-
-.particles-container {
+.bg-grid {
   position: absolute;
   inset: 0;
-  overflow: hidden;
-  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(var(--accent-rgb), 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--accent-rgb), 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse at 50% 42%, black 0%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 42%, black 0%, transparent 72%);
 }
-
-.particle {
+.bg-sweep {
   position: absolute;
-  border-radius: 50%;
-  opacity: 0.4;
-  animation: floatParticle 8s ease-in-out infinite;
+  left: -30%;
+  right: -30%;
+  height: 140px;
+  top: 0;
+  background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.06), transparent);
+  animation: sweep 7s linear infinite;
+}
+@keyframes sweep {
+  from { transform: translateY(-160px); }
+  to { transform: translateY(100vh); }
 }
 
-@keyframes floatParticle {
-  0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
-  25% { transform: translateY(-50px) translateX(20px) scale(1.2); opacity: 0.6; }
-  50% { transform: translateY(-30px) translateX(-20px) scale(0.8); opacity: 0.4; }
-  75% { transform: translateY(-80px) translateX(10px) scale(1.1); opacity: 0.5; }
-}
-
-.floating-items {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.float-item {
-  position: absolute;
-  font-size: 2.5rem;
-  opacity: 0.25;
-  animation: float 10s ease-in-out infinite;
-}
-
-.item-1 { top: 10%; left: 10%; animation-delay: 0s; }
-.item-2 { top: 20%; right: 15%; animation-delay: 2s; }
-.item-3 { bottom: 25%; left: 20%; animation-delay: 4s; }
-.item-4 { top: 60%; right: 25%; animation-delay: 1s; }
-.item-5 { bottom: 15%; right: 10%; animation-delay: 3s; }
-.item-6 { top: 35%; left: 60%; animation-delay: 5s; }
-.item-7 { bottom: 40%; right: 50%; animation-delay: 2.5s; }
-.item-8 { top: 70%; left: 30%; animation-delay: 4.5s; }
-
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-40px) rotate(180deg); }
-}
-
-.login-box {
-  background: rgba(15, 15, 26, 0.95);
-  backdrop-filter: blur(30px);
-  border: 1px solid rgba(168, 85, 247, 0.4);
-  border-radius: 24px;
-  padding: 48px;
+/* ============ 登录卡 ============ */
+.login-card {
+  position: relative;
   width: 100%;
   max-width: 420px;
-  box-shadow: 
-    0 0 80px rgba(168, 85, 247, 0.25),
-    0 0 120px rgba(236, 72, 153, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  animation: fadeInUp 0.6s ease-out;
+  padding: 40px 40px 34px;
+  background: linear-gradient(180deg, rgba(16, 26, 46, 0.92), rgba(9, 14, 25, 0.95));
+  border: 1px solid var(--line-strong);
+  box-shadow:
+    0 30px 80px -30px rgba(0, 0, 0, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* 四角准星 */
+.corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
 }
+.corner::before,
+.corner::after {
+  content: '';
+  position: absolute;
+  background: var(--accent-color);
+}
+.corner::before { width: 14px; height: 1.5px; }
+.corner::after { width: 1.5px; height: 14px; }
+.corner--tl { top: 10px; left: 10px; }
+.corner--tr { top: 10px; right: 10px; transform: rotate(90deg); }
+.corner--bl { bottom: 10px; left: 10px; transform: rotate(-90deg); }
+.corner--br { bottom: 10px; right: 10px; transform: rotate(180deg); }
 
-.logo-container {
-  width: 100px;
-  height: 100px;
-  margin: 0 auto 20px;
+/* 顶部状态条 */
+.card-topbar {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  margin-bottom: 26px;
+  border-bottom: 1px solid var(--line-soft);
 }
-
-.logo-shape {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #fbbf24 100%);
-  border-radius: 24px;
-  display: flex;
+.topbar-label {
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: var(--text-tertiary);
+}
+.topbar-status {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  box-shadow: 
-    0 0 40px rgba(168, 85, 247, 0.6),
-    0 0 80px rgba(236, 72, 153, 0.3);
-  animation: pulse 3s ease-in-out infinite;
-  transform: rotate(-15deg);
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  color: var(--text-secondary);
+  letter-spacing: 0.12em;
+}
+.topbar-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.9);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  50% { opacity: 0.3; }
 }
 
-@keyframes pulse {
-  0%, 100% { transform: rotate(-15deg) scale(1); box-shadow: 0 0 40px rgba(168, 85, 247, 0.6), 0 0 80px rgba(236, 72, 153, 0.3); }
-  50% { transform: rotate(-15deg) scale(1.08); box-shadow: 0 0 60px rgba(168, 85, 247, 0.8), 0 0 120px rgba(236, 72, 153, 0.5); }
-}
-
-.logo-icon {
-  font-size: 3rem;
-  position: relative;
-  z-index: 2;
-}
-
-.logo-crown {
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  font-size: 1.5rem;
-  animation: bounce 1.5s ease-in-out infinite;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-
-.game-title {
-  font-size: 2.5rem;
-  font-weight: bold;
-  background: linear-gradient(135deg, #fcd34d 0%, #f59e0b 50%, #d97706 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 8px;
-}
-
-.game-subtitle {
-  color: #94a3b8;
-  font-size: 1rem;
-}
-
-.login-form {
-  margin-top: 20px;
-}
-
-.input-wrapper {
-  position: relative;
-}
-
-.input-icon {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.25rem;
-  z-index: 1;
-}
-
-.custom-input {
-  width: 100%;
-  height: 48px;
-  padding-left: 48px;
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 12px !important;
-  color: white !important;
-  font-size: 1rem;
-}
-
-.custom-input::placeholder {
-  color: rgba(255, 255, 255, 0.5) !important;
-}
-
-.custom-input:focus {
-  border-color: #a855f7 !important;
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.3) !important;
-}
-
-.login-btn {
-  width: 100%;
-  height: 48px;
-  background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%) !important;
-  border: none !important;
-  border-radius: 12px !important;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: white !important;
-  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
-  transition: all 0.3s ease;
-}
-
-.login-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 30px rgba(168, 85, 247, 0.6);
-}
-
-.register-link {
-  color: #a855f7;
-  margin-left: 8px;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.register-link:hover {
-  color: #c084fc;
-}
-
-.lock-message {
-  margin-top: 20px;
-  padding: 12px;
-  background: rgba(239, 68, 68, 0.2);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 8px;
+/* 品牌 */
+.brand {
   text-align: center;
+  margin-bottom: 28px;
+}
+.brand-mark {
+  position: relative;
+  width: 58px;
+  height: 44px;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--accent-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-rgb), 0.6);
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+}
+.brand-mark span {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  color: var(--accent-color);
+}
+.brand-dot {
+  position: absolute;
+  top: 5px;
+  right: 7px;
+  width: 5px;
+  height: 5px;
+  background: var(--accent-gold);
+  box-shadow: 0 0 8px rgba(var(--gold-rgb), 0.9);
+}
+.brand-title {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.brand-sub {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--text-tertiary);
 }
 
-.lock-message p {
-  color: #f87171;
-  font-size: 0.9rem;
+/* 表单 */
+.login-form {
+  margin-top: 4px;
+}
+.field-icon {
+  width: 17px;
+  height: 17px;
+  color: var(--text-tertiary);
+  transition: color 0.2s ease;
+}
+:deep(.el-input__wrapper.is-focus) .field-icon {
+  color: var(--accent-color);
+}
+
+/* 提交按钮 */
+.submit-btn {
+  position: relative;
+  width: 100%;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: #03201d;
+  background: var(--accent-color);
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+.submit-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  left: -50px;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transition: none;
+}
+.submit-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+  box-shadow: 0 0 28px -6px rgba(var(--accent-rgb), 0.75);
+}
+.submit-btn:hover:not(:disabled)::after {
+  animation: btn-shine 0.9s ease;
+}
+@keyframes btn-shine {
+  to { left: 110%; }
+}
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+.spinner {
+  width: 17px;
+  height: 17px;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 切换注册 */
+.switch-line {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+.switch-link {
+  margin-left: 6px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--accent-color);
+  text-decoration: none;
+  position: relative;
+}
+.switch-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: var(--accent-color);
+  opacity: 0.4;
+  transition: opacity 0.2s ease;
+}
+.switch-link:hover::after { opacity: 1; }
+
+/* 锁定提示 */
+.lock-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 12px 14px;
+  background: rgba(255, 77, 108, 0.08);
+  border: 1px solid rgba(255, 77, 108, 0.35);
+  color: var(--danger);
+  font-size: 12.5px;
+}
+.lock-message svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .login-card { padding: 32px 24px 28px; }
 }
 </style>
