@@ -3,69 +3,70 @@
     class="app-container min-h-screen"
     :style="appStyle"
   >
-    <nav v-if="showNav" class="backdrop-blur-lg border-b sticky top-0 z-50" :style="{ background: themeColors['--nav-bg'], borderColor: themeColors['--border-color'] }">
-      <div class="max-w-7xl mx-auto px-4 py-2">
-        <div class="flex items-center justify-between">
+    <nav v-if="showNav" class="nav-hud backdrop-blur-xl sticky top-0 z-50" :style="{ background: themeColors['--nav-bg'] }">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="flex items-center justify-between h-14">
           <!-- Logo -->
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-lg flex items-center justify-center shadow-lg" :style="{ background: `linear-gradient(135deg, ${themeColors['--accent-color']}, ${themeColors['--accent-hover']})`, boxShadow: `0 4px 12px ${themeColors['--shadow-color']}` }">
-              <span class="text-white font-bold text-base">TFT</span>
+          <router-link to="/" class="flex items-center gap-2.5">
+            <div class="logo-mark">
+              <span>TFT</span>
+              <i class="logo-dot"></i>
             </div>
-            <span class="font-bold text-lg hidden sm:block" :style="{ color: themeColors['--text-primary'] }">掌上金铲铲</span>
-          </div>
-          
+            <span class="font-display font-bold text-[15px] hidden sm:block tracking-wide" :style="{ color: 'var(--text-primary)' }">掌上金铲铲</span>
+          </router-link>
+
           <!-- 导航链接 -->
-          <div class="flex items-center gap-6">
-            <router-link 
+          <div class="flex items-center gap-5">
+            <router-link
               v-for="link in navLinks"
               :key="link.to"
               :to="link.to"
-              :class="link.hidden ? 'hidden md:block' : ''"
-              class="text-sm font-medium transition-colors duration-200 hover:opacity-100"
-              :style="navLinkStyle(link.to)"
+              :class="['nav-link', link.hidden ? 'hidden md:block' : '', isActive(link.to) ? 'is-active' : '']"
             >
               {{ link.label }}
             </router-link>
-            <router-link 
+            <router-link
               v-if="userStore.userInfo?.role === 'admin'"
               to="/admin"
-              class="text-sm font-medium"
-              :style="navLinkStyle('/admin')"
+              :class="['nav-link', isActive('/admin') ? 'is-active' : '']"
             >
               管理后台
             </router-link>
           </div>
-          
+
           <!-- 用户操作 -->
-          <div class="flex items-center gap-3">
-            <!-- 主题切换按钮 -->
-            <button 
+          <div class="flex items-center gap-2.5">
+            <!-- 主题设置 -->
+            <button
               @click="showThemeDialog = true"
-              class="w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:opacity-80"
-              :style="{ background: themeColors['--bg-card-hover'], color: themeColors['--text-primary'] }"
+              class="icon-btn"
               title="主题设置"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
               </svg>
             </button>
-            <div v-if="userStore.userInfo" class="flex items-center gap-3">
-              <router-link to="/profile" class="w-8 h-8 rounded-full flex items-center justify-center hover:ring-2 transition-all" :style="{ background: `linear-gradient(135deg, ${themeColors['--accent-color']}, ${themeColors['--accent-hover']})` }">
-                <span class="text-white text-xs font-bold">{{ userStore.userInfo.username.charAt(0) }}</span>
+            <div v-if="userStore.userInfo" class="flex items-center gap-2.5">
+              <router-link to="/profile" class="avatar-circle">
+                <span>{{ userStore.userInfo.username.charAt(0) }}</span>
               </router-link>
-              <span class="text-sm font-medium hidden sm:block" :style="{ color: themeColors['--text-primary'] }">{{ userStore.userInfo.username }}</span>
-              <button @click="handleLogout" class="px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg text-sm font-medium transition-colors">退出</button>
+              <span class="text-[13px] font-medium hidden sm:block" :style="{ color: 'var(--text-secondary)' }">{{ userStore.userInfo.username }}</span>
+              <button @click="handleLogout" class="logout-btn">退出</button>
             </div>
             <div v-else class="flex items-center gap-2">
-              <router-link to="/login" class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors" :style="{ background: themeColors['--accent-color'] + '20', color: themeColors['--accent-color'], ':hover': { background: themeColors['--accent-color'] + '30' } }">登录</router-link>
-              <router-link to="/register" class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:opacity-80" :style="{ border: `1px solid ${themeColors['--border-color']}`, color: themeColors['--text-secondary'] }">注册</router-link>
+              <router-link to="/login" class="login-btn">登录</router-link>
+              <router-link to="/register" class="register-btn">注册</router-link>
             </div>
           </div>
         </div>
       </div>
     </nav>
     <main class="min-h-screen">
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <transition name="page" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </main>
 
     <!-- 主题设置对话框 -->
@@ -181,15 +182,8 @@ const navLinks = computed(() => [
   { to: '/dashboard', label: '数据统计', hidden: true },
 ])
 
-// 导航链接样式
-const navLinkStyle = (to) => {
-  const colors = themeColors.value
-  const isActive = router.currentRoute.value.path === to
-  return {
-    color: isActive ? colors['--accent-color'] : colors['--text-secondary'],
-    position: 'relative',
-  }
-}
+// 路由链接是否精确活跃
+const isActive = (to) => router.currentRoute.value.path === to
 
 // 应用全局样式
 const appStyle = computed(() => {
@@ -205,6 +199,13 @@ const appStyle = computed(() => {
   }
 })
 
+// 将 hex 颜色转为 "r, g, b"，用于 rgba() 变量
+function hexToRgb(hex) {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '')
+  if (!m) return null
+  return `${parseInt(m[1], 16)}, ${parseInt(m[2], 16)}, ${parseInt(m[3], 16)}`
+}
+
 // 将 CSS 变量应用到 document.documentElement
 function applyTheme() {
   const colors = themeStore.themeColors
@@ -212,6 +213,9 @@ function applyTheme() {
   Object.entries(colors).forEach(([key, value]) => {
     root.style.setProperty(key, value)
   })
+  // 按当前主题主色同步推导 RGB，保证光晕/发光在任何预设下都自洽
+  const rgb = hexToRgb(colors['--accent-color'])
+  if (rgb) root.style.setProperty('--accent-rgb', rgb)
   // 设置自定义背景变量
   root.style.setProperty('--custom-bg-image', themeStore.customBackground ? `url(${themeStore.customBackground})` : 'none')
 }
@@ -256,8 +260,181 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 主题过渡效果 */
 .app-container {
   transition: background-color 0.3s ease, background-image 0.3s ease;
+}
+
+/* ---- 导航：底部一条渐变光线 ---- */
+.nav-hud {
+  position: sticky;
+}
+.nav-hud::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 8%, rgba(var(--accent-rgb), 0.55) 50%, transparent 92%);
+}
+
+/* ---- Logo 切角标识 ---- */
+.logo-mark {
+  position: relative;
+  width: 40px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--accent-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-rgb), 0.55);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+.logo-mark span {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--accent-color);
+  letter-spacing: 0.06em;
+}
+.logo-dot {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  width: 4px;
+  height: 4px;
+  background: var(--accent-gold);
+  box-shadow: 0 0 8px rgba(var(--gold-rgb), 0.9);
+}
+
+/* ---- 导航链接 ---- */
+.nav-link {
+  position: relative;
+  padding: 4px 2px;
+  font-family: var(--font-display);
+  font-size: 0.83rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.nav-link:hover {
+  color: var(--text-primary);
+}
+.nav-link.is-active {
+  color: var(--accent-color);
+}
+.nav-link.is-active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -3px;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 2px;
+  background: var(--accent-color);
+  box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.85);
+}
+
+/* ---- 图标按钮 ---- */
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-sm);
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.icon-btn:hover {
+  color: var(--accent-color);
+  background: rgba(var(--accent-rgb), 0.08);
+  border-color: rgba(var(--accent-rgb), 0.3);
+}
+
+/* ---- 头像 ---- */
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(var(--accent-rgb), 0.6);
+  background: rgba(var(--accent-rgb), 0.12);
+  color: var(--accent-color);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 12px;
+  text-decoration: none;
+  transition: box-shadow 0.2s ease;
+}
+.avatar-circle:hover {
+  box-shadow: 0 0 16px -2px rgba(var(--accent-rgb), 0.7);
+}
+
+/* ---- 退出 ---- */
+.logout-btn {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: var(--r-sm);
+  color: var(--danger);
+  background: rgba(255, 77, 108, 0.1);
+  border: 1px solid rgba(255, 77, 108, 0.35);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.logout-btn:hover {
+  background: rgba(255, 77, 108, 0.2);
+}
+
+/* ---- 登录 / 注册 ---- */
+.login-btn,
+.register-btn {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: var(--r-sm);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.login-btn {
+  color: var(--accent-color);
+  background: rgba(var(--accent-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-rgb), 0.45);
+}
+.login-btn:hover {
+  background: rgba(var(--accent-rgb), 0.18);
+  box-shadow: 0 0 16px -4px rgba(var(--accent-rgb), 0.7);
+}
+.register-btn {
+  color: var(--text-secondary);
+  border: 1px solid var(--line-strong);
+}
+.register-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ---- 页面切换过渡 ---- */
+.page-enter-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.page-leave-active {
+  transition: opacity 0.15s ease;
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.page-leave-to {
+  opacity: 0;
 }
 </style>
