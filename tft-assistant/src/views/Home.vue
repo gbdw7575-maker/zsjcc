@@ -1,181 +1,163 @@
 <template>
-  <div class="min-h-screen">
-    <section class="py-16 px-4">
-      <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-16">
-          <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full border border-purple-500/30 mb-6">
-            <span class="text-purple-400 text-sm font-medium">金铲铲之战 · S8怪兽入侵</span>
-          </div>
-          <h1 class="text-5xl md:text-6xl font-bold text-white mb-6">
-            <span class="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">掌上金铲铲</span>
-          </h1>
-          <p class="text-xl text-gray-300 max-w-2xl mx-auto">金铲铲之战专业辅助平台 · S8怪兽入侵赛季官方数据</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          <router-link to="/teamfight" class="feature-card group">
-            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-purple-500/30 group-hover:scale-110 transition-transform">
-              <span class="text-3xl">⚔️</span>
-            </div>
-            <h3 class="text-2xl font-bold text-white mb-3">阵容模拟器</h3>
-            <p class="text-gray-400">拖拽棋子到棋盘，实时查看羁绊效果，打造最强阵容</p>
-            <div class="mt-6 flex items-center text-purple-400 group-hover:text-purple-300 transition-colors">
-              <span>开始模拟</span>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </div>
-          </router-link>
-          
-          <router-link to="/equipment" class="feature-card group">
-            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform">
-              <span class="text-3xl">🔧</span>
-            </div>
-            <h3 class="text-2xl font-bold text-white mb-3">装备合成</h3>
-            <p class="text-gray-400">查看装备合成路径，了解装备属性，合理分配装备</p>
-            <div class="mt-6 flex items-center text-blue-400 group-hover:text-blue-300 transition-colors">
-              <span>查看装备</span>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </div>
-          </router-link>
-          
-          <router-link to="/pool" class="feature-card group">
-            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-green-500/30 group-hover:scale-110 transition-transform">
-              <span class="text-3xl">🎯</span>
-            </div>
-            <h3 class="text-2xl font-bold text-white mb-3">卡池概率</h3>
-            <p class="text-gray-400">追踪共享卡池，计算D牌概率，精准判断搜卡时机</p>
-            <div class="mt-6 flex items-center text-green-400 group-hover:text-green-300 transition-colors">
-              <span>开始追踪</span>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </div>
-          </router-link>
-          
-          <router-link to="/economy" class="feature-card group">
-            <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-yellow-500/30 group-hover:scale-110 transition-transform">
-              <span class="text-3xl">💰</span>
-            </div>
-            <h3 class="text-2xl font-bold text-white mb-3">经济计算器</h3>
-            <p class="text-gray-400">实时计算利息、升级成本，精准规划每回合经济运营</p>
-            <div class="mt-6 flex items-center text-yellow-400 group-hover:text-yellow-300 transition-colors">
-              <span>开始计算</span>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </div>
-          </router-link>
-          
-          <router-link to="/augments" class="feature-card group">
-            <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-yellow-500/30 group-hover:scale-110 transition-transform">
-              <span class="text-3xl">⭐</span>
-            </div>
-            <h3 class="text-2xl font-bold text-white mb-3">海克斯强化</h3>
-            <p class="text-gray-400">查看所有海克斯强化符文，了解强度评级和适配阵容</p>
-            <div class="mt-6 flex items-center text-yellow-400 group-hover:text-yellow-300 transition-colors">
-              <span>查看海克斯</span>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </div>
-          </router-link>
-          
-          <router-link to="/synergies" class="feature-card group">
-            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-purple-500/30 group-hover:scale-110 transition-transform">
-              <span class="text-3xl">🔗</span>
-            </div>
-            <h3 class="text-2xl font-bold text-white mb-3">羁绊大全</h3>
-            <p class="text-gray-400">查看所有羁绊效果，了解羁绊层级和所属英雄</p>
-            <div class="mt-6 flex items-center text-purple-400 group-hover:text-purple-300 transition-colors">
-              <span>查看羁绊</span>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </div>
-          </router-link>
-        </div>
-        
-        <!-- 系统公告 -->
-        <div v-if="announcements.length > 0" class="mb-16">
-          <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-              <span>📢</span> 系统公告
-            </h2>
-          </div>
-          <div class="space-y-4">
-            <div 
-              v-for="ann in announcements" 
-              :key="ann._id"
-              class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-yellow-500/30 transition-all"
-              :class="ann.isPinned ? 'border-l-4 border-l-yellow-500' : ''"
-            >
-              <div class="flex items-start justify-between">
-                <div class="flex-1">
-                  <div class="flex items-center gap-3 mb-3">
-                    <span v-if="ann.isPinned" class="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded text-xs font-medium">置顶</span>
-                    <span class="px-2 py-0.5 rounded text-xs font-medium" :class="typeBadgeClass(ann.type)">
-                      {{ typeLabel(ann.type) }}
-                    </span>
-                    <h3 class="text-lg font-bold text-white">{{ ann.title }}</h3>
-                  </div>
-                  <p class="text-gray-400 text-sm line-clamp-2 mb-3">{{ ann.content }}</p>
-                  <div class="flex items-center gap-3 text-xs text-gray-500">
-                    <span>发布者: {{ ann.author?.username }}</span>
-                    <span>{{ formatDate(ann.createdAt) }}</span>
-                    <span>浏览: {{ ann.viewCount }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+  <div class="home">
+    <!-- ============ Hero ============ -->
+    <section class="hero">
+      <div class="hero-grid">
+        <!-- 左侧竖排赛季标 -->
+        <div class="hero-side">
+          <span class="hero-side-text">SEASON&nbsp;08</span>
+          <span class="hero-side-line"></span>
         </div>
 
-        <!-- 版本更新提示 -->
-        <div class="bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 rounded-3xl p-8 border border-white/10 mb-16">
-          <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <h2 class="text-2xl font-bold text-white mb-2">S8怪兽入侵赛季返场</h2>
-              <p class="text-gray-400">英雄强化、机甲羁绊、地下魔盗团，经典赛季重磅回归</p>
-            </div>
-            <el-tooltip content="点击查看金铲铲之战官方怪兽入侵赛季更新公告" placement="top">
-              <el-button type="primary" @click="openUpdateDetails" class="bg-gradient-to-r from-purple-500 to-pink-500 border-none px-8 py-3 rounded-xl font-semibold cursor-pointer">
-                查看更新详情 →
-              </el-button>
-            </el-tooltip>
+        <div class="hero-main">
+          <div class="hero-badge animate-fade-up">
+            <i class="hero-badge-dot"></i>
+            <span>金铲铲之战 · S8 怪兽入侵 · 数据实时同步</span>
           </div>
-        </div>
-        
-        <!-- 热门阵容推荐 -->
-        <div>
-          <div class="flex items-center justify-between mb-8">
-            <h2 class="text-3xl font-bold text-white">热门阵容推荐</h2>
-            <router-link to="/teamfight" class="text-purple-400 hover:text-purple-300 font-medium">查看全部 →</router-link>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <template v-for="team in hotTeams" :key="team.id">
-              <router-link 
-                v-if="team.id"
-                :to="`/team/${team.id}`"
-                class="team-card group cursor-pointer block"
-              >
-              <div class="flex items-center justify-between mb-4">
-                <span class="text-2xl font-bold text-white">{{ team.name }}</span>
-                <span :class="tierClass(team.tier)" class="px-3 py-1 rounded-full text-sm font-bold">{{ team.tier }}</span>
-              </div>
-              <p class="text-gray-400 text-sm mb-4">{{ team.description }}</p>
-              <div class="mt-4 pt-4 border-t border-white/10">
-                <div class="flex flex-wrap gap-1">
-                  <span v-for="hero in team.champions.slice(0, 6)" :key="hero" class="text-xs text-gray-400">{{ hero }}</span>
-                  <span v-if="team.champions.length > 6" class="text-xs text-gray-600">+{{ team.champions.length - 6 }}</span>
-                </div>
-              </div>
+
+          <h1 class="hero-title animate-fade-up" style="animation-delay:.08s">
+            <span class="hero-title-cn">掌上金铲铲</span>
+            <span class="hero-title-en">TFT COMPANION</span>
+          </h1>
+
+          <p class="hero-desc animate-fade-up" style="animation-delay:.16s">
+            阵容模拟 / 卡池概率 / 经济运营 / 战绩复盘 —— 为每一局登顶提供数据支撑
+          </p>
+
+          <div class="hero-actions animate-fade-up" style="animation-delay:.24s">
+            <router-link to="/teamfight" class="hud-btn hud-btn--primary">
+              开始模拟
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </router-link>
-            </template>
+            <router-link to="/record" class="hud-btn">我的战绩</router-link>
+          </div>
+
+          <!-- 数据条 -->
+          <div class="hero-stats animate-fade-up" style="animation-delay:.32s">
+            <div class="hero-stat">
+              <span class="stat-num">{{ heroStats.heroes }}</span>
+              <span class="hero-stat-label">英雄</span>
+            </div>
+            <span class="hero-stat-sep"></span>
+            <div class="hero-stat">
+              <span class="stat-num">{{ heroStats.synergies }}</span>
+              <span class="hero-stat-label">羁绊</span>
+            </div>
+            <span class="hero-stat-sep"></span>
+            <div class="hero-stat">
+              <span class="stat-num">{{ heroStats.teams }}</span>
+              <span class="hero-stat-label">阵容</span>
+            </div>
           </div>
         </div>
+      </div>
+
+      <!-- 底部扫描线 -->
+      <div class="hero-scanline"></div>
+    </section>
+
+    <!-- ============ 功能入口 ============ -->
+    <section class="block">
+      <div class="block-head">
+        <h2 class="section-title text-xl">核心工具</h2>
+        <span class="chip">TOOLS / 06</span>
+      </div>
+
+      <div class="feature-grid">
+        <router-link
+          v-for="(f, i) in features"
+          :key="f.to"
+          :to="f.to"
+          class="feature hud-card animate-fade-up"
+          :style="{ animationDelay: `${0.05 * i}s` }"
+        >
+          <span class="feature-index">0{{ i + 1 }}</span>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path :d="f.icon" />
+            </svg>
+          </div>
+          <h3 class="feature-title">{{ f.title }}</h3>
+          <p class="feature-desc">{{ f.desc }}</p>
+          <span class="feature-go">
+            进入
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </router-link>
+      </div>
+    </section>
+
+    <!-- ============ 系统公告 ============ -->
+    <section class="block" v-if="announcements.length > 0">
+      <div class="block-head">
+        <h2 class="section-title text-xl">系统公告</h2>
+        <span class="chip chip--gold">ANNOUNCEMENT</span>
+      </div>
+      <div class="ann-list">
+        <div
+          v-for="ann in announcements"
+          :key="ann._id"
+          class="ann hud-card"
+          :class="{ 'ann--pin': ann.isPinned }"
+        >
+          <div class="ann-tags">
+            <span v-if="ann.isPinned" class="chip chip--gold">置顶</span>
+            <span class="chip" :class="annTypeChip(ann.type)">{{ typeLabel(ann.type) }}</span>
+          </div>
+          <h3 class="ann-title">{{ ann.title }}</h3>
+          <p class="ann-content">{{ ann.content }}</p>
+          <div class="ann-meta">
+            <span>{{ ann.author?.username }}</span>
+            <span>{{ formatDate(ann.createdAt) }}</span>
+            <span>浏览 {{ ann.viewCount }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 赛季横幅 ============ -->
+    <section class="block">
+      <div class="season-banner">
+        <div class="season-glyph">S8</div>
+        <div class="season-info">
+          <h2>怪兽入侵赛季返场</h2>
+          <p>英雄强化、机甲羁绊、地下魔盗团 —— 经典赛季重磅回归</p>
+        </div>
+        <button class="hud-btn hud-btn--gold" @click="openUpdateDetails">
+          更新详情
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ 热门阵容 ============ -->
+    <section class="block">
+      <div class="block-head">
+        <h2 class="section-title text-xl">热门阵容推荐</h2>
+        <router-link to="/teamfight" class="block-more">
+          查看全部
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </router-link>
+      </div>
+      <div class="team-grid">
+        <template v-for="(team, i) in hotTeams" :key="team.id">
+          <router-link
+            v-if="team.id"
+            :to="`/team/${team.id}`"
+            class="team hud-card animate-fade-up"
+            :style="{ animationDelay: `${0.05 * i}s` }"
+          >
+            <div class="team-head">
+              <span class="team-name">{{ team.name }}</span>
+              <span class="chip" :class="tierChipClass(team.tier)">{{ team.tier }}</span>
+            </div>
+            <p class="team-desc">{{ team.description }}</p>
+            <div class="team-champions">
+              <span v-for="hero in team.champions.slice(0, 6)" :key="hero" class="team-champion">{{ hero }}</span>
+              <span v-if="team.champions.length > 6" class="team-champion team-champion--more">+{{ team.champions.length - 6 }}</span>
+            </div>
+          </router-link>
+        </template>
       </div>
     </section>
   </div>
@@ -189,25 +171,64 @@ import { announcementApi } from '../services/api'
 const hotTeams = computed(() => (gameData.metaTeams.value || []).slice(0, 8))
 const announcements = ref([])
 
-const tierClass = (tier) => {
-  const classes = {
-    'S': 'bg-gradient-to-r from-yellow-400 to-orange-500 text-black',
-    'A': 'bg-gradient-to-r from-purple-400 to-pink-500 text-white',
-    'B': 'bg-gradient-to-r from-blue-400 to-cyan-500 text-white',
-    'C': 'bg-gray-500 text-white',
-    'T0': 'bg-gradient-to-r from-yellow-400 to-orange-500 text-black',
-    'T0.5': 'bg-gradient-to-r from-purple-400 to-pink-500 text-white',
-    'T1': 'bg-gradient-to-r from-blue-400 to-cyan-500 text-white'
+// Hero 数据计数，数据加载后响应式更新
+const heroStats = computed(() => ({
+  heroes: (gameData.heroes.value || []).length,
+  synergies: (gameData.synergies.value || []).length,
+  teams: (gameData.metaTeams.value || []).length
+}))
+
+// 功能入口（SVG path，统一 24x24 线性图标）
+const features = [
+  {
+    to: '/teamfight',
+    title: '阵容模拟器',
+    desc: '拖拽棋子到棋盘，实时查看羁绊，打造最强阵容',
+    icon: 'M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2'
+  },
+  {
+    to: '/equipment',
+    title: '装备合成',
+    desc: '查看合成路径与属性，合理分配每件装备',
+    icon: 'M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4 2.6-2.6z'
+  },
+  {
+    to: '/pool',
+    title: '卡池概率',
+    desc: '追踪共享卡池，计算 D 牌概率，判断搜卡时机',
+    icon: 'M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 0v20M2 12h20'
+  },
+  {
+    to: '/economy',
+    title: '经济计算器',
+    desc: '实时计算利息与升级成本，规划每回合运营',
+    icon: 'M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6'
+  },
+  {
+    to: '/augments',
+    title: '海克斯强化',
+    desc: '全部强化符文，强度评级与适配阵容一览',
+    icon: 'M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17l-6 3.4 1.4-6.8L2.2 9l6.9-.7L12 2z'
+  },
+  {
+    to: '/synergies',
+    title: '羁绊大全',
+    desc: '所有羁绊效果、层级与所属英雄查询',
+    icon: 'M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1'
   }
-  return classes[tier] || 'bg-gray-500 text-white'
+]
+
+// 阵容评级配色（金 = 顶级，青 = 主流，灰 = 一般）
+const tierChipClass = (tier) => {
+  if (['S', 'T0', 'T0.5'].includes(tier)) return 'chip--gold'
+  if (['A', 'T1'].includes(tier)) return 'chip--accent'
+  return ''
 }
 
-const typeBadgeClass = (type) => {
-  switch (type) {
-    case 'urgent': return 'bg-red-500/20 text-red-400'
-    case 'important': return 'bg-yellow-500/20 text-yellow-400'
-    default: return 'bg-blue-500/20 text-blue-400'
-  }
+const annTypeChip = (type) => {
+  if (type === 'urgent') return 'chip--danger'
+  if (type === 'important') return 'chip--gold'
+  return ''
 }
 
 const typeLabel = (type) => {
@@ -218,9 +239,7 @@ const typeLabel = (type) => {
   }
 }
 
-const formatDate = (date) => {
-  return new Date(date).toLocaleDateString('zh-CN')
-}
+const formatDate = (date) => new Date(date).toLocaleDateString('zh-CN')
 
 const loadAnnouncements = async () => {
   try {
@@ -231,46 +250,380 @@ const loadAnnouncements = async () => {
   }
 }
 
-// 打开版本更新详情
 const openUpdateDetails = () => {
-  // 打开金铲铲之战官方S8怪兽入侵返场公告（实时更新）
   window.open('https://www.taptap.cn/moment/816001859008335622?group_id=213275', '_blank')
 }
 
-onMounted(() => {
-  loadAnnouncements()
-})
+onMounted(() => loadAnnouncements())
 </script>
 
 <style scoped>
-.feature-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 32px;
+.home {
+  padding-bottom: 64px;
+}
+
+/* ================= Hero ================= */
+.hero {
+  position: relative;
+  padding: 72px 0 56px;
+  overflow: hidden;
+}
+.hero-grid {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 36px;
+}
+.hero-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding-top: 10px;
+}
+.hero-side-text {
+  writing-mode: vertical-rl;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.35em;
+  color: var(--text-tertiary);
+}
+.hero-side-line {
+  flex: 1;
+  width: 1px;
+  background: linear-gradient(180deg, var(--accent-color), transparent);
+  opacity: 0.6;
+}
+.hero-main {
+  flex: 1;
+  min-width: 0;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  margin-bottom: 28px;
+}
+.hero-badge span {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+}
+.hero-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.9);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  50% { opacity: 0.35; }
+}
+.hero-title {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hero-title-cn {
+  font-size: clamp(40px, 6vw, 62px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+}
+.hero-title-en {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(14px, 1.6vw, 18px);
+  letter-spacing: 0.42em;
+  color: var(--accent-color);
+  opacity: 0.85;
+}
+.hero-desc {
+  font-size: 15px;
+  color: var(--text-secondary);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 44px;
+}
+.hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.hero-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.hero-stat .stat-num {
+  font-size: 30px;
+  color: var(--text-primary);
+}
+.hero-stat-label {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.1em;
+}
+.hero-stat-sep {
+  width: 1px;
+  height: 22px;
+  background: var(--line-strong);
+}
+.hero-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 10%, rgba(var(--accent-rgb), 0.4) 50%, transparent 90%);
+}
+
+/* ================= 通用区块 ================= */
+.block {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 36px 24px 0;
+}
+.block-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+.block-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: color 0.2s ease;
+}
+.block-more:hover { color: var(--accent-color); }
+.block-more svg { width: 14px; height: 14px; }
+
+/* ================= 功能卡 ================= */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.feature {
+  padding: 26px;
+  text-decoration: none;
+  overflow: hidden;
+}
+.feature:hover {
+  transform: translateY(-3px);
+}
+.feature-index {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  letter-spacing: 0.15em;
+}
+.feature-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(var(--accent-rgb), 0.35);
+  background: rgba(var(--accent-rgb), 0.07);
+  margin-bottom: 18px;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+.feature-icon svg {
+  width: 21px;
+  height: 21px;
+  color: var(--accent-color);
+}
+.feature-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.feature-desc {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+}
+.feature-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  transition: color 0.2s ease;
+}
+.feature-go svg {
+  width: 13px;
+  height: 13px;
+  transition: transform 0.2s ease;
+}
+.feature:hover .feature-go { color: var(--accent-color); }
+.feature:hover .feature-go svg { transform: translateX(3px); }
+
+/* ================= 公告 ================= */
+.ann-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ann {
+  padding: 22px 26px;
+}
+.ann--pin {
+  border-left: 2px solid var(--accent-gold);
+}
+.ann-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.ann-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.ann-content {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ann-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: var(--font-display);
 }
 
-.feature-card:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(168, 85, 247, 0.3);
-  transform: translateY(-5px);
+/* ================= 赛季横幅 ================= */
+.season-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 30px 32px;
+  border: 1px solid rgba(var(--gold-rgb), 0.28);
+  background:
+    linear-gradient(90deg, rgba(var(--gold-rgb), 0.09), rgba(var(--accent-rgb), 0.04) 60%),
+    rgba(255, 255, 255, 0.02);
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+}
+.season-glyph {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  text-shadow: 0 0 28px rgba(var(--gold-rgb), 0.45);
+  line-height: 1;
+}
+.season-info { flex: 1; }
+.season-info h2 {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.season-info p {
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 
-.team-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 24px;
-  transition: all 0.3s ease;
+/* ================= 阵容卡 ================= */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
 }
+.team {
+  padding: 20px;
+}
+.team:hover { transform: translateY(-3px); }
+.team-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.team-name {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.team-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 38px;
+}
+.team-champions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line-soft);
+}
+.team-champion {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: var(--font-display);
+}
+.team-champion--more { color: var(--accent-color); }
 
-.team-card:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(168, 85, 247, 0.3);
-  transform: translateY(-5px);
+/* ================= 响应式 ================= */
+@media (max-width: 900px) {
+  .feature-grid { grid-template-columns: repeat(2, 1fr); }
+  .team-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .hero { padding: 48px 0 40px; }
+  .hero-side { display: none; }
+  .feature-grid, .team-grid { grid-template-columns: 1fr; }
+  .season-banner { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .hero-stats { gap: 18px; }
 }
 </style>
