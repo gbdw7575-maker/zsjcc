@@ -7,12 +7,12 @@
       </div>
 
       <!-- 反馈表单 -->
-      <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 mb-8">
+      <div class="hud-card p-6 mb-8">
         <h2 class="text-xl font-bold text-white mb-4">提交反馈</h2>
         <div class="space-y-4">
           <div>
             <label class="text-gray-400 text-sm mb-1 block">反馈类型</label>
-            <select v-model="form.type" class="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white">
+            <select v-model="form.type" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white">
               <option value="bug">Bug 报告</option>
               <option value="feature">功能建议</option>
               <option value="improvement">改进意见</option>
@@ -21,11 +21,11 @@
           </div>
           <div>
             <label class="text-gray-400 text-sm mb-1 block">标题</label>
-            <input v-model="form.title" placeholder="简要描述你的反馈" class="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500" />
+            <input v-model="form.title" placeholder="简要描述你的反馈" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white placeholder-gray-500" />
           </div>
           <div>
             <label class="text-gray-400 text-sm mb-1 block">详细描述</label>
-            <textarea v-model="form.description" rows="5" placeholder="请详细描述你的问题或建议..." class="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500"></textarea>
+            <textarea v-model="form.description" rows="5" placeholder="请详细描述你的问题或建议..." class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white placeholder-gray-500"></textarea>
           </div>
           <div>
             <label class="text-gray-400 text-sm mb-1 block">优先级</label>
@@ -47,7 +47,7 @@
           <button 
             @click="submitFeedback"
             :disabled="submitting"
-            class="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium disabled:opacity-50"
+            class="px-8 py-3 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] rounded-xl font-medium disabled:opacity-50"
           >
             {{ submitting ? '提交中...' : '提交反馈' }}
           </button>
@@ -55,17 +55,17 @@
       </div>
 
       <!-- 我的反馈列表 -->
-      <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+      <div class="hud-card p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-bold text-white">我的反馈</h2>
-          <button @click="loadMyFeedbacks" class="px-4 py-2 bg-white/10 text-gray-300 hover:bg-white/20 rounded-xl text-sm">
+          <button @click="loadMyFeedbacks" class="px-4 py-2 bg-[var(--bg-card-hover)] text-gray-300 hover:bg-[var(--bg-elevated)] rounded-xl text-sm">
             刷新
           </button>
         </div>
 
         <div class="space-y-4">
           <div v-for="fb in myFeedbacks" :key="fb._id" 
-            class="bg-white/5 rounded-xl p-4 border border-white/10">
+            class="bg-[var(--bg-card-hover)] rounded-lg p-4 border border-[var(--line-soft)]">
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-2">

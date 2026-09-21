@@ -1,18 +1,18 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+  <div class="min-h-screen">
     <div class="max-w-4xl mx-auto px-4 py-6">
       <div class="flex items-center gap-2 mb-6">
         <button 
           @click="goBack" 
-          class="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 text-gray-300 rounded-lg transition-colors"
+          class="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-[var(--bg-card-hover)] text-gray-300 rounded-lg transition-colors"
         >
           <span class="text-lg">←</span>
           返回论坛
         </button>
       </div>
 
-      <div v-if="post" class="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10">
-        <div class="p-6 border-b border-white/10">
+      <div v-if="post" class="hud-card">
+        <div class="p-6 border-b border-[var(--line-soft)]">
           <div class="flex items-center gap-4 mb-4">
             <div 
               class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
@@ -32,7 +32,7 @@
             <span 
               v-for="tag in getPostDisplayData()?.tags" 
               :key="tag"
-              class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm font-medium"
+              class="px-3 py-1 bg-[rgba(var(--accent-rgb),0.12)] text-[var(--accent-color)] rounded-full text-sm font-medium"
             >
               {{ tag }}
             </span>
@@ -47,7 +47,7 @@
             <div 
               v-for="(item, index) in getPostDisplayData().media" 
               :key="index"
-              class="rounded-xl overflow-hidden border border-white/10"
+              class="rounded-xl overflow-hidden border border-[var(--line-soft)]"
               style="min-height: 200px; background: #1a1a2e;"
             >
               <!-- 图片 -->
@@ -88,33 +88,33 @@
             </div>
           </Teleport>
           
-          <div class="flex items-center gap-6 mt-6 pt-6 border-t border-white/10">
+          <div class="flex items-center gap-6 mt-6 pt-6 border-t border-[var(--line-soft)]">
             <button 
               @click="handleLike"
               :class="[
                 'flex items-center gap-2 px-4 py-2 rounded-lg transition-all',
                 getPostDisplayData()?.isLiked 
                   ? 'bg-red-500/20 text-red-400' 
-                  : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-red-400'
+                  : 'bg-white/5 text-gray-400 hover:bg-[var(--bg-card-hover)] hover:text-red-400'
               ]"
             >
               <span class="text-xl">{{ getPostDisplayData()?.isLiked ? '❤️' : '🤍' }}</span>
               <span>{{ getPostDisplayData()?.likes }}</span>
             </button>
             
-            <button class="flex items-center gap-2 px-4 py-2 bg-white/5 text-gray-400 hover:bg-white/10 rounded-lg transition-colors">
+            <button class="flex items-center gap-2 px-4 py-2 bg-white/5 text-gray-400 hover:bg-[var(--bg-card-hover)] rounded-lg transition-colors">
               <span class="text-xl">💬</span>
               <span>{{ comments.length }}</span>
             </button>
             
-            <button class="flex items-center gap-2 px-4 py-2 bg-white/5 text-gray-400 hover:bg-white/10 rounded-lg transition-colors">
+            <button class="flex items-center gap-2 px-4 py-2 bg-white/5 text-gray-400 hover:bg-[var(--bg-card-hover)] rounded-lg transition-colors">
               <span class="text-xl">👁️</span>
               <span>{{ getPostDisplayData()?.views }}</span>
             </button>
             
             <button 
               @click="handleShare"
-              class="flex items-center gap-2 px-4 py-2 bg-white/5 text-gray-400 hover:bg-white/10 hover:text-green-400 rounded-lg transition-colors ml-auto"
+              class="flex items-center gap-2 px-4 py-2 bg-white/5 text-gray-400 hover:bg-[var(--bg-card-hover)] hover:text-green-400 rounded-lg transition-colors ml-auto"
             >
               <span class="text-xl">🔗</span>
               <span>分享</span>
@@ -128,7 +128,7 @@
             评论区 ({{ comments.length }})
           </h3>
           
-          <div class="bg-white/5 rounded-xl p-4 mb-6">
+          <div class="bg-[var(--bg-card-hover)] rounded-lg p-4 mb-6">
             <textarea 
               v-model="newComment"
               placeholder="发表你的看法..."
@@ -139,7 +139,7 @@
               <button 
                 @click="submitComment"
                 :disabled="!newComment.trim()"
-                class="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-all"
+                class="px-6 py-2 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed text-[#03201d] font-medium rounded-lg transition-all"
               >
                 发表评论
               </button>
@@ -150,7 +150,7 @@
             <div 
               v-for="comment in comments" 
               :key="comment._id || comment.id"
-              class="bg-white/5 rounded-xl p-4"
+              class="bg-[var(--bg-card-hover)] rounded-lg p-4"
             >
               <div class="flex items-center gap-3 mb-2">
                 <div 
@@ -195,7 +195,7 @@
                 </button>
               </div>
               
-              <div v-if="replyToCommentId === (comment._id || comment.id)" class="mt-4 bg-white/5 rounded-lg p-3">
+              <div v-if="replyToCommentId === (comment._id || comment.id)" class="mt-4 bg-[var(--bg-card-hover)] rounded-lg p-3">
                 <textarea 
                   v-model="replyContent"
                   :placeholder="`回复 ${getCommentDisplayData(comment).author}...`"
@@ -212,18 +212,18 @@
                   </button>
                   <button 
                     @click="toggleReply(null)"
-                    class="px-4 py-1.5 ml-2 bg-white/5 hover:bg-white/10 text-gray-400 text-sm font-medium rounded-lg transition-colors"
+                    class="px-4 py-1.5 ml-2 bg-white/5 hover:bg-[var(--bg-card-hover)] text-gray-400 text-sm font-medium rounded-lg transition-colors"
                   >
                     取消
                   </button>
                 </div>
               </div>
               
-              <div v-if="comment.replies && comment.replies.length > 0" class="mt-4 pl-4 border-l-2 border-white/10 space-y-3">
+              <div v-if="comment.replies && comment.replies.length > 0" class="mt-4 pl-4 border-l-2 border-[var(--line-soft)] space-y-3">
                 <div 
                   v-for="reply in comment.replies" 
                   :key="reply._id || reply.id"
-                  class="bg-white/5 rounded-lg p-3"
+                  class="bg-[var(--bg-card-hover)] rounded-lg p-3"
                 >
                   <div class="flex items-center gap-2 mb-1">
                     <div 

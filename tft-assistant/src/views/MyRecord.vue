@@ -14,14 +14,14 @@
         <button
           @click="syncFromClient"
           :disabled="syncing"
-          class="px-4 py-2 rounded-xl font-semibold text-sm bg-white/10 text-gray-200 hover:bg-white/15 disabled:opacity-40 transition-all"
+          class="px-4 py-2 rounded-xl font-semibold text-sm bg-[var(--bg-card-hover)] text-gray-200 hover:bg-white/15 disabled:opacity-40 transition-all"
         >
           {{ syncing ? '同步中...' : '同步本机战绩' }}
         </button>
         <button
         @click="showForm = !showForm"
         class="px-4 py-2 rounded-xl font-semibold text-sm transition-all"
-        :class="showForm ? 'bg-white/10 text-gray-300 hover:bg-white/15' : 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white hover:opacity-90'"
+        :class="showForm ? 'bg-[var(--bg-card-hover)] text-gray-300 hover:bg-white/15' : 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white hover:opacity-90'"
       >
         {{ showForm ? '收起' : '+ 录入战绩' }}
       </button>
@@ -31,7 +31,7 @@
     <!-- 录入表单 -->
     <div
       v-if="showForm"
-      class="mb-6 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 p-5"
+      class="mb-6 hud-card p-5"
     >
       <h2 class="text-white font-semibold mb-4 text-sm flex items-center gap-2">
         <span class="w-1.5 h-4 rounded bg-emerald-400"></span>录入新对局
@@ -56,7 +56,7 @@
                     : p <= 4
                       ? 'bg-emerald-500/30 border-emerald-400/50 text-emerald-300'
                       : 'bg-red-500/20 border-red-400/40 text-red-300'
-                  : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'"
+                  : 'bg-white/5 border-[var(--line-soft)] text-gray-400 hover:bg-[var(--bg-card-hover)]'"
               >
                 {{ p }}
               </button>
@@ -73,7 +73,7 @@
                 type="button"
                 @click="form.mode = m.value"
                 class="px-3 py-2 rounded-lg text-xs transition-all border"
-                :class="form.mode === m.value ? 'bg-white/10 border-white/30 text-white' : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'"
+                :class="form.mode === m.value ? 'bg-[var(--bg-card-hover)] border-white/30 text-white' : 'bg-white/5 border-[var(--line-soft)] text-gray-400 hover:bg-[var(--bg-card-hover)]'"
               >
                 {{ m.label }}
               </button>
@@ -87,7 +87,7 @@
           <input
             v-model="form.traitsInput"
             placeholder="例如：星之守护者, 灵能使, 秘术卫士"
-            class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-gray-500 outline-none focus:border-emerald-400/50 transition-colors"
+            class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-[var(--line-soft)] text-white text-sm placeholder-gray-500 outline-none focus:border-emerald-400/50 transition-colors"
           />
         </div>
 
@@ -102,7 +102,7 @@
             <div
               v-for="(unit, idx) in form.units"
               :key="idx"
-              class="flex items-center gap-2 bg-white/5 rounded-xl p-2.5 border border-white/5"
+              class="flex items-center gap-2 bg-[var(--bg-card-hover)] rounded-lg p-2.5 border border-white/5"
             >
               <!-- 英雄选择 -->
               <div class="flex-1 relative">
@@ -111,14 +111,14 @@
                   @focus="unit.showSuggest = true"
                   @blur="() => setTimeout(() => unit.showSuggest = false, 150)"
                   placeholder="英雄名称"
-                  class="w-full px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-gray-500 outline-none focus:border-emerald-400/50"
+                  class="w-full px-3 py-1.5 rounded-lg bg-white/5 border border-[var(--line-soft)] text-white text-sm placeholder-gray-500 outline-none focus:border-emerald-400/50"
                 />
-                <div v-if="unit.showSuggest && filteredChampions(unit.champion).length" class="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-white/10 rounded-lg max-h-32 overflow-y-auto z-30">
+                <div v-if="unit.showSuggest && filteredChampions(unit.champion).length" class="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-[var(--line-soft)] rounded-lg max-h-32 overflow-y-auto z-30">
                   <div
                     v-for="name in filteredChampions(unit.champion)"
                     :key="name"
                     @mousedown.prevent="unit.champion = name; unit.showSuggest = false"
-                    class="px-3 py-1.5 text-sm text-gray-300 hover:bg-white/10 cursor-pointer"
+                    class="px-3 py-1.5 text-sm text-gray-300 hover:bg-[var(--bg-card-hover)] cursor-pointer"
                     :class="{ 'text-emerald-400': unit.champion === name }"
                   >
                     {{ name }}
@@ -158,7 +158,7 @@
             placeholder="备注（选填，最多 200 字）"
             maxlength="200"
             rows="2"
-            class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-gray-500 outline-none focus:border-emerald-400/50 transition-colors resize-none"
+            class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-[var(--line-soft)] text-white text-sm placeholder-gray-500 outline-none focus:border-emerald-400/50 transition-colors resize-none"
           ></textarea>
         </div>
 
@@ -178,23 +178,23 @@
 
     <!-- 统计卡片 -->
     <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6" v-if="stats">
-      <div class="col-span-2 md:col-span-1 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 p-3 text-center">
+      <div class="col-span-2 md:col-span-1 hud-card p-3 text-center">
         <div class="text-2xl font-bold text-white">{{ stats.totalGames }}</div>
         <div class="text-gray-500 text-[10px]">总场次</div>
       </div>
-      <div class="rounded-xl bg-white/5 backdrop-blur-md border border-white/10 p-3 text-center">
+      <div class="hud-card p-3 text-center">
         <div class="text-2xl font-bold text-yellow-400">{{ stats.winRate }}%</div>
         <div class="text-gray-500 text-[10px]">吃鸡率</div>
       </div>
-      <div class="rounded-xl bg-white/5 backdrop-blur-md border border-white/10 p-3 text-center">
+      <div class="hud-card p-3 text-center">
         <div class="text-2xl font-bold text-emerald-400">{{ stats.top4Rate }}%</div>
         <div class="text-gray-500 text-[10px]">前四率</div>
       </div>
-      <div class="rounded-xl bg-white/5 backdrop-blur-md border border-white/10 p-3 text-center">
+      <div class="hud-card p-3 text-center">
         <div class="text-2xl font-bold text-cyan-400">#{{ stats.avgPlacement }}</div>
         <div class="text-gray-500 text-[10px]">平均排名</div>
       </div>
-      <div class="rounded-xl bg-white/5 backdrop-blur-md border border-white/10 p-3 text-center">
+      <div class="hud-card p-3 text-center">
         <div class="text-2xl font-bold text-white">{{ stats.wins }}</div>
         <div class="text-gray-500 text-[10px]">吃鸡次数</div>
       </div>
@@ -202,25 +202,25 @@
 
     <!-- 常用羁绊 & 英雄 -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" v-if="stats?.topTraits?.length || stats?.topChampions?.length">
-      <div class="rounded-xl bg-white/5 backdrop-blur-md border border-white/10 p-4" v-if="stats.topTraits?.length">
+      <div class="hud-card p-4" v-if="stats.topTraits?.length">
         <h3 class="text-white font-semibold text-xs mb-3">常用羁绊</h3>
         <div class="space-y-1.5">
           <div v-for="t in stats.topTraits" :key="t.name" class="flex items-center gap-2">
             <span class="text-gray-300 text-xs flex-1">{{ traitName(t.name) }}</span>
-            <span class="text-purple-400 text-[10px] font-mono">{{ t.count }}场</span>
-            <div class="w-20 h-1 rounded-full bg-white/10">
-              <div class="h-full rounded-full bg-purple-400/50" :style="{ width: pct(t.count, stats.totalGames) }"></div>
+            <span class="text-[var(--accent-color)] text-[10px] font-mono">{{ t.count }}场</span>
+            <div class="w-20 h-1 rounded-full bg-[var(--bg-card-hover)]">
+              <div class="h-full rounded-full bg-[rgba(var(--accent-rgb),0.5)]" :style="{ width: pct(t.count, stats.totalGames) }"></div>
             </div>
           </div>
         </div>
       </div>
-      <div class="rounded-xl bg-white/5 backdrop-blur-md border border-white/10 p-4" v-if="stats.topChampions?.length">
+      <div class="hud-card p-4" v-if="stats.topChampions?.length">
         <h3 class="text-white font-semibold text-xs mb-3">常用英雄</h3>
         <div class="space-y-1.5">
           <div v-for="c in stats.topChampions" :key="c.name" class="flex items-center gap-2">
             <span class="text-gray-300 text-xs flex-1">{{ unitName(c.name) }}</span>
             <span class="text-emerald-400 text-[10px] font-mono">{{ c.count }}场</span>
-            <div class="w-20 h-1 rounded-full bg-white/10">
+            <div class="w-20 h-1 rounded-full bg-[var(--bg-card-hover)]">
               <div class="h-full rounded-full bg-emerald-400/50" :style="{ width: pct(c.count, stats.totalGames) }"></div>
             </div>
           </div>
@@ -229,8 +229,8 @@
     </div>
 
     <!-- 战绩列表 -->
-    <div class="rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 overflow-hidden">
-      <div class="px-5 py-3 border-b border-white/10 flex items-center justify-between">
+    <div class="hud-card overflow-hidden">
+      <div class="px-5 py-3 border-b border-[var(--line-soft)] flex items-center justify-between">
         <h3 class="text-white font-semibold text-sm">对局记录</h3>
         <span class="text-gray-500 text-xs" v-if="total >= 0">共 {{ total }} 场</span>
       </div>
@@ -301,7 +301,7 @@
         <button
           @click="page > 1 && loadRecords(page - 1)"
           :disabled="page <= 1"
-          class="px-3 py-1 rounded-lg text-xs text-gray-400 hover:text-white hover:bg-white/10 disabled:opacity-30 transition-all"
+          class="px-3 py-1 rounded-lg text-xs text-gray-400 hover:text-white hover:bg-[var(--bg-card-hover)] disabled:opacity-30 transition-all"
         >
           上一页
         </button>
@@ -309,7 +309,7 @@
         <button
           @click="page < pages && loadRecords(page + 1)"
           :disabled="page >= pages"
-          class="px-3 py-1 rounded-lg text-xs text-gray-400 hover:text-white hover:bg-white/10 disabled:opacity-30 transition-all"
+          class="px-3 py-1 rounded-lg text-xs text-gray-400 hover:text-white hover:bg-[var(--bg-card-hover)] disabled:opacity-30 transition-all"
         >
           下一页
         </button>
