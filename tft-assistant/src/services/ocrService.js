@@ -1,7 +1,10 @@
 // OCR Service for TFT Game Screen Recognition
 // 使用Tesseract.js进行本地OCR识别
-
-import Tesseract from 'tesseract.js'
+//
+// D2: Tesseract.js 改为动态 import —— 仅在 ScreenShare 页实际触发 OCR 时才下载 worker 与训练数据。
+//   - 静态 import 时主 bundle 多 ~270 KB（tesseract.js + 依赖）
+//   - 动态 import 后该体积移出主 bundle，进入按需 chunk
+//   - 仅初始化时执行一次 import，多次调用复用同一 Promise
 
 class OCRService {
   constructor() {
@@ -15,17 +18,20 @@ class OCRService {
     if (this.isInitialized) return
     if (this.initPromise) return this.initPromise
 
-    this.initPromise = Tesseract.createWorker('chi_sim+eng', 1, {
-      logger: m => {
-        if (m.status === 'recognizing text') {
-
+    this.initPromise = (async () => {
+      // 动态导入：仅在首次调用 initialize 时才下载 tesseract.js 主包
+      const { default: Tesseract } = await import('tesseract.js')
+      const worker = await Tesseract.createWorker('chi_sim+eng', 1, {
+        logger: m => {
+          if (m.status === 'recognizing text') {
+            // 保留钩子位，便于后续接入进度条
+          }
         }
-      }
-    }).then(worker => {
+      })
       this.worker = worker
       this.isInitialized = true
       return worker
-    })
+    })()
 
     return this.initPromise
   }
@@ -33,14 +39,14 @@ class OCRService {
   // 从视频帧捕获图像
   captureFrame(videoElement) {
     if (!videoElement) return null
-    
+
     const canvas = document.createElement('canvas')
     canvas.width = videoElement.videoWidth || 1920
     canvas.height = videoElement.videoHeight || 1080
-    
+
     const ctx = canvas.getContext('2d')
     ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height)
-    
+
     return canvas
   }
 
@@ -100,13 +106,13 @@ class OCRService {
     try {
       // 并行识别各个区域
       const results = {}
-      
+
       // 识别数字信息
       results.gold = await this.recognizeRegion(canvas, regions.gold.x, regions.gold.y, regions.gold.w, regions.gold.h)
       results.health = await this.recognizeRegion(canvas, regions.health.x, regions.health.y, regions.health.w, regions.health.h)
       results.level = await this.recognizeRegion(canvas, regions.level.x, regions.level.y, regions.level.w, regions.level.h)
       results.round = await this.recognizeRegion(canvas, regions.round.x, regions.round.y, regions.round.w, regions.round.h)
-      
+
       // 识别英雄和羁绊信息
       results.heroesText = await this.recognizeRegion(canvas, regions.heroes.x, regions.heroes.y, regions.heroes.w, regions.heroes.h)
       results.synergiesText = await this.recognizeRegion(canvas, regions.synergies.x, regions.synergies.y, regions.synergies.w, regions.synergies.h)
