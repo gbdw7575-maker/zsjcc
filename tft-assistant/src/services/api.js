@@ -87,7 +87,10 @@ export const gameDataApi = {
   createGameData: (data) => api.post('/game-data', data),
   bulkCreateGameData: (data) => api.post('/game-data/bulk', data),
   updateGameData: (id, data) => api.put(`/game-data/${id}`, data),
-  deleteGameData: (id) => api.delete(`/game-data/${id}`)
+  deleteGameData: (id) => api.delete(`/game-data/${id}`),
+  // B2/B4: 赛季相关
+  listSeasons: () => api.get('/game-data/seasons'),
+  setActiveSeason: (season) => api.post('/game-data/active-season', { season })
 }
 
 export const feedbackApi = {
