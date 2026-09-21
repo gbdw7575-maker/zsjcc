@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+  <div class="min-h-screen">
     <div class="max-w-7xl mx-auto px-4 py-6">
       <!-- 头部 -->
       <div class="mb-6">
@@ -15,7 +15,7 @@
           <!-- AI配置按钮 -->
           <button 
             @click="openAIConfig"
-            class="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-medium rounded-lg transition-all flex items-center gap-2"
+            class="hud-btn"
           >
             <span class="text-lg">🤖</span>
             AI配置
@@ -28,7 +28,7 @@
         <!-- 左侧：屏幕共享区域 -->
         <div class="lg:col-span-2 space-y-4">
           <!-- 共享控制 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10">
+          <div class="hud-card p-4">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-4">
                 <button 
@@ -43,7 +43,7 @@
                 <button 
                   v-if="!browserSupported && !isSharing"
                   @click="startDemoMode"
-                  class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold rounded-xl transition-all shadow-lg shadow-purple-500/30 flex items-center gap-2"
+                  class="px-6 py-3 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] font-bold rounded-xl transition-all flex items-center gap-2"
                 >
                   <span class="text-xl">🎮</span>
                   演示模式
@@ -61,7 +61,7 @@
               
               <div class="flex items-center gap-2 text-sm">
                 <span class="text-gray-400">状态：</span>
-                <span :class="isSharing ? (isDemoMode ? 'text-purple-400' : 'text-green-400') : 'text-gray-500'" class="font-medium">
+                <span :class="isSharing ? (isDemoMode ? 'text-[var(--accent-color)]' : 'text-green-400') : 'text-gray-500'" class="font-medium">
                   {{ isSharing ? (isDemoMode ? '演示模式' : '共享中') : '未共享' }}
                 </span>
                 <span v-if="isSharing && !isDemoMode" class="animate-pulse text-red-500">●</span>
@@ -78,7 +78,7 @@
           </div>
 
           <!-- 视频显示区域 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-xl border border-white/10 overflow-hidden">
+          <div class="hud-card overflow-hidden">
             <div class="relative aspect-video bg-black/50 flex items-center justify-center">
               <video 
                 ref="videoRef"
@@ -104,7 +104,7 @@
                   </div>
                   <button 
                     @click="startDemoMode"
-                    class="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold rounded-xl transition-all"
+                    class="mt-6 px-6 py-3 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] font-bold rounded-xl transition-all"
                   >
                     🎮 开启演示模式
                   </button>
@@ -118,7 +118,7 @@
                     点击"开始共享"按钮，选择金铲铲之战游戏窗口或整个屏幕进行共享
                   </p>
                   <div class="mt-4 flex items-center gap-2 text-sm text-gray-400">
-                    <span class="px-2 py-1 bg-purple-500/20 rounded">提示</span>
+                    <span class="px-2 py-1 bg-[rgba(var(--accent-rgb),0.12)] rounded">提示</span>
                     <span>建议选择游戏窗口以获得最佳识别效果</span>
                   </div>
                 </div>
@@ -126,7 +126,7 @@
               
               <!-- 共享时的覆盖层 -->
               <div v-if="isSharing" class="absolute top-4 left-4 flex items-center gap-2">
-                <span v-if="isDemoMode" class="px-3 py-1 bg-purple-500/80 text-white text-sm font-medium rounded-lg flex items-center gap-1">
+                <span v-if="isDemoMode" class="px-3 py-1 bg-[rgba(var(--accent-rgb),0.8)] text-white text-sm font-medium rounded-lg flex items-center gap-1">
                   <span>🎮</span>
                   演示模式
                 </span>
@@ -142,7 +142,7 @@
           </div>
 
           <!-- 画面分析区域 -->
-          <div v-if="isSharing" class="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10">
+          <div v-if="isSharing" class="hud-card p-4">
             <div class="flex items-center justify-between mb-4">
               <h3 class="text-lg font-bold text-white flex items-center gap-2">
                 <span class="text-xl">🔍</span>
@@ -207,7 +207,7 @@
             </div>
             
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div class="bg-white/5 rounded-lg p-3 text-center cursor-pointer hover:bg-white/10 transition-colors" @click="editField = 'phase'" title="点击修正">
+              <div class="bg-[var(--bg-card-hover)] rounded-lg p-3 text-center cursor-pointer hover:bg-[var(--bg-elevated)] transition-colors" @click="editField = 'phase'" title="点击修正">
                 <div class="text-2xl mb-1">⏱️</div>
                 <div class="text-gray-400 text-sm">当前阶段</div>
                 <div class="text-white font-bold">
@@ -217,7 +217,7 @@
                 <div v-if="rawAnalysis && rawAnalysis.phase !== currentPhase" class="text-xs text-gray-500 mt-1">AI: {{ rawAnalysis.phase }}</div>
               </div>
               
-              <div class="bg-white/5 rounded-lg p-3 text-center cursor-pointer hover:bg-white/10 transition-colors" @click="editField = 'gold'" title="点击修正">
+              <div class="bg-[var(--bg-card-hover)] rounded-lg p-3 text-center cursor-pointer hover:bg-[var(--bg-elevated)] transition-colors" @click="editField = 'gold'" title="点击修正">
                 <div class="text-2xl mb-1">💰</div>
                 <div class="text-gray-400 text-sm">金币</div>
                 <div class="text-white font-bold">
@@ -227,7 +227,7 @@
                 <div v-if="rawAnalysis && rawAnalysis.gold !== estimatedGold" class="text-xs text-gray-500 mt-1">AI: {{ rawAnalysis.gold }}</div>
               </div>
               
-              <div class="bg-white/5 rounded-lg p-3 text-center cursor-pointer hover:bg-white/10 transition-colors" @click="editField = 'health'" title="点击修正">
+              <div class="bg-[var(--bg-card-hover)] rounded-lg p-3 text-center cursor-pointer hover:bg-[var(--bg-elevated)] transition-colors" @click="editField = 'health'" title="点击修正">
                 <div class="text-2xl mb-1">❤️</div>
                 <div class="text-gray-400 text-sm">血量</div>
                 <div class="text-white font-bold">
@@ -237,7 +237,7 @@
                 <div v-if="rawAnalysis && rawAnalysis.health !== estimatedHealth" class="text-xs text-gray-500 mt-1">AI: {{ rawAnalysis.health }}</div>
               </div>
               
-              <div class="bg-white/5 rounded-lg p-3 text-center cursor-pointer hover:bg-white/10 transition-colors" @click="editField = 'level'" title="点击修正">
+              <div class="bg-[var(--bg-card-hover)] rounded-lg p-3 text-center cursor-pointer hover:bg-[var(--bg-elevated)] transition-colors" @click="editField = 'level'" title="点击修正">
                 <div class="text-2xl mb-1">👥</div>
                 <div class="text-gray-400 text-sm">人口</div>
                 <div class="text-white font-bold">
@@ -253,7 +253,7 @@
         <!-- 右侧：指导建议 -->
         <div class="space-y-4">
           <!-- 当前阵容识别 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10">
+          <div class="hud-card p-4">
             <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <span class="text-xl">🎯</span>
               阵容识别
@@ -265,11 +265,11 @@
             </div>
             
             <div v-else class="space-y-3">
-              <div class="bg-purple-500/20 rounded-lg p-3">
-                <div class="text-purple-300 font-medium mb-1">检测到羁绊</div>
+              <div class="bg-[rgba(var(--accent-rgb),0.12)] rounded-lg p-3">
+                <div class="text-[var(--accent-color)] font-medium mb-1">检测到羁绊</div>
                 <div class="flex flex-wrap gap-2">
                   <span v-for="synergy in detectedSynergies" :key="synergy.name" 
-                    class="px-2 py-1 bg-purple-500/30 text-purple-200 rounded text-sm">
+                    class="px-2 py-1 bg-[rgba(var(--accent-rgb),0.18)] text-[var(--accent-color)] rounded text-sm">
                     {{ synergy.name }} {{ synergy.count }}
                   </span>
                 </div>
@@ -286,7 +286,7 @@
           </div>
 
           <!-- 实时建议 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10">
+          <div class="hud-card p-4">
             <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <span class="text-xl">💡</span>
               实时建议
@@ -301,7 +301,7 @@
               <div 
                 v-for="(suggestion, index) in currentSuggestions" 
                 :key="index"
-                class="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg p-3 border border-purple-500/20"
+                class="bg-gradient-to-r from-[rgba(var(--accent-rgb),0.08)] to-[rgba(var(--gold-rgb),0.08)] rounded-lg p-3 border border-[rgba(var(--accent-rgb),0.2)]"
               >
                 <div class="flex items-start gap-2">
                   <span class="text-xl">{{ suggestion.icon }}</span>
@@ -319,22 +319,22 @@
           </div>
 
           <!-- 操作提示 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10">
+          <div class="hud-card p-4">
             <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <span class="text-xl">⚡</span>
               快速操作提示
             </h3>
             
             <div class="space-y-2">
-              <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+              <div class="flex items-center justify-between p-2 bg-[var(--bg-card-hover)] rounded-lg">
                 <span class="text-gray-300">升级时机</span>
                 <span class="text-green-400 font-medium">{{ upgradeHint }}</span>
               </div>
-              <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+              <div class="flex items-center justify-between p-2 bg-[var(--bg-card-hover)] rounded-lg">
                 <span class="text-gray-300">D牌建议</span>
                 <span class="text-yellow-400 font-medium">{{ rollHint }}</span>
               </div>
-              <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+              <div class="flex items-center justify-between p-2 bg-[var(--bg-card-hover)] rounded-lg">
                 <span class="text-gray-300">装备优先</span>
                 <span class="text-blue-400 font-medium">{{ equipmentHint }}</span>
               </div>
@@ -342,7 +342,7 @@
           </div>
 
           <!-- 历史记录 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10">
+          <div class="hud-card p-4">
             <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <span class="text-xl">📜</span>
               建议历史
@@ -352,7 +352,7 @@
               <div 
                 v-for="(record, index) in suggestionHistory" 
                 :key="index"
-                class="text-sm p-2 bg-white/5 rounded-lg"
+                class="text-sm p-2 bg-[var(--bg-card-hover)] rounded-lg"
               >
                 <div class="flex items-center gap-2">
                   <span class="text-gray-500">{{ record.time }}</span>

@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+  <div class="min-h-screen">
     <div class="max-w-2xl mx-auto px-4 py-6">
       <!-- 返回按钮 -->
       <div class="flex items-center gap-2 mb-6">
         <button 
           @click="goBack" 
-          class="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 text-gray-300 rounded-lg transition-colors"
+          class="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-[var(--bg-card-hover)] text-gray-300 rounded-lg transition-colors"
         >
           <span class="text-lg">←</span>
           返回论坛
@@ -13,7 +13,7 @@
       </div>
 
       <!-- 发布表单 -->
-      <div class="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 p-6">
+      <div class="hud-card p-6">
         <h1 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
           <span class="text-2xl">✏️</span>
           发布新帖子
@@ -27,7 +27,7 @@
               v-model="postForm.title"
               type="text"
               placeholder="输入帖子标题..."
-              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
+              class="w-full px-4 py-3 bg-[var(--bg-card-hover)] border border-[var(--line-soft)] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[var(--accent-color)] transition-colors"
               required
             />
           </div>
@@ -38,7 +38,7 @@
             <textarea 
               v-model="postForm.content"
               placeholder="分享你的想法、攻略或问题..."
-              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors resize-none"
+              class="w-full px-4 py-3 bg-[var(--bg-card-hover)] border border-[var(--line-soft)] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[var(--accent-color)] transition-colors resize-none"
               rows="6"
               required
             ></textarea>
@@ -56,8 +56,8 @@
                 :class="[
                   'px-4 py-2 rounded-lg text-sm font-medium transition-all',
                   postForm.tags.includes(tag)
-                    ? 'bg-purple-500 text-white'
-                    : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                    ? 'bg-[var(--accent-color)] text-[#03201d]'
+                    : 'bg-white/5 text-gray-400 hover:bg-[var(--bg-card-hover)]'
                 ]"
               >
                 {{ tag }}
@@ -67,7 +67,7 @@
               v-model="customTag"
               type="text"
               placeholder="添加自定义标签..."
-              class="w-full mt-3 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
+              class="w-full mt-3 px-4 py-2 bg-[var(--bg-card-hover)] border border-[var(--line-soft)] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[var(--accent-color)] transition-colors"
               @keyup.enter.prevent="addCustomTag"
             />
           </div>
@@ -80,12 +80,12 @@
             <!-- 拖拽上传区 -->
             <div 
               v-if="uploadFiles.length < 9"
-              class="relative border-2 border-dashed border-white/20 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500/50 hover:bg-white/5 transition-all"
+              class="relative border-2 border-dashed border-[var(--line-strong)] rounded-xl p-8 text-center cursor-pointer hover:border-[rgba(var(--accent-rgb),0.5)] hover:bg-white/5 transition-all"
               @click="$refs.fileInput.click()"
               @dragover.prevent="dragOver = true"
               @dragleave.prevent="dragOver = false"
               @drop.prevent="onDrop"
-              :class="{ 'border-purple-500/50 bg-purple-500/5': dragOver }"
+              :class="{ 'border-[rgba(var(--accent-rgb),0.5)] bg-[rgba(var(--accent-rgb),0.05)]': dragOver }"
             >
               <input 
                 ref="fileInput"
@@ -105,7 +105,7 @@
               <div 
                 v-for="(file, index) in uploadFiles" 
                 :key="index"
-                class="relative aspect-video rounded-lg overflow-hidden bg-black/50 border border-white/10 group"
+                class="relative aspect-video rounded-lg overflow-hidden bg-black/50 border border-[var(--line-soft)] group"
               >
                 <!-- 图片预览 -->
                 <img 
@@ -144,7 +144,7 @@
           </div>
           
           <!-- 预览 -->
-          <div v-if="postForm.title || postForm.content || uploadFiles.length > 0" class="bg-white/5 rounded-xl p-4">
+          <div v-if="postForm.title || postForm.content || uploadFiles.length > 0" class="bg-[var(--bg-card-hover)] rounded-lg p-4">
             <h3 class="text-gray-400 text-sm font-medium mb-2">预览</h3>
             <h4 class="text-white font-bold">{{ postForm.title || '标题预览' }}</h4>
             <p class="text-gray-400 text-sm mt-2 whitespace-pre-wrap">{{ postForm.content || '内容预览...' }}</p>
@@ -159,7 +159,7 @@
               <span 
                 v-for="tag in postForm.tags" 
                 :key="tag"
-                class="px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded text-xs"
+                class="px-2 py-0.5 bg-[rgba(var(--accent-rgb),0.12)] text-[var(--accent-color)] rounded text-xs"
               >
                 {{ tag }}
               </span>
@@ -175,7 +175,7 @@
             <button 
               type="submit"
               :disabled="!isFormValid || isUploading"
-              class="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all shadow-lg shadow-purple-500/30"
+              class="px-8 py-3 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed text-[#03201d] font-bold rounded-xl transition-all"
             >
               {{ isUploading ? '发布中...' : '发布帖子' }}
             </button>

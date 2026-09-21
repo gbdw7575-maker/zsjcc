@@ -7,26 +7,26 @@
       </div>
 
       <!-- 面板1: 当前状态输入 -->
-      <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 mb-6">
+      <div class="hud-card p-6 mb-6">
         <h2 class="text-xl font-bold text-white mb-4">当前状态</h2>
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
           <div>
             <label class="text-gray-400 text-sm block mb-2">当前金币</label>
-            <input v-model.number="state.gold" type="number" min="0" max="200" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-lg font-bold focus:border-purple-400 outline-none" />
+            <input v-model.number="state.gold" type="number" min="0" max="200" class="w-full bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg px-4 py-3 text-white text-lg font-bold focus:border-[var(--accent-color)] outline-none" />
           </div>
           <div>
             <label class="text-gray-400 text-sm block mb-2">当前等级</label>
-            <select v-model.number="state.level" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-lg font-bold focus:border-purple-400 outline-none" style="color-scheme: dark">
+            <select v-model.number="state.level" class="w-full bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg px-4 py-3 text-white text-lg font-bold focus:border-[var(--accent-color)] outline-none" style="color-scheme: dark">
               <option v-for="l in 9" :key="l" :value="l" class="bg-slate-800 text-white">{{ l }}</option>
             </select>
           </div>
           <div>
             <label class="text-gray-400 text-sm block mb-2">当前经验</label>
-            <input v-model.number="state.xp" type="number" min="0" max="100" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-lg font-bold focus:border-purple-400 outline-none" />
+            <input v-model.number="state.xp" type="number" min="0" max="100" class="w-full bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg px-4 py-3 text-white text-lg font-bold focus:border-[var(--accent-color)] outline-none" />
           </div>
           <div>
             <label class="text-gray-400 text-sm block mb-2">连胜/连败</label>
-            <select v-model.number="state.streak" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-lg font-bold focus:border-purple-400 outline-none" style="color-scheme: dark">
+            <select v-model.number="state.streak" class="w-full bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg px-4 py-3 text-white text-lg font-bold focus:border-[var(--accent-color)] outline-none" style="color-scheme: dark">
               <option :value="-5" class="bg-slate-800 text-white">5连败</option>
               <option :value="-4" class="bg-slate-800 text-white">4连败</option>
               <option :value="-3" class="bg-slate-800 text-white">3连败</option>
@@ -42,7 +42,7 @@
           </div>
           <div>
             <label class="text-gray-400 text-sm block mb-2">目标等级</label>
-            <select v-model.number="targetLevel" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-lg font-bold focus:border-purple-400 outline-none" style="color-scheme: dark">
+            <select v-model.number="targetLevel" class="w-full bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg px-4 py-3 text-white text-lg font-bold focus:border-[var(--accent-color)] outline-none" style="color-scheme: dark">
               <option v-for="l in 9" :key="l" :value="l" :disabled="l <= state.level" class="bg-slate-800 text-white">{{ l }}</option>
             </select>
           </div>
@@ -51,7 +51,7 @@
 
       <!-- 面板2: 下回合收入 -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="hud-card p-6">
           <h3 class="text-gray-400 text-sm mb-4">下回合预计收入</h3>
           <div class="text-5xl font-bold text-yellow-400 mb-4">{{ nextRoundGold }}</div>
           <div class="space-y-2 text-sm">
@@ -67,14 +67,14 @@
               <span class="text-gray-400">连胜/连败</span>
               <span :class="streakGold > 0 ? 'text-green-400' : 'text-white'">+{{ streakGold }}</span>
             </div>
-            <div class="flex justify-between border-t border-white/10 pt-2 mt-2">
+            <div class="flex justify-between border-t border-[var(--line-soft)] pt-2 mt-2">
               <span class="text-gray-300 font-semibold">最终金币</span>
               <span class="text-yellow-300 font-bold">{{ state.gold + nextRoundGold }}</span>
             </div>
           </div>
         </div>
 
-        <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="hud-card p-6">
           <h3 class="text-gray-400 text-sm mb-4">利息断点提醒</h3>
           <div class="space-y-3">
             <div v-for="bp in interestBreakpoints" :key="bp.threshold" class="flex items-center gap-3">
@@ -82,14 +82,14 @@
               <span class="text-gray-300 text-sm flex-1">{{ bp.label }}</span>
               <span class="text-yellow-400 font-bold">{{ bp.interest }}</span>
             </div>
-            <div class="pt-3 border-t border-white/10 text-sm">
+            <div class="pt-3 border-t border-[var(--line-soft)] text-sm">
               <span class="text-gray-400">距离下一断点还需 </span>
-              <span class="text-purple-400 font-bold">{{ goldToNextBreakpoint }}</span>
+              <span class="text-[var(--accent-color)] font-bold">{{ goldToNextBreakpoint }}</span>
             </div>
           </div>
         </div>
 
-        <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="hud-card p-6">
           <h3 class="text-gray-400 text-sm mb-4">升级规划</h3>
           <div class="space-y-3 text-sm">
             <div class="flex justify-between">
@@ -108,7 +108,7 @@
               <span class="text-gray-400">花费金币</span>
               <span class="text-red-400 font-bold text-lg">{{ upgradeCost }}</span>
             </div>
-            <div class="flex justify-between border-t border-white/10 pt-2">
+            <div class="flex justify-between border-t border-[var(--line-soft)] pt-2">
               <span class="text-gray-400">自然升级回合数</span>
               <span class="text-cyan-400 font-bold">{{ naturalRounds }}</span>
             </div>
@@ -121,59 +121,59 @@
       </div>
 
       <!-- 面板3: 金币趋势预测 -->
-      <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 mb-6">
+      <div class="hud-card p-6 mb-6">
         <h2 class="text-xl font-bold text-white mb-4">未来回合金币预测</h2>
         <p class="text-gray-400 text-sm mb-6">假设不花钱、不做任何操作（仅拿利息+基础收入）</p>
         <div class="flex flex-wrap gap-3">
-          <div v-for="r in goldProjection" :key="r.round" class="flex-1 min-w-[80px] bg-white/5 rounded-xl p-4 text-center border border-white/10">
+          <div v-for="r in goldProjection" :key="r.round" class="flex-1 min-w-[80px] bg-[var(--bg-card-hover)] rounded-lg p-4 text-center border border-[var(--line-soft)]">
             <div class="text-gray-500 text-xs mb-1">R{{ r.round }}</div>
-            <div class="text-2xl font-bold" :class="r.gold >= 50 ? 'text-yellow-400' : r.gold >= 40 ? 'text-purple-400' : 'text-white'">{{ r.gold }}</div>
+            <div class="text-2xl font-bold" :class="r.gold >= 50 ? 'text-yellow-400' : r.gold >= 40 ? 'text-[var(--accent-color)]' : 'text-white'">{{ r.gold }}</div>
             <div class="text-xs mt-2" :class="r.interest > 0 ? 'text-yellow-400' : 'text-gray-600'">利息 +{{ r.interest }}</div>
           </div>
         </div>
       </div>
 
       <!-- 面板4: D牌成本计算 -->
-      <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 mb-6">
+      <div class="hud-card p-6 mb-6">
         <h2 class="text-xl font-bold text-white mb-4">D牌/刷新成本</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div class="bg-white/5 rounded-xl p-4">
+          <div class="bg-[var(--bg-card-hover)] rounded-lg p-4">
             <div class="text-gray-400 text-sm mb-2">刷新一次</div>
             <div class="text-3xl font-bold text-blue-400">2g</div>
           </div>
-          <div class="bg-white/5 rounded-xl p-4">
+          <div class="bg-[var(--bg-card-hover)] rounded-lg p-4">
             <div class="text-gray-400 text-sm mb-2">当前可刷新</div>
             <div class="text-3xl font-bold text-green-400">{{ Math.floor(state.gold / 2) }}次</div>
           </div>
-          <div class="bg-white/5 rounded-xl p-4">
+          <div class="bg-[var(--bg-card-hover)] rounded-lg p-4">
             <div class="text-gray-400 text-sm mb-2">升一级</div>
             <div class="text-3xl font-bold text-orange-400">{{ Math.ceil(xpToBuy / 4) * 4 }}g</div>
           </div>
-          <div class="bg-white/5 rounded-xl p-4">
+          <div class="bg-[var(--bg-card-hover)] rounded-lg p-4">
             <div class="text-gray-400 text-sm mb-2">搜到50的D牌</div>
-            <div class="text-3xl font-bold text-purple-400">{{ Math.max(0, Math.floor((state.gold - 50) / 2)) }}次</div>
+            <div class="text-3xl font-bold text-[var(--accent-color)]">{{ Math.max(0, Math.floor((state.gold - 50) / 2)) }}次</div>
           </div>
         </div>
       </div>
 
       <!-- 面板5: 升级路线图 -->
-      <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+      <div class="hud-card p-6">
         <h2 class="text-xl font-bold text-white mb-4">S8 升级经验表</h2>
         <div class="grid grid-cols-6 gap-3">
-          <div v-for="l in levelTable" :key="l.from" class="bg-white/5 rounded-xl p-4 text-center border border-white/10" :class="{ 'ring-2 ring-purple-400': l.from === state.level }">
+          <div v-for="l in levelTable" :key="l.from" class="bg-[var(--bg-card-hover)] rounded-lg p-4 text-center border border-[var(--line-soft)]" :class="{ 'ring-2 ring-[var(--accent-color)]': l.from === state.level }">
             <div class="text-gray-400 text-xs mb-1">Lv{{ l.from }} → {{ l.to }}</div>
             <div class="text-2xl font-bold text-white">{{ l.xp }}XP</div>
             <div class="text-xs text-gray-500 mt-1">{{ Math.ceil(l.xp / 4) * 4 }}g</div>
           </div>
         </div>
         <div class="mt-6 grid grid-cols-3 md:grid-cols-6 gap-3 text-center text-sm">
-          <div v-for="l in [4,5,6,7,8,9]" :key="l" class="bg-white/5 rounded-xl p-3 border border-white/10">
+          <div v-for="l in [4,5,6,7,8,9]" :key="l" class="bg-[var(--bg-card-hover)] rounded-lg p-3 border border-[var(--line-soft)]">
             <div class="text-gray-400 mb-1">Lv.{{ l }} 抽卡概率</div>
             <div class="flex justify-center gap-2 text-xs">
               <span class="text-gray-500">{{ rollOdds[l]?.tier1 || 0 }}%</span>
               <span class="text-green-400">{{ rollOdds[l]?.tier2 || 0 }}%</span>
               <span class="text-blue-400">{{ rollOdds[l]?.tier3 || 0 }}%</span>
-              <span class="text-purple-400">{{ rollOdds[l]?.tier4 || 0 }}%</span>
+              <span class="text-[var(--accent-color)]">{{ rollOdds[l]?.tier4 || 0 }}%</span>
               <span class="text-yellow-400">{{ rollOdds[l]?.tier5 || 0 }}%</span>
             </div>
             <div class="flex justify-center gap-2 text-xs mt-1 text-gray-600">

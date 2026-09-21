@@ -10,7 +10,7 @@
 
       <!-- 统计卡片 -->
       <div class="grid grid-cols-1 md:grid-cols-6 gap-4 mb-8">
-        <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="hud-card p-6">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
               <span class="text-2xl">👥</span>
@@ -21,7 +21,7 @@
             </div>
           </div>
         </div>
-        <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="hud-card p-6">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
               <span class="text-2xl">📝</span>
@@ -32,7 +32,7 @@
             </div>
           </div>
         </div>
-        <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="hud-card p-6">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
               <span class="text-2xl">⏳</span>
@@ -43,7 +43,7 @@
             </div>
           </div>
         </div>
-        <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="hud-card p-6">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center">
               <span class="text-2xl">📢</span>
@@ -54,9 +54,9 @@
             </div>
           </div>
         </div>
-        <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="hud-card p-6">
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+            <div class="w-12 h-12 bg-[rgba(var(--accent-rgb),0.12)] rounded-xl flex items-center justify-center">
               <span class="text-2xl">🟢</span>
             </div>
             <div>
@@ -65,7 +65,7 @@
             </div>
           </div>
         </div>
-        <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="hud-card p-6">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center">
               <span class="text-2xl">💬</span>
@@ -86,8 +86,8 @@
           @click="activeTab = tab.value"
           class="px-6 py-3 rounded-xl font-medium transition-all"
           :class="activeTab === tab.value 
-            ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/30' 
-            : 'bg-white/10 text-gray-400 hover:bg-white/20'"
+            ? 'bg-[var(--accent-color)] text-[#03201d]' 
+            : 'bg-[var(--bg-card-hover)] text-gray-400 hover:bg-[var(--bg-elevated)]'"
         >
           <span class="mr-2">{{ tab.icon }}</span>
           {{ tab.label }}
@@ -95,14 +95,14 @@
       </div>
 
       <!-- 用户管理 -->
-      <div v-if="activeTab === 'users'" class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+      <div v-if="activeTab === 'users'" class="hud-card p-6">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-xl font-bold text-white">用户管理</h2>
           <div class="flex gap-4">
             <input 
               v-model="searchQuery"
               placeholder="搜索用户名或邮箱..."
-              class="px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500"
+              class="px-4 py-2 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white placeholder-gray-500"
               @input="searchUsers"
             />
           </div>
@@ -111,7 +111,7 @@
         <div class="overflow-x-auto">
           <table class="w-full">
             <thead>
-              <tr class="text-gray-400 text-sm border-b border-white/10">
+              <tr class="text-gray-400 text-sm border-b border-[var(--line-soft)]">
                 <th class="text-left py-3 px-4">用户</th>
                 <th class="text-left py-3 px-4">邮箱</th>
                 <th class="text-left py-3 px-4">角色</th>
@@ -124,7 +124,7 @@
               <tr v-for="user in users" :key="user._id" class="text-white border-b border-white/5 hover:bg-white/5">
                 <td class="py-4 px-4">
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-purple-500/30 flex items-center justify-center">
+                    <div class="w-10 h-10 rounded-full bg-[rgba(var(--accent-rgb),0.18)] flex items-center justify-center">
                       {{ user.username[0].toUpperCase() }}
                     </div>
                     <span>{{ user.username }}</span>
@@ -158,7 +158,7 @@
                     <button 
                       v-if="user.role !== 'admin'"
                       @click="setAdmin(user)"
-                      class="px-3 py-1 bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 rounded-lg text-sm transition-colors"
+                      class="px-3 py-1 bg-[rgba(var(--accent-rgb),0.12)] text-[var(--accent-color)] hover:bg-[rgba(var(--accent-rgb),0.18)] rounded-lg text-sm transition-colors"
                     >
                       设为管理员
                     </button>
@@ -177,13 +177,13 @@
       </div>
 
       <!-- 内容审核 -->
-      <div v-if="activeTab === 'review'" class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+      <div v-if="activeTab === 'review'" class="hud-card p-6">
         <div class="flex items-center justify-between mb-6">
           <div>
             <h2 class="text-xl font-bold text-white">内容审核</h2>
             <p class="text-gray-400 text-sm mt-1">待审核帖子: {{ pendingPosts.length }}</p>
           </div>
-          <button @click="loadPendingPosts" class="px-4 py-2 bg-white/10 text-gray-300 hover:bg-white/20 rounded-xl text-sm transition-colors">
+          <button @click="loadPendingPosts" class="px-4 py-2 bg-[var(--bg-card-hover)] text-gray-300 hover:bg-[var(--bg-elevated)] rounded-xl text-sm transition-colors">
             刷新
           </button>
         </div>
@@ -195,11 +195,11 @@
 
         <div class="space-y-4">
           <div v-for="post in pendingPosts" :key="post._id" 
-            class="bg-white/5 rounded-xl p-5 border border-white/10 hover:border-yellow-500/30 transition-all">
+            class="bg-[var(--bg-card-hover)] rounded-lg p-5 border border-[var(--line-soft)] hover:border-yellow-500/30 transition-all">
             <div class="flex items-start justify-between gap-4">
               <div class="flex-1">
                 <div class="flex items-center gap-3 mb-2">
-                  <div class="w-8 h-8 rounded-full bg-purple-500/30 flex items-center justify-center text-sm">
+                  <div class="w-8 h-8 rounded-full bg-[rgba(var(--accent-rgb),0.18)] flex items-center justify-center text-sm">
                     {{ post.author?.username?.[0]?.toUpperCase() }}
                   </div>
                   <span class="text-white font-medium">{{ post.author?.username }}</span>
@@ -229,12 +229,12 @@
       </div>
 
       <!-- 公告管理 -->
-      <div v-if="activeTab === 'announcements'" class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+      <div v-if="activeTab === 'announcements'" class="hud-card p-6">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-xl font-bold text-white">公告管理</h2>
           <button 
             @click="showAnnouncementDialog = true"
-            class="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl"
+            class="px-6 py-2 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] rounded-xl"
           >
             发布公告
           </button>
@@ -242,7 +242,7 @@
 
         <div class="space-y-4">
           <div v-for="ann in announcements" :key="ann._id" 
-            class="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-purple-500/30">
+            class="bg-[var(--bg-card-hover)] rounded-lg p-4 border border-[var(--line-soft)] hover:border-[rgba(var(--accent-rgb),0.3)]">
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-2">
@@ -282,33 +282,33 @@
       <!-- 数据维护 -->
       <div v-if="activeTab === 'maintenance'" class="space-y-6">
         <!-- 游戏数据概览 -->
-        <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="hud-card p-6">
           <div class="flex items-center justify-between mb-4">
             <div>
               <h2 class="text-xl font-bold text-white">游戏数据概览</h2>
               <p class="text-gray-400 text-sm mt-1">当前活跃版本的数据统计</p>
             </div>
-            <button @click="$router.push('/admin/game-data')" class="px-4 py-2 bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 rounded-xl text-sm transition-colors">
+            <button @click="$router.push('/admin/game-data')" class="px-4 py-2 bg-[rgba(var(--accent-rgb),0.12)] text-[var(--accent-color)] hover:bg-[rgba(var(--accent-rgb),0.18)] rounded-xl text-sm transition-colors">
               进入数据维护 →
             </button>
           </div>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="bg-white/5 rounded-xl p-4 border border-white/10 text-center">
+            <div class="bg-[var(--bg-card-hover)] rounded-lg p-4 border border-[var(--line-soft)] text-center">
               <div class="text-3xl mb-2">🎯</div>
               <div class="text-2xl font-bold text-white">{{ stats.totalTeams || 0 }}</div>
               <div class="text-gray-400 text-sm">推荐阵容</div>
             </div>
-            <div class="bg-white/5 rounded-xl p-4 border border-white/10 text-center">
+            <div class="bg-[var(--bg-card-hover)] rounded-lg p-4 border border-[var(--line-soft)] text-center">
               <div class="text-3xl mb-2">⚔️</div>
               <div class="text-2xl font-bold text-white">{{ stats.totalEquipments || 0 }}</div>
               <div class="text-gray-400 text-sm">装备数据</div>
             </div>
-            <div class="bg-white/5 rounded-xl p-4 border border-white/10 text-center">
+            <div class="bg-[var(--bg-card-hover)] rounded-lg p-4 border border-[var(--line-soft)] text-center">
               <div class="text-3xl mb-2">🔗</div>
               <div class="text-2xl font-bold text-white">{{ stats.totalSynergies || 0 }}</div>
               <div class="text-gray-400 text-sm">羁绊数据</div>
             </div>
-            <div class="bg-white/5 rounded-xl p-4 border border-white/10 text-center">
+            <div class="bg-[var(--bg-card-hover)] rounded-lg p-4 border border-[var(--line-soft)] text-center">
               <div class="text-3xl mb-2">👤</div>
               <div class="text-2xl font-bold text-white">{{ stats.totalHeroes || 0 }}</div>
               <div class="text-gray-400 text-sm">英雄数据</div>
@@ -317,13 +317,13 @@
         </div>
 
         <!-- 阵容数据管理 -->
-        <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="hud-card p-6">
           <div class="flex items-center justify-between mb-4">
             <div>
               <h2 class="text-xl font-bold text-white">阵容数据管理</h2>
               <p class="text-gray-400 text-sm mt-1">查看、置顶推荐、删除不当阵容</p>
             </div>
-            <button @click="loadTeams" class="px-4 py-2 bg-white/10 text-gray-300 hover:bg-white/20 rounded-xl text-sm transition-colors">
+            <button @click="loadTeams" class="px-4 py-2 bg-[var(--bg-card-hover)] text-gray-300 hover:bg-[var(--bg-elevated)] rounded-xl text-sm transition-colors">
               刷新
             </button>
           </div>
@@ -331,7 +331,7 @@
           <div class="overflow-x-auto">
             <table class="w-full" v-if="teams.length > 0">
               <thead>
-                <tr class="text-gray-400 text-sm border-b border-white/10">
+                <tr class="text-gray-400 text-sm border-b border-[var(--line-soft)]">
                   <th class="text-left py-3 px-4">阵容名称</th>
                   <th class="text-left py-3 px-4">版本</th>
                   <th class="text-left py-3 px-4">类型</th>
@@ -384,10 +384,10 @@
         </div>
 
         <!-- 系统维护 -->
-        <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div class="hud-card p-6">
           <h2 class="text-xl font-bold text-white mb-4">系统维护</h2>
           <div class="flex flex-col md:flex-row gap-4">
-            <div class="flex-1 bg-white/5 rounded-xl p-4 border border-white/10">
+            <div class="flex-1 bg-[var(--bg-card-hover)] rounded-lg p-4 border border-[var(--line-soft)]">
               <div class="flex items-center gap-3 mb-3">
                 <span class="text-2xl">🗑️</span>
                 <div>
@@ -403,7 +403,7 @@
                 {{ cacheClearing ? '处理中...' : '清除被拒帖子' }}
               </button>
             </div>
-            <div class="flex-1 bg-white/5 rounded-xl p-4 border border-white/10">
+            <div class="flex-1 bg-[var(--bg-card-hover)] rounded-lg p-4 border border-[var(--line-soft)]">
               <div class="flex items-center gap-3 mb-3">
                 <span class="text-2xl">🧹</span>
                 <div>
@@ -419,7 +419,7 @@
                 {{ cacheClearing ? '处理中...' : '清除未激活数据' }}
               </button>
             </div>
-            <div class="flex-1 bg-white/5 rounded-xl p-4 border border-white/10">
+            <div class="flex-1 bg-[var(--bg-card-hover)] rounded-lg p-4 border border-[var(--line-soft)]">
               <div class="flex items-center gap-3 mb-3">
                 <span class="text-2xl">📊</span>
                 <div>
@@ -451,28 +451,28 @@
       </div>
 
       <!-- 反馈管理 -->
-      <div v-if="activeTab === 'feedbacks'" class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+      <div v-if="activeTab === 'feedbacks'" class="hud-card p-6">
         <div class="flex items-center justify-between mb-6">
           <div>
             <h2 class="text-xl font-bold text-white">反馈管理</h2>
             <p class="text-gray-400 text-sm mt-1">共 {{ feedbackTotal }} 条反馈</p>
           </div>
           <div class="flex gap-3">
-            <select v-model="feedbackFilter.status" @change="loadFeedbacks" class="px-3 py-2 bg-white/10 border border-white/20 rounded-xl text-white text-sm">
+            <select v-model="feedbackFilter.status" @change="loadFeedbacks" class="px-3 py-2 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white text-sm">
               <option value="">全部状态</option>
               <option value="pending">待处理</option>
               <option value="processing">处理中</option>
               <option value="resolved">已解决</option>
               <option value="closed">已关闭</option>
             </select>
-            <select v-model="feedbackFilter.type" @change="loadFeedbacks" class="px-3 py-2 bg-white/10 border border-white/20 rounded-xl text-white text-sm">
+            <select v-model="feedbackFilter.type" @change="loadFeedbacks" class="px-3 py-2 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white text-sm">
               <option value="">全部类型</option>
               <option value="bug">Bug报告</option>
               <option value="feature">功能建议</option>
               <option value="improvement">改进意见</option>
               <option value="other">其他</option>
             </select>
-            <button @click="loadFeedbacks" class="px-4 py-2 bg-white/10 text-gray-300 hover:bg-white/20 rounded-xl text-sm">
+            <button @click="loadFeedbacks" class="px-4 py-2 bg-[var(--bg-card-hover)] text-gray-300 hover:bg-[var(--bg-elevated)] rounded-xl text-sm">
               刷新
             </button>
           </div>
@@ -480,7 +480,7 @@
 
         <div class="space-y-4">
           <div v-for="fb in feedbacks" :key="fb._id" 
-            class="bg-white/5 rounded-xl p-5 border border-white/10" :class="{'border-red-500/30': fb.status === 'pending'}">
+            class="bg-[var(--bg-card-hover)] rounded-lg p-5 border border-[var(--line-soft)]" :class="{'border-red-500/30': fb.status === 'pending'}">
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <div class="flex items-center gap-3 mb-2">
@@ -509,7 +509,7 @@
                   <input 
                     v-model="replyTexts[fb._id]"
                     placeholder="输入回复内容..."
-                    class="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm placeholder-gray-500"
+                    class="flex-1 px-3 py-2 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white text-sm placeholder-gray-500"
                   />
                   <button 
                     @click="replyFeedback(fb._id)"
@@ -523,7 +523,7 @@
                 <select 
                   :value="fb.status" 
                   @change="updateFeedbackStatus(fb._id, $event.target.value)"
-                  class="px-3 py-1.5 bg-white/10 border border-white/20 rounded-lg text-white text-xs"
+                  class="px-3 py-1.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white text-xs"
                 >
                   <option value="pending">待处理</option>
                   <option value="processing">处理中</option>
@@ -533,7 +533,7 @@
                 <select 
                   :value="fb.priority"
                   @change="updateFeedbackPriority(fb._id, $event.target.value)"
-                  class="px-3 py-1.5 bg-white/10 border border-white/20 rounded-lg text-white text-xs"
+                  class="px-3 py-1.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white text-xs"
                 >
                   <option value="low">低</option>
                   <option value="medium">中</option>
@@ -560,11 +560,11 @@
         <div class="space-y-4">
           <div>
             <label class="text-gray-400 text-sm mb-1">标题</label>
-            <input v-model="annForm.title" class="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white" placeholder="公告标题" />
+            <input v-model="annForm.title" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="公告标题" />
           </div>
           <div>
             <label class="text-gray-400 text-sm mb-1">类型</label>
-            <select v-model="annForm.type" class="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white">
+            <select v-model="annForm.type" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white">
               <option value="normal">普通</option>
               <option value="important">重要</option>
               <option value="urgent">紧急</option>
@@ -576,12 +576,12 @@
           </div>
           <div>
             <label class="text-gray-400 text-sm mb-1">内容</label>
-            <textarea v-model="annForm.content" rows="6" class="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white" placeholder="公告内容..."></textarea>
+            <textarea v-model="annForm.content" rows="6" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="公告内容..."></textarea>
           </div>
         </div>
         <template #footer>
-          <button @click="showAnnouncementDialog = false" class="px-6 py-2 bg-white/10 text-white rounded-xl">取消</button>
-          <button @click="submitAnnouncement" class="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl">
+          <button @click="showAnnouncementDialog = false" class="px-6 py-2 bg-[var(--bg-card-hover)] text-white rounded-xl">取消</button>
+          <button @click="submitAnnouncement" class="px-6 py-2 bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-[#03201d] rounded-xl">
             {{ editingAnn ? '保存' : '发布' }}
           </button>
         </template>
@@ -591,10 +591,10 @@
       <el-dialog v-model="showRejectReason" title="拒绝理由" width="450px">
         <div>
           <label class="text-gray-400 text-sm mb-2 block">请输入拒绝原因</label>
-          <textarea v-model="rejectReason" rows="3" class="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white" placeholder="拒绝原因..."></textarea>
+          <textarea v-model="rejectReason" rows="3" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="拒绝原因..."></textarea>
         </div>
         <template #footer>
-          <button @click="showRejectReason = false" class="px-6 py-2 bg-white/10 text-white rounded-xl">取消</button>
+          <button @click="showRejectReason = false" class="px-6 py-2 bg-[var(--bg-card-hover)] text-white rounded-xl">取消</button>
           <button @click="confirmRejectPost" class="px-6 py-2 bg-red-500 text-white rounded-xl">确认拒绝</button>
         </template>
       </el-dialog>
