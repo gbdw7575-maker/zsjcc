@@ -121,13 +121,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, defineAsyncComponent } from 'vue'
 import { adminApi } from '../services/api'
-import AdminUsers from '../components/admin/AdminUsers.vue'
-import AdminReview from '../components/admin/AdminReview.vue'
-import AdminAnnouncements from '../components/admin/AdminAnnouncements.vue'
-import AdminMaintenance from '../components/admin/AdminMaintenance.vue'
-import AdminFeedbacks from '../components/admin/AdminFeedbacks.vue'
+
+// D6: 5 个 tab 子组件按需异步加载，Vite 自动分包
+//   - 切换 tab 时才下载对应代码，后台首屏仅下载当前 activeTab 的 chunk
+//   - 配合 v-if 按需挂载，未访问的 tab 代码不进入首屏 bundle
+const AdminUsers = defineAsyncComponent(() => import('../components/admin/AdminUsers.vue'))
+const AdminReview = defineAsyncComponent(() => import('../components/admin/AdminReview.vue'))
+const AdminAnnouncements = defineAsyncComponent(() => import('../components/admin/AdminAnnouncements.vue'))
+const AdminMaintenance = defineAsyncComponent(() => import('../components/admin/AdminMaintenance.vue'))
+const AdminFeedbacks = defineAsyncComponent(() => import('../components/admin/AdminFeedbacks.vue'))
 
 const activeTab = ref('users')
 const tabs = [
