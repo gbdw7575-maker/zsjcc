@@ -25,6 +25,8 @@ declare module 'vue' {
     ForumPosts: typeof import('./../components/forum/ForumPosts.vue')['default']
     ForumTournament: typeof import('./../components/forum/ForumTournament.vue')['default']
     ForumTutorials: typeof import('./../components/forum/ForumTutorials.vue')['default']
+    HomeContent: typeof import('./../components/home/HomeContent.vue')['default']
+    HomeSkeleton: typeof import('./../components/home/HomeSkeleton.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
