@@ -152,7 +152,10 @@ export const recordApi = {
   getDetail: (id) => api.get(`/records/${id}`),
   delete: (id) => api.delete(`/records/${id}`),
   // 从本机金铲铲客户端自动同步最近对局
-  syncLCU: () => api.post('/records/sync-lcu')
+  syncLCU: () => api.post('/records/sync-lcu'),
+  // A3: ScreenShare OCR + AI 复盘自动入库（upsert by videoId+timestamp）
+  // 用于把 ScreenShare 页识别完的 AI 建议持久化到 MatchRecord，便于 MyRecord 列表回看
+  upsertOcrAdvice: (payload) => api.post('/records/ocr', payload)
 }
 
 export const aiApi = {

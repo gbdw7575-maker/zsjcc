@@ -21,6 +21,95 @@ export const syncLCU = async (req, res) => {
 }
 
 /**
+ * A2: OCR 识别 + AI 复盘结果自动入库（upsert）
+ * POST /api/records/ocr
+ *
+ * 前端在 ScreenShare 页 AI 复盘返回后调用，依据 videoId+timestamp 去重：
+ *   - 已存在：合并更新 aiAdvice 字段（覆盖最新一次 AI 建议）
+ *   - 不存在：新建 source='ocr' 的对局记录，placement 默认 0（未知，待用户后续补录）
+ *
+ * Body:
+ *   videoId     String  屏幕共享会话 ID（前端生成）
+ *   timestamp   Number  本次 AI 建议的生成时间戳（ms）
+ *   aiAdvice    Object  { text, suggestions[], snapshot{}, provider }
+ *   mode?       String  默认 ranked
+ *   traits?     String[]
+ *   units?       Object[]
+ *   placement?  Number  已知最终排名则一并更新
+ */
+export const upsertOcrRecord = async (req, res) => {
+  try {
+    const { videoId, timestamp, aiAdvice, mode, traits, units, placement } = req.body || {}
+
+    if (!videoId || !timestamp) {
+      return res.status(400).json({
+        success: false,
+        message: '缺少 videoId 或 timestamp，无法去重'
+      })
+    }
+    if (!aiAdvice || !aiAdvice.text) {
+      return res.status(400).json({
+        success: false,
+        message: '缺少 aiAdvice.text，OCR 入库需要 AI 复盘建议文本'
+      })
+    }
+
+    const sourceGameId = `${videoId}#${timestamp}`
+    const advicePayload = {
+      text: String(aiAdvice.text).slice(0, 2000),
+      suggestions: Array.isArray(aiAdvice.suggestions)
+        ? aiAdvice.suggestions.slice(0, 10).map(s => ({
+            title: String(s.title || '').slice(0, 100),
+            content: String(s.content || '').slice(0, 500)
+          }))
+        : [],
+      snapshot: aiAdvice.snapshot && typeof aiAdvice.snapshot === 'object'
+        ? {
+            phase: String(aiAdvice.snapshot.phase || '').slice(0, 50),
+            gold: String(aiAdvice.snapshot.gold || '').slice(0, 20),
+            health: String(aiAdvice.snapshot.health || '').slice(0, 20),
+            level: String(aiAdvice.snapshot.level || '').slice(0, 20),
+            teamName: String(aiAdvice.snapshot.teamName || '').slice(0, 100)
+          }
+        : {},
+      provider: String(aiAdvice.provider || '').slice(0, 50),
+      generatedAt: new Date()
+    }
+
+    // 仅在用户提供有效 placement（1-8）时才更新该字段，避免覆盖已有真实排名
+    const placementUpdate = {}
+    if (typeof placement === 'number' && placement >= 1 && placement <= 8) {
+      placementUpdate.placement = placement
+    }
+
+    const filter = { user: req.user._id, sourceGameId }
+    const update = {
+      $set: {
+        source: 'ocr',
+        aiAdvice: advicePayload,
+        ...placementUpdate
+      },
+      $setOnInsert: {
+        user: req.user._id,
+        sourceGameId,
+        mode: mode || 'ranked',
+        traits: Array.isArray(traits) ? traits : [],
+        units: Array.isArray(units) ? units : [],
+        placement: typeof placement === 'number' && placement >= 1 && placement <= 8 ? placement : 0,
+        playedAt: new Date()
+      }
+    }
+
+    const opts = { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true }
+    const record = await MatchRecord.findOneAndUpdate(filter, update, opts).lean()
+
+    res.status(201).json({ success: true, data: record })
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message })
+  }
+}
+
+/**
  * 录入一条对局记录
  * POST /api/records
  */

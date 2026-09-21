@@ -444,6 +444,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { ElMessage, ElDialog, ElForm, ElFormItem, ElInput, ElSelect, ElButton } from 'element-plus'
 import { aiAnalysisService } from '../services/aiAnalysis'
+import { recordApi } from '../services/api'
 
 const videoRef = ref(null)
 const isSharing = ref(false)
@@ -451,6 +452,13 @@ const shareTime = ref(0)
 const mediaStream = ref(null)
 const browserSupported = ref(true)
 const isDemoMode = ref(false)
+
+// A3: 每次屏幕共享会话生成唯一 videoId，用于 OCR 帧去重入库
+//   - 同一会话内的多帧 AI 分析共享同一 videoId，timestamp 区分每一帧
+//   - 入库 sourceGameId = `${videoId}#${timestamp}` 保证每帧唯一
+const ocrSessionId = ref('')
+const generateOcrSessionId = () =>
+  `ocr-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
 
 // AI Configuration
 const showAIConfig = ref(false)
@@ -609,6 +617,8 @@ const startScreenShare = async () => {
     }
     isSharing.value = true
     isDemoMode.value = false
+    // A3: 本次屏幕共享会话的唯一标识，用于 OCR 入库去重
+    ocrSessionId.value = generateOcrSessionId()
     
     stream.getVideoTracks()[0].onended = () => {
       stopScreenShare(true) // 从track事件触发，不显示消息
@@ -716,7 +726,7 @@ const resetAnalysis = () => {
 
 const analyzeGameFrame = async () => {
   if (!isSharing.value) return
-  
+
   // Use AI analysis if configured
   if (isAIConfigured.value && videoRef.value) {
     try {
@@ -725,6 +735,12 @@ const analyzeGameFrame = async () => {
       updateAnalysisData(analysis)
       lastAnalysisType.value = 'AI'
       analysisError.value = ''
+      // A3: AI 复盘建议自动入库到 MatchRecord（source='ocr'）
+      //   - 失败不阻塞主流程，仅打 console，避免影响识别循环
+      //   - 未登录用户静默跳过（401 由 axios 拦截器处理跳登录）
+      persistOcrAdvice(analysis).catch(err => {
+        console.warn('OCR 入库失败（不影响本次识别）:', err?.message || err)
+      })
     } catch (error) {
       console.error('AI analysis error:', error)
       // 显示错误信息，不使用模拟数据
@@ -737,6 +753,46 @@ const analyzeGameFrame = async () => {
     analysisError.value = '请先配置AI API密钥'
     lastAnalysisType.value = 'Error'
   }
+}
+
+/**
+ * A3: 把 AI 复盘结果异步写入 MatchRecord（source='ocr'）
+ *   - 同一 ocrSessionId + 当前 timestamp 作为 sourceGameId 去重
+ *   - 后端 upsert：已存在则覆盖 aiAdvice，不存在则新建 placement=0 的占位记录
+ */
+const persistOcrAdvice = async (analysis) => {
+  if (!ocrSessionId.value) return
+  if (!analysis || !analysis.suggestions?.length) return
+
+  const adviceText = analysis.suggestions
+    .map(s => `${s.title || ''}: ${s.content || ''}`.trim())
+    .filter(Boolean)
+    .join(' | ')
+  if (!adviceText) return
+
+  const payload = {
+    videoId: ocrSessionId.value,
+    timestamp: Date.now(),
+    aiAdvice: {
+      text: adviceText,
+      suggestions: analysis.suggestions.map(s => ({
+        title: s.title || '',
+        content: s.content || ''
+      })),
+      snapshot: {
+        phase: analysis.phase || '',
+        gold: String(analysis.gold ?? ''),
+        health: String(analysis.health ?? ''),
+        level: String(analysis.level ?? ''),
+        teamName: analysis.teamName || ''
+      },
+      provider: aiAnalysisService.getConfig().provider || ''
+    },
+    mode: 'ranked',
+    traits: detectedSynergies.value || []
+  }
+
+  await recordApi.upsertOcrAdvice(payload)
 }
 
 const analysisConfidence = ref(0)
