@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto">
       <div class="mb-6">
         <h1 class="text-3xl font-bold text-white">卡池概率计算器</h1>
-        <p class="text-gray-400 mt-2">追踪卡池剩余卡量，实时计算D牌概率 — S8怪兽入侵赛季</p>
+        <p class="text-gray-400 mt-2">追踪卡池剩余卡量，实时计算D牌概率 — S18苍林秘境赛季</p>
       </div>
 
       <!-- 顶部控制栏 -->

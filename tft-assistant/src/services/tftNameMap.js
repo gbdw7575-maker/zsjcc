@@ -5,7 +5,7 @@
  */
 import { gameData } from './gameDataService'
 
-// S8 羁绊英文 ID（已去 TFT8_ 前缀）→ 中文名
+// S18 羁绊英文 ID（已去 TFT8_ 前缀）→ 中文名
 const TRAIT_MAP = {
   Ace: '精英战士',
   Admin: 'AI程序',

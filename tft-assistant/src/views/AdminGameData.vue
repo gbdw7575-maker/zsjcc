@@ -20,7 +20,7 @@
       <div class="hud-card p-4 mb-6 flex flex-wrap items-center gap-3">
         <div class="flex items-center gap-2">
           <span class="text-gray-400 text-sm">当前赛季</span>
-          <span class="chip chip--accent">{{ seasons.activeSeason || 'S8' }}</span>
+          <span class="chip chip--accent">{{ seasons.activeSeason || 'S18' }}</span>
           <span v-if="seasons.activePatch" class="text-gray-500 text-xs">补丁 {{ seasons.activePatch }}</span>
         </div>
         <div class="flex-1" />
@@ -115,7 +115,7 @@
         <div class="space-y-4">
           <div>
             <label class="text-gray-400 text-sm mb-1">赛季标识</label>
-            <input v-model="newItem.season" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="如: S8 / S10（留空将归入 active 赛季）" />
+            <input v-model="newItem.season" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="如: S18 / S10（留空将归入 active 赛季）" />
           </div>
           <div>
             <label class="text-gray-400 text-sm mb-1">补丁号</label>
@@ -123,7 +123,7 @@
           </div>
           <div>
             <label class="text-gray-400 text-sm mb-1">版本号</label>
-            <input v-model="newItem.version" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="如: S8怪兽入侵返厂" />
+            <input v-model="newItem.version" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="如: S18苍林秘境" />
           </div>
           <div>
             <label class="text-gray-400 text-sm mb-1">数据类型</label>
@@ -152,7 +152,7 @@
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="text-gray-400 text-sm mb-1">赛季标识</label>
-              <input v-model="bulkSeason" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="如: S8" />
+              <input v-model="bulkSeason" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="如: S18" />
             </div>
             <div>
               <label class="text-gray-400 text-sm mb-1">补丁号</label>
@@ -161,7 +161,7 @@
           </div>
           <div>
             <label class="text-gray-400 text-sm mb-1">版本号</label>
-            <input v-model="bulkVersion" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="如: S8怪兽入侵返厂" />
+            <input v-model="bulkVersion" class="w-full px-4 py-2.5 bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg text-white" placeholder="如: S18苍林秘境" />
           </div>
           <div>
             <label class="text-gray-400 text-sm mb-1">批量数据 (JSON数组格式)</label>
@@ -217,10 +217,10 @@ const editingId = ref(null)
 const showBulkDialog = ref(false)
 const showDetailDialog = ref(false)
 const selectedItem = ref(null)
-const bulkVersion = ref('S8怪兽入侵返厂')
+const bulkVersion = ref('S18苍林秘境')
 const bulkJson = ref('')
 // B4-UI: 赛季切换器状态
-const bulkSeason = ref('S8')
+const bulkSeason = ref('S18')
 const bulkPatch = ref('')
 const pendingSeason = ref('')
 const switching = ref(false)
@@ -233,7 +233,7 @@ const seasons = ref({
 const newItem = ref({
   season: '',
   patch: '',
-  version: 'S8怪兽入侵返厂',
+  version: 'S18苍林秘境',
   type: 'metaTeam',
   source: '',
   dataJson: ''
@@ -347,7 +347,7 @@ const addItem = async () => {
     }
     showAddDialog.value = false
     editingId.value = null
-    newItem.value = { season: '', patch: '', version: 'S8怪兽入侵返厂', type: 'metaTeam', source: '', dataJson: '' }
+    newItem.value = { season: '', patch: '', version: 'S18苍林秘境', type: 'metaTeam', source: '', dataJson: '' }
     await loadGameData()
     await loadSeasons()
     // 通知全局游戏数据服务重新拉取，用户无需手动刷新页面

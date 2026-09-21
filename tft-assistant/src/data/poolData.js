@@ -1,8 +1,8 @@
-// S8 怪兽入侵 卡池数据
+// S18 苍林秘境 卡池数据
 // 卡池大小（每种英雄的总张数）
 export const POOL_SIZE = { 1: 29, 2: 22, 3: 18, 4: 12, 5: 10 }
 
-// 各等级刷新概率 (S8 标准)
+// 各等级刷新概率 (S18 标准)
 export const ROLL_ODDS = {
   1:  { 1: 100, 2: 0,   3: 0,   4: 0,   5: 0 },
   2:  { 1: 100, 2: 0,   3: 0,   4: 0,   5: 0 },
@@ -17,78 +17,84 @@ export const ROLL_ODDS = {
 }
 
 // 各费用英雄种类数
-export const HERO_COUNT_BY_COST = { '1': 13, '2': 13, '3': 13, '4': 12, '5': 8 }
+export const HERO_COUNT_BY_COST = { '1': 14, '2': 13, '3': 14, '4': 14, '5': 10 }
 
-// S8 全部英雄（费用分组）
+// S18 全部英雄（费用分组）
 export const ALL_POOL_HEROES = [
-  // ======= 1 费 (13种) =======
-  { name: '艾希',          en: 'Ashe',       cost: 1, tier: 1 },
-  { name: '布里茨',        en: 'Blitzcrank', cost: 1, tier: 1 },
-  { name: '普朗克',        en: 'Gangplank',  cost: 1, tier: 1 },
-  { name: '凯尔',          en: 'Kayle',      cost: 1, tier: 1 },
-  { name: '璐璐',          en: 'Lulu',       cost: 1, tier: 1 },
-  { name: '拉克丝',        en: 'Lux',        cost: 1, tier: 1 },
-  { name: '墨菲特',        en: 'Malphite',   cost: 1, tier: 1 },
-  { name: '内瑟斯',        en: 'Nasus',      cost: 1, tier: 1 },
-  { name: '波比',          en: 'Poppy',      cost: 1, tier: 1 },
-  { name: '雷克顿',        en: 'Renekton',   cost: 1, tier: 1 },
-  { name: '塞拉斯',        en: 'Sylas',      cost: 1, tier: 1 },
-  { name: '希维尔',        en: 'Sivir',      cost: 1, tier: 1 },
-  { name: '孙悟空',        en: 'WuKong',     cost: 1, tier: 1 },
+  // ======= 1 费 (14种) =======
+  { name: '阿卡丽',     en: 'Akali',       cost: 1, tier: 1 },
+  { name: '卡蜜尔',     en: 'Camille',     cost: 1, tier: 1 },
+  { name: '小炭',       en: 'Cinderling',  cost: 1, tier: 1 },
+  { name: '卡尔玛',     en: 'Karma',       cost: 1, tier: 1 },
+  { name: '古布子',     en: 'Kobuko',      cost: 1, tier: 1 },
+  { name: '蕾欧娜',     en: 'Leona',       cost: 1, tier: 1 },
+  { name: '奥恩',       en: 'Ornn',        cost: 1, tier: 1 },
+  { name: '碎石',       en: 'Pebbles',     cost: 1, tier: 1 },
+  { name: '洛',         en: 'Rakan',       cost: 1, tier: 1 },
+  { name: '雷克塞',     en: "Rek'Sai",     cost: 1, tier: 1 },
+  { name: '维鲁斯',     en: 'Varus',       cost: 1, tier: 1 },
+  { name: '维迦',       en: 'Veigar',      cost: 1, tier: 1 },
+  { name: '霞',         en: 'Xayah',       cost: 1, tier: 1 },
+  { name: '约里克',     en: 'Yorick',      cost: 1, tier: 1 },
 
   // ======= 2 费 (13种) =======
-  { name: '安妮',          en: 'Annie',      cost: 2, tier: 2 },
-  { name: '卡蜜尔',        en: 'Camille',    cost: 2, tier: 2 },
-  { name: '德莱文',        en: 'Draven',     cost: 2, tier: 2 },
-  { name: '伊泽瑞尔',      en: 'Ezreal',     cost: 2, tier: 2 },
-  { name: '菲奥娜',        en: 'Fiora',      cost: 2, tier: 2 },
-  { name: '金克丝',        en: 'Jinx',       cost: 2, tier: 2 },
-  { name: '李青',          en: 'LeeSin',     cost: 2, tier: 2 },
-  { name: '芮尔',          en: 'Rell',       cost: 2, tier: 2 },
-  { name: '悠米',          en: 'Yuumi',      cost: 2, tier: 2 },
-  { name: '蔚',            en: 'Vi',         cost: 2, tier: 2 },
-  { name: '亚索',          en: 'Yasuo',      cost: 2, tier: 2 },
-  { name: '泰隆',          en: 'Talon',      cost: 2, tier: 2 },
-  { name: '乐芙兰',        en: 'Leblanc',    cost: 2, tier: 2 },
+  { name: '阿利斯塔',   en: 'Alistar',     cost: 2, tier: 2 },
+  { name: '凯特琳',     en: 'Caitlyn',     cost: 2, tier: 2 },
+  { name: '伊莉丝',     en: 'Elise',       cost: 2, tier: 2 },
+  { name: '格罗普',     en: 'Gromp',       cost: 2, tier: 2 },
+  { name: '凯尔',       en: 'Kayle',       cost: 2, tier: 2 },
+  { name: '乐芙兰',     en: 'LeBlanc',     cost: 2, tier: 2 },
+  { name: '暗影狼',     en: 'Murkwolf',    cost: 2, tier: 2 },
+  { name: '斯库特尔',   en: 'Scuttlecrab', cost: 2, tier: 2 },
+  { name: '瑟庄妮',     en: 'Sejuani',     cost: 2, tier: 2 },
+  { name: '慎',         en: 'Shen',        cost: 2, tier: 2 },
+  { name: '提莫',       en: 'Teemo',       cost: 2, tier: 2 },
+  { name: '沃里克',     en: 'Warwick',     cost: 2, tier: 2 },
+  { name: '优娜拉',     en: 'Yunara',      cost: 2, tier: 2 },
 
-  // ======= 3 费 (13种) =======
-  { name: '阿利斯塔',      en: 'Alistar',    cost: 3, tier: 3 },
-  { name: '科加斯',        en: 'Chogath',    cost: 3, tier: 3 },
-  { name: '贾克斯',        en: 'Jax',        cost: 3, tier: 3 },
-  { name: '卡莎',          en: 'Kaisa',      cost: 3, tier: 3 },
-  { name: '尼菈',          en: 'Nilah',      cost: 3, tier: 3 },
-  { name: '拉莫斯',        en: 'Rammus',     cost: 3, tier: 3 },
-  { name: '锐雯',          en: 'Riven',      cost: 3, tier: 3 },
-  { name: '赛娜',          en: 'Senna',      cost: 3, tier: 3 },
-  { name: '娑娜',          en: 'Sona',       cost: 3, tier: 3 },
-  { name: '塔莉垭',        en: 'Taliyah',    cost: 3, tier: 3 },
-  { name: '维克兹',        en: 'Velkoz',     cost: 3, tier: 3 },
-  { name: '薇恩',          en: 'Vayne',      cost: 3, tier: 3 },
-  { name: '佐伊',          en: 'Zoe',        cost: 3, tier: 3 },
+  // ======= 3 费 (14种) =======
+  { name: '阿兹尔',     en: 'Azir',        cost: 3, tier: 3 },
+  { name: '卡西奥佩娅', en: 'Cassiopeia',  cost: 3, tier: 3 },
+  { name: '黛安娜',     en: 'Diana',       cost: 3, tier: 3 },
+  { name: '费德提克',   en: 'Fiddlesticks',cost: 3, tier: 3 },
+  { name: '赫卡里姆',   en: 'Hecarim',     cost: 3, tier: 3 },
+  { name: '卡兹克',     en: "Kha'Zix",     cost: 3, tier: 3 },
+  { name: '克格莫',     en: "Kog'Maw",     cost: 3, tier: 3 },
+  { name: '克鲁格',     en: 'Krug',        cost: 3, tier: 3 },
+  { name: '易大师',     en: 'MasterYi',    cost: 3, tier: 3 },
+  { name: '拉莫斯',     en: 'Rammus',      cost: 3, tier: 3 },
+  { name: '锐鹏',       en: 'Raptor',      cost: 3, tier: 3 },
+  { name: '雷恩加尔',   en: 'Rengar',      cost: 3, tier: 3 },
+  { name: '崔丝塔娜',   en: 'Tristana',    cost: 3, tier: 3 },
+  { name: '蔚',         en: 'Vi',          cost: 3, tier: 3 },
 
-  // ======= 4 费 (12种) =======
-  { name: '奥瑞利安 · 索尔', en: 'AurelionSol', cost: 4, tier: 4 },
-  { name: '卑尔维斯',      en: 'Belveth',    cost: 4, tier: 4 },
-  { name: '艾克',          en: 'Ekko',       cost: 4, tier: 4 },
-  { name: '厄斐琉斯',      en: 'Aphelios',   cost: 4, tier: 4 },
-  { name: '扎克',          en: 'Zac',        cost: 4, tier: 4 },
-  { name: '瑟庄妮',        en: 'Sejuani',    cost: 4, tier: 4 },
-  { name: '莎弥拉',        en: 'Samira',     cost: 4, tier: 4 },
-  { name: '索拉卡',        en: 'Soraka',     cost: 4, tier: 4 },
-  { name: '厄运小姐',      en: 'MissFortune',cost: 4, tier: 4 },
-  { name: '迦娜',          en: 'Janna',      cost: 4, tier: 4 },
-  { name: '佛耶戈',        en: 'Viego',      cost: 4, tier: 4 },
-  { name: '瑟提',          en: 'Sett',       cost: 4, tier: 4 },
+  // ======= 4 费 (14种) =======
+  { name: '阿狸',       en: 'Ahri',          cost: 4, tier: 4 },
+  { name: '阿木木',     en: 'Amumu',         cost: 4, tier: 4 },
+  { name: '古代哨兵',   en: 'AncientSentinel',cost: 4, tier: 4 },
+  { name: '厄斐琉斯',   en: 'Aphelios',      cost: 4, tier: 4 },
+  { name: '荆棘甲虫',   en: 'Brambleback',    cost: 4, tier: 4 },
+  { name: '伊泽瑞尔',   en: 'Ezreal',         cost: 4, tier: 4 },
+  { name: '莉莉娅',     en: 'Lillia',         cost: 4, tier: 4 },
+  { name: '墨菲特',     en: 'Malphite',       cost: 4, tier: 4 },
+  { name: '莫甘娜',     en: 'Morgana',        cost: 4, tier: 4 },
+  { name: '奈德丽',     en: 'Nidalee',        cost: 4, tier: 4 },
+  { name: '瑟提',       en: 'Sett',           cost: 4, tier: 4 },
+  { name: '希维尔',     en: 'Sivir',          cost: 4, tier: 4 },
+  { name: '索拉卡',     en: 'Soraka',         cost: 4, tier: 4 },
+  { name: '婕拉',       en: 'Zyra',           cost: 4, tier: 4 },
 
-  // ======= 5 费 (8种) =======
-  { name: '费德提克',      en: 'Fiddlesticks', cost: 5, tier: 5 },
-  { name: '加里奥',        en: 'Galio',      cost: 5, tier: 5 },
-  { name: '蕾欧娜',        en: 'Leona',      cost: 5, tier: 5 },
-  { name: '莫德凯撒',      en: 'Mordekaiser',cost: 5, tier: 5 },
-  { name: '努努和威朗普',  en: 'Nunu',       cost: 5, tier: 5 },
-  { name: '辛德拉',        en: 'Syndra',     cost: 5, tier: 5 },
-  { name: '厄加特',        en: 'Urgot',      cost: 5, tier: 5 },
-  { name: '劫',            en: 'Zed',        cost: 5, tier: 5 },
+  // ======= 5 费 (10种) =======
+  { name: '阿璐妮',     en: 'Alune',        cost: 5, tier: 5 },
+  { name: '艾希',       en: 'Ashe',         cost: 5, tier: 5 },
+  { name: '德莱文',     en: 'Draven',       cost: 5, tier: 5 },
+  { name: '纳尔',       en: 'Gnar',         cost: 5, tier: 5 },
+  { name: '艾翁',       en: 'Ivern',        cost: 5, tier: 5 },
+  { name: '凯南',       en: 'Kennen',       cost: 5, tier: 5 },
+  { name: '拉克丝',     en: 'Lux',          cost: 5, tier: 5 },
+  { name: '茂凯',       en: 'Maokai',       cost: 5, tier: 5 },
+  { name: '塔里克',     en: 'Taric',        cost: 5, tier: 5 },
+  { name: '远古巨龙',   en: 'ElderDragon',  cost: 5, tier: 5 },
 ]
 
 // ============================================================================
@@ -133,7 +139,7 @@ export function calcRollProbability(level, cardCost, totalRemaining, tierPoolTot
  * D牌预算下的达成概率
  * @param {number} level          — 当前等级
  * @param {number} cardCost       — 目标卡费用
- * @param {number} wantedCount    — 还需要几张
+ * @param {number} wantedCount    — 还需要几张（兼容旧参数名）
  * @param {number} remaining      — 该卡剩余总张数
  * @param {number} tierPoolTotal  — 该费总剩余
  * @param {number} rolls          — 可刷新次数

@@ -49,12 +49,12 @@
               <span class="balance-badge buff">加强</span>
               <span class="balance-date">2026.06 版本调整</span>
             </div>
-            <h4 class="balance-title">S8 怪兽入侵赛季平衡调整回顾</h4>
+            <h4 class="balance-title">S18 苍林秘境赛季平衡调整回顾</h4>
             <ul class="balance-list">
-              <li>战斗机甲吸收基础生命值提升5%</li>
-              <li>精英战士处决阈值从30%提升至33%</li>
-              <li>星之守护者法力回复加成40%/70%/100%/150%</li>
-              <li>怪兽棋子基础属性普遍高于同费英雄</li>
+              <li>绽放 Wisps 神火增益数值提升</li>
+              <li>裂隙兽 Alpha Mark 强化属性小幅加强</li>
+              <li>苍木植物生命值与成长系数上调</li>
+              <li>巫会 Essence 累积效率重新平衡</li>
             </ul>
           </div>
           <div class="cfg-block balance-block">
@@ -62,10 +62,10 @@
               <span class="balance-badge nerf">削弱</span>
               <span class="balance-date">持续关注</span>
             </div>
-            <h4 class="balance-title">S8返场版本调整</h4>
+            <h4 class="balance-title">S18 返场版本调整</h4>
             <ul class="balance-list">
-              <li>地下魔盗团叠加进度数值回调</li>
-              <li>部分三费卡技能伤害系数小幅下调</li>
+              <li>灵巧兽 BFF 加成数值回调</li>
+              <li>部分四费卡技能伤害系数小幅下调</li>
             </ul>
           </div>
           <p class="balance-foot">

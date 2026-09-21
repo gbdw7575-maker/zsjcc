@@ -29,7 +29,7 @@ const metaTeams = ref([])
 const loaded = ref(false)
 const loading = ref(false)
 const error = ref(null)
-const currentVersion = ref('S8 怪兽入侵（本地数据）')
+const currentVersion = ref('S18 苍林秘境（本地数据）')
 const fromFallback = ref(true)
 // B3: 当前赛季（未指定时后端返回 active 赛季数据）
 const currentSeason = ref(null)
@@ -180,7 +180,7 @@ async function load({ season } = {}) {
 
 /**
  * B3: 切换当前赛季并重新拉取数据
- * @param {String} season 赛季标识（如 'S8'、'S10'）
+ * @param {String} season 赛季标识（如 'S18'、'S10'）
  */
 async function setCurrentSeason(season) {
   if (!season) return

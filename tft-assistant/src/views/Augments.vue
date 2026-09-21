@@ -19,7 +19,7 @@
               <span class="text-3xl">✨</span>
               金铲铲海克斯强化符文
             </h1>
-            <p class="text-gray-400">S8怪兽入侵赛季 - 官方数据</p>
+            <p class="text-gray-400">S18苍林秘境赛季 - 社区数据</p>
           </div>
           <div class="text-sm text-gray-500">
             <span class="font-semibold text-gray-400">数据来源：</span>
@@ -258,7 +258,7 @@
           <h2 class="text-xl font-bold text-white">数据来源</h2>
         </div>
         <p class="text-gray-300 text-sm leading-relaxed">
-          所有海克斯强化符文数据均来自官方S8怪兽入侵赛季数据，确保与官方设定完全匹配。
+          所有海克斯强化符文数据均来自社区S18苍林秘境赛季数据，确保与游戏内设定基本匹配。
           英雄强化符文包含每个英雄的专属强化，银色、金色、棱彩强化符文按照官方分类展示。
           强度评级基于实战表现和玩家反馈，适配阵容基于官方推荐和主流玩法。
         </p>

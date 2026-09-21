@@ -3,7 +3,7 @@
     <div class="max-w-6xl mx-auto">
       <div class="mb-8">
         <h1 class="text-3xl font-bold text-white">经济运营计算器</h1>
-        <p class="text-gray-400 mt-2">实时计算金币利息、升级成本、最佳D牌时机 — S8怪兽入侵赛季</p>
+        <p class="text-gray-400 mt-2">实时计算金币利息、升级成本、最佳D牌时机 — S18苍林秘境赛季</p>
       </div>
 
       <!-- 面板1: 当前状态输入 -->
@@ -158,7 +158,7 @@
 
       <!-- 面板5: 升级路线图 -->
       <div class="hud-card p-6">
-        <h2 class="text-xl font-bold text-white mb-4">S8 升级经验表</h2>
+        <h2 class="text-xl font-bold text-white mb-4">S18 升级经验表</h2>
         <div class="grid grid-cols-6 gap-3">
           <div v-for="l in levelTable" :key="l.from" class="bg-[var(--bg-card-hover)] rounded-lg p-4 text-center border border-[var(--line-soft)]" :class="{ 'ring-2 ring-[var(--accent-color)]': l.from === state.level }">
             <div class="text-gray-400 text-xs mb-1">Lv{{ l.from }} → {{ l.to }}</div>
@@ -199,7 +199,7 @@ const state = reactive({
 
 const targetLevel = ref(7)
 
-// S8 升级所需经验
+// S18 升级所需经验
 const levelXP = [
   { from: 3, to: 4, xp: 6 },
   { from: 4, to: 5, xp: 10 },
@@ -212,7 +212,7 @@ const levelXP = [
 const levelXPMap = {}
 levelXP.forEach(l => { levelXPMap[l.from] = l })
 
-// S8 抽卡概率：走统一数据入口（本地兜底，后端 pool 数据可覆盖）
+// S18 抽卡概率：走统一数据入口（本地兜底，后端 pool 数据可覆盖）
 const rollOdds = computed(() => {
   const src = gameData.rollOdds.value
   const result = {}

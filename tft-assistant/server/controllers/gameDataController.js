@@ -83,7 +83,7 @@ export const getActiveVersion = async (req, res) => {
       .limit(1)
 
     if (activeData.length === 0) {
-      return res.json({ success: true, data: { version: 'S8怪兽入侵返厂', season: '', patch: '' } })
+      return res.json({ success: true, data: { version: 'S18苍林秘境', season: '', patch: '' } })
     }
 
     // B1: 同时返回 season 与 patch，前端可据此显示"当前赛季：S10"

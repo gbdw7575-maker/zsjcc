@@ -4,7 +4,7 @@
       <div class="flex items-center justify-between mb-8">
         <div>
           <h1 class="text-3xl font-bold text-white">版本大数据</h1>
-          <p class="text-gray-400 mt-2">金铲铲之战 S8怪兽入侵返厂 - 阵容强度 · 装备推荐 · 羁绊排行</p>
+          <p class="text-gray-400 mt-2">金铲铲之战 S18苍林秘境 - 阵容强度 · 装备推荐 · 羁绊排行</p>
         </div>
         <div class="flex items-center gap-4">
           <span class="text-gray-400 text-sm">数据来源: 游侠网、头条攻略</span>

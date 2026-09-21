@@ -20,6 +20,7 @@ const MODE_MAP = {
 
 /**
  * 去掉赛季前缀：TFT8_Ashe → Ashe；兼容 TFT8_Character_xxx
+ * （注：S18 客户端仍可能沿用 TFT8_ 前缀做技术标识，按原样兼容处理）
  */
 function stripSeasonPrefix(raw) {
   if (!raw) return ''

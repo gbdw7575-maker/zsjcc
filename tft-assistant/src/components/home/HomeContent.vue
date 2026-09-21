@@ -206,18 +206,18 @@ const seasonLabel = computed(() => {
     if (v && v.toUpperCase().includes(gameData.currentSeason.value.toUpperCase())) return v
     return gameData.currentSeason.value
   }
-  return gameData.currentVersion.value || 'S8 怪兽入侵'
+  return gameData.currentVersion.value || 'S18 苍林秘境'
 })
 
 const seasonTitle = computed(() => {
   const v = gameData.currentVersion.value || ''
   const m = /S\d+\s*([^\n（(]+)/.exec(v)
-  return m ? `${m[1].trim()}赛季` : '怪兽入侵赛季返场'
+  return m ? `${m[1].trim()}赛季` : '苍林秘境赛季'
 })
 
 const seasonSubtitle = computed(() => {
   if (gameData.fromFallback.value) {
-    return '英雄强化、机甲羁绊、地下魔盗团 —— 经典赛季重磅回归'
+    return 'Wisps 神火、绽放裂隙、苍木植物 —— 全新赛季重磅上线'
   }
   return '当前赛季数据已同步，阵容 / 装备 / 羁绊实时更新'
 })

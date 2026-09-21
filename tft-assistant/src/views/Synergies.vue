@@ -9,7 +9,7 @@
           </svg>
           <span class="font-medium">返回首页</span>
         </router-link>
-        <span class="ml-4 text-sm text-gray-500">金铲铲之战 · S8怪兽入侵赛季</span>
+        <span class="ml-4 text-sm text-gray-500">金铲铲之战 · S18苍林秘境赛季</span>
       </div>
 
       <!-- 页面标题 -->
@@ -17,7 +17,7 @@
         <h1 class="text-4xl font-bold text-white mb-4">
           <span class="bg-gradient-to-r from-[#4aefe0] via-[#ffc857] to-[#60a5fa] bg-clip-text text-transparent">羁绊大全</span>
         </h1>
-        <p class="text-xl text-gray-300 mb-2">S8怪兽入侵赛季所有羁绊效果详解</p>
+        <p class="text-xl text-gray-300 mb-2">S18苍林秘境赛季所有羁绊效果详解</p>
         <div class="text-sm text-gray-500 mt-3">
           <span class="font-semibold text-gray-400">数据来源：</span>
           <span>金铲铲之战官方公告、虎扑游戏电竞资讯、云顶之弈数据站</span>

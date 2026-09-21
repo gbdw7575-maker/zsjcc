@@ -9,7 +9,7 @@
           </svg>
           <span class="font-medium">返回首页</span>
         </router-link>
-        <span class="ml-4 text-sm text-gray-500">金铲铲之战 · S8怪兽入侵赛季</span>
+        <span class="ml-4 text-sm text-gray-500">金铲铲之战 · S18苍林秘境赛季</span>
       </div>
 
       <!-- 加载中/未找到 -->

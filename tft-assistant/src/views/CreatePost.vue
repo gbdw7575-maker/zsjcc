@@ -216,7 +216,7 @@ const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'vi
 const availableTags = [
   '阵容推荐', '攻略分享', '运营思路', '海克斯', '羁绊',
   '讨论交流', '组队招募', '版本资讯', '新手攻略', '避坑指南',
-  'S8', '机甲怪兽', '地下魔盗团', '福牛守护者', '至高天'
+  'S18', '绽放裂隙', '苍木召唤', '巫会灵巧'
 ]
 
 const isFormValid = computed(() => {
