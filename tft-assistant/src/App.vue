@@ -15,13 +15,13 @@
             <span class="font-display font-bold text-[15px] hidden sm:block tracking-wide" :style="{ color: 'var(--text-primary)' }">掌上金铲铲</span>
           </router-link>
 
-          <!-- 导航链接 -->
-          <div class="flex items-center gap-5">
+          <!-- 导航链接（桌面） -->
+          <div class="hidden lg:flex items-center gap-5">
             <router-link
               v-for="link in navLinks"
               :key="link.to"
               :to="link.to"
-              :class="['nav-link', link.hidden ? 'hidden md:block' : '', isActive(link.to) ? 'is-active' : '']"
+              :class="['nav-link', link.hidden ? 'hidden xl:block' : '', isActive(link.to) ? 'is-active' : '']"
             >
               {{ link.label }}
             </router-link>
@@ -36,6 +36,19 @@
 
           <!-- 用户操作 -->
           <div class="flex items-center gap-2.5">
+            <!-- 移动端汉堡按钮 -->
+            <button
+              class="icon-btn lg:hidden"
+              @click="mobileNavOpen = !mobileNavOpen"
+              title="菜单"
+            >
+              <svg v-if="!mobileNavOpen" xmlns="http://www.w3.org/2000/svg" class="h-[19px] w-[19px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-[19px] w-[19px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
             <!-- 主题设置 -->
             <button
               @click="showThemeDialog = true"
@@ -59,6 +72,29 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- 移动端下拉导航 -->
+      <div v-show="mobileNavOpen" class="mobile-nav lg:hidden">
+        <router-link
+          v-for="link in navLinks"
+          :key="link.to"
+          :to="link.to"
+          class="m-nav-link"
+          @click="mobileNavOpen = false"
+        >
+          <span>{{ link.label }}</span>
+          <i v-if="isActive(link.to)" class="m-active-dot"></i>
+        </router-link>
+        <router-link
+          v-if="userStore.userInfo?.role === 'admin'"
+          to="/admin"
+          class="m-nav-link"
+          @click="mobileNavOpen = false"
+        >
+          <span>管理后台</span>
+          <i v-if="isActive('/admin')" class="m-active-dot"></i>
+        </router-link>
       </div>
     </nav>
     <main class="min-h-screen">
@@ -158,6 +194,7 @@ const themeStore = useThemeStore()
 const router = useRouter()
 
 const showThemeDialog = ref(false)
+const mobileNavOpen = ref(false)
 
 const showNav = computed(() => {
   const hideRoutes = ['/login', '/register']
@@ -421,6 +458,42 @@ onMounted(() => {
 .register-btn:hover {
   color: var(--text-primary);
   background: rgba(255, 255, 255, 0.05);
+}
+
+/* ---- 移动端下拉导航 ---- */
+.mobile-nav {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  padding: 10px 16px 14px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--line-strong);
+  box-shadow: 0 24px 40px -24px rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+}
+.m-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 6px;
+  font-family: var(--font-display);
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line-soft);
+}
+.m-nav-link:last-child { border-bottom: none; }
+.m-nav-link:active { color: var(--accent-color); }
+.m-active-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.9);
 }
 
 /* ---- 页面切换过渡 ---- */
