@@ -38,9 +38,9 @@
             </div>
           </div>
           <div v-if="equipment.stats && Object.keys(equipment.stats).length > 0" class="flex flex-wrap gap-2 mb-4">
-            <span v-for="(value, key) in equipment.stats" :key="key" class="text-xs px-3 py-1 bg-purple-500/30 text-purple-300 rounded-full">{{ statLabel(key) }} +{{ value }}</span>
+            <span v-for="(value, key) in equipment.stats" :key="key" class="text-xs px-3 py-1 bg-[rgba(var(--accent-rgb),0.12)] text-[var(--accent-color)] rounded-full">{{ statLabel(key) }} +{{ value }}</span>
           </div>
-          <div v-if="equipment.components && equipment.components.length > 0" class="p-4 bg-white/5 rounded-xl">
+          <div v-if="equipment.components && equipment.components.length > 0" class="p-4 bg-[var(--bg-card-hover)] rounded-lg">
             <p class="text-sm text-gray-400 mb-3">合成路径:</p>
             <div class="flex items-center justify-center gap-3">
               <div v-for="(component, index) in equipment.components" :key="component" class="flex items-center">
@@ -65,21 +65,23 @@
         </div>
       </div>
       
-      <div class="mt-12 bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10">
+      <div class="mt-12 bg-[var(--bg-card)] border border-[var(--line-soft)] rounded-lg p-8">
         <h2 class="text-2xl font-bold text-white mb-6">合成公式速览</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div v-for="recipe in compositeRecipes" :key="recipe.id" class="flex items-center gap-3 p-4 bg-white/5 rounded-xl min-w-0">
+          <div v-for="recipe in compositeRecipes" :key="recipe.id" class="flex items-center gap-3 p-4 bg-[var(--bg-card-hover)] rounded-lg min-w-0">
             <div class="flex items-center gap-1.5 flex-shrink-0">
-              <img 
-                :src="getComponentIcon(recipe.component1)" 
+              <img
+                :src="getComponentIcon(recipe.component1)"
                 :alt="recipe.component1"
+                loading="lazy"
                 class="w-10 h-10 rounded-lg object-contain border-2 border-gray-500 flex-shrink-0"
                 @error="handleItemImageError"
               />
               <span class="text-gray-400 text-sm">+</span>
-              <img 
-                :src="getComponentIcon(recipe.component2)" 
+              <img
+                :src="getComponentIcon(recipe.component2)"
                 :alt="recipe.component2"
+                loading="lazy"
                 class="w-10 h-10 rounded-lg object-contain border-2 border-gray-500 flex-shrink-0"
                 @error="handleItemImageError"
               />
@@ -135,7 +137,7 @@ const typeBorderClass = (type) => {
     'attack': 'border-red-500',
     'magic': 'border-blue-500',
     'defense': 'border-green-500',
-    'utility': 'border-purple-500',
+    'utility': 'border-[var(--accent-color)]',
     'base': 'border-gray-400',
     'combined': 'border-yellow-500'
   }
@@ -147,7 +149,7 @@ const typeClass = (type) => {
     'attack': 'bg-gradient-to-br from-red-500/30 to-orange-500/30 border border-red-500/30',
     'magic': 'bg-gradient-to-br from-blue-500/30 to-cyan-500/30 border border-blue-500/30',
     'defense': 'bg-gradient-to-br from-green-500/30 to-emerald-500/30 border border-green-500/30',
-    'utility': 'bg-gradient-to-br from-purple-500/30 to-pink-500/30 border border-purple-500/30'
+    'utility': 'bg-[rgba(var(--accent-rgb),0.15)] border border-[rgba(var(--accent-rgb),0.3)]'
   }
   return classes[type] || 'bg-gray-500/30'
 }
@@ -157,13 +159,13 @@ const typeBadgeClass = (type) => {
     'attack': 'bg-red-500/20 text-red-400',
     'magic': 'bg-blue-500/20 text-blue-400',
     'defense': 'bg-green-500/20 text-green-400',
-    'utility': 'bg-purple-500/20 text-purple-400'
+    'utility': 'bg-[rgba(var(--accent-rgb),0.12)] text-[var(--accent-color)]'
   }
   return classes[type] || 'bg-gray-500/20 text-gray-400'
 }
 
 const levelClass = (type) => {
-  return type === 'base' ? 'bg-gray-500/30 text-gray-300' : 'bg-purple-500/30 text-purple-300'
+  return type === 'base' ? 'bg-gray-500/30 text-gray-300' : 'bg-[rgba(var(--accent-rgb),0.15)] text-[var(--accent-color)]'
 }
 
 const statLabel = (key) => {
@@ -201,25 +203,23 @@ const getComponentIcon = (name) => {
   return '/images/items/default-item.png'
 }
 
-const showItemDetails = (equipment) => {
-  // 可以在这里添加点击装备显示详情的逻辑
-  console.log('Clicked item:', equipment.name)
+const showItemDetails = () => {
+  // 预留：点击装备显示详情的逻辑
 }
 </script>
 
 <style scoped>
 .equipment-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg);
   padding: 24px;
   transition: all 0.3s ease;
 }
 
 .equipment-card:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(168, 85, 247, 0.3);
+  background: var(--bg-card-hover);
+  border-color: rgba(var(--accent-rgb), 0.35);
   transform: translateY(-3px);
 }
 </style>

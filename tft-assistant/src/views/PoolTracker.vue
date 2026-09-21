@@ -7,17 +7,17 @@
       </div>
 
       <!-- 顶部控制栏 -->
-      <div class="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 mb-6">
+      <div class="bg-[var(--bg-card)] border border-[var(--line-soft)] rounded-lg p-4 mb-6">
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 items-end">
           <div>
             <label class="text-gray-400 text-xs block mb-1">当前等级</label>
-            <select v-model.number="currentLevel" class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white font-bold focus:border-purple-400 outline-none" style="color-scheme: dark">
+            <select v-model.number="currentLevel" class="w-full bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg px-3 py-2 text-white font-bold focus:border-[var(--accent-color)] outline-none" style="color-scheme: dark">
               <option v-for="l in 9" :key="l" :value="l" class="bg-slate-800 text-white">Lv.{{ l }}</option>
             </select>
           </div>
           <div>
             <label class="text-gray-400 text-xs block mb-1">目标英雄</label>
-            <select v-model="targetHero" class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white font-bold focus:border-purple-400 outline-none" style="color-scheme: dark">
+            <select v-model="targetHero" class="w-full bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg px-3 py-2 text-white font-bold focus:border-[var(--accent-color)] outline-none" style="color-scheme: dark">
               <option value="" class="bg-slate-800 text-white">-- 选择英雄 --</option>
               <optgroup v-for="tier in [1,2,3,4,5]" :key="tier" :label="tier + '费英雄'" class="bg-slate-800 text-gray-400">
                 <option v-for="h in heroesByTier[tier]" :key="h.en" :value="h.en" class="bg-slate-800 text-white">{{ h.name }} ({{ tier }}费)</option>
@@ -26,7 +26,7 @@
           </div>
           <div>
             <label class="text-gray-400 text-xs block mb-1">目标总张数</label>
-            <select v-model.number="targetCount" class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white font-bold focus:border-purple-400 outline-none" style="color-scheme: dark">
+            <select v-model.number="targetCount" class="w-full bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg px-3 py-2 text-white font-bold focus:border-[var(--accent-color)] outline-none" style="color-scheme: dark">
               <option v-for="n in maxTargetOptions" :key="n" :value="n" class="bg-slate-800 text-white">
                 {{ n }}张{{ n >= 6 ? ' (追三星)' : '' }}
               </option>
@@ -34,7 +34,7 @@
           </div>
           <div>
             <label class="text-gray-400 text-xs block mb-1">计划D牌金币</label>
-            <input v-model.number="planGold" type="number" min="0" max="200" class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white font-bold focus:border-purple-400 outline-none" />
+            <input v-model.number="planGold" type="number" min="0" max="200" class="w-full bg-[var(--bg-card-hover)] border border-[var(--line-strong)] rounded-lg px-3 py-2 text-white font-bold focus:border-[var(--accent-color)] outline-none" />
           </div>
           <button @click="resetAll" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-xl text-sm font-medium transition-colors border border-red-500/20">
             重置卡池
@@ -45,7 +45,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <!-- 左侧：卡池追踪 (3列) -->
         <div class="lg:col-span-3 space-y-4">
-          <div v-for="tier in [1,2,3,4,5]" :key="tier" class="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+          <div v-for="tier in [1,2,3,4,5]" :key="tier" class="bg-[var(--bg-card)] border border-[var(--line-soft)] rounded-lg p-4">
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-3">
                 <h3 class="text-lg font-bold" :class="tierColor(tier)">{{ tier }}费英雄</h3>
@@ -101,7 +101,7 @@
         <!-- 右侧：概率计算 (2列) -->
         <div class="lg:col-span-2 space-y-4">
           <!-- 概率结果面板 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+          <div class="bg-[var(--bg-card)] border border-[var(--line-soft)] rounded-lg p-6">
             <h3 class="text-lg font-bold text-white mb-4">概率分析</h3>
             <div v-if="!targetHero" class="text-gray-500 text-sm text-center py-8">
               请选择一个目标英雄
@@ -121,14 +121,14 @@
 
               <!-- 基本信息 -->
               <div class="grid grid-cols-2 gap-3 text-sm">
-                <div class="bg-white/5 rounded-xl p-3">
+                <div class="bg-[var(--bg-card-hover)] rounded-lg p-3">
                   <div class="text-gray-500 mb-1">卡池剩余</div>
                   <div class="text-2xl font-bold" :class="targetRemaining <= 2 ? 'text-red-400' : targetRemaining <= 5 ? 'text-yellow-400' : 'text-green-400'">
                     {{ targetRemaining }}
                   </div>
                   <div class="text-xs text-gray-600">/ {{ targetPoolTotal }} 张共{{ targetTierCount }}种</div>
                 </div>
-                <div class="bg-white/5 rounded-xl p-3">
+                <div class="bg-[var(--bg-card-hover)] rounded-lg p-3">
                   <div class="text-gray-500 mb-1">同费剩余</div>
                   <div class="text-2xl font-bold text-white">{{ targetTierRemaining }}</div>
                   <div class="text-xs text-gray-600">张 ({{ targetHeroCost }}费卡池)</div>
@@ -136,21 +136,21 @@
               </div>
 
               <!-- 单格概率 -->
-              <div class="bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-xl p-4 border border-purple-500/20">
+              <div class="bg-[rgba(var(--accent-rgb),0.08)] rounded-lg p-4 border border-[var(--line-soft)]">
                 <div class="flex items-center justify-between">
                   <div>
                     <div class="text-gray-400 text-xs mb-1">每格出现概率</div>
-                    <div class="text-3xl font-bold text-purple-300">{{ safePercent(slotProb) }}</div>
+                    <div class="text-3xl font-bold text-[var(--accent-color)]">{{ safePercent(slotProb) }}</div>
                   </div>
                   <div>
                     <div class="text-gray-400 text-xs mb-1">每次刷新(5格)</div>
-                    <div class="text-3xl font-bold text-pink-300">{{ safePercent(rollProb) }}</div>
+                    <div class="text-3xl font-bold text-[var(--accent-gold)]">{{ safePercent(rollProb) }}</div>
                   </div>
                 </div>
               </div>
 
               <!-- D牌预算分析 -->
-              <div v-if="planGold > 0" class="bg-white/5 rounded-xl p-4">
+              <div v-if="planGold > 0" class="bg-[var(--bg-card-hover)] rounded-lg p-4">
                 <h4 class="text-sm text-gray-400 mb-3">{{ planGold }}金币 ≈ {{ Math.floor(planGold / 2) }}次刷新，共 {{ Math.floor(planGold / 2) * 5 }} 格</h4>
                 <div class="relative pt-1">
                   <div class="flex mb-1 items-center justify-between">
@@ -181,25 +181,25 @@
 
               <!-- 期望消耗 -->
               <div class="grid grid-cols-3 gap-2 text-center text-sm">
-                <div class="bg-white/5 rounded-xl p-3">
+                <div class="bg-[var(--bg-card-hover)] rounded-lg p-3">
                   <div class="text-gray-500 mb-1">期望刷新</div>
                   <div class="text-xl font-bold text-yellow-400">{{ safeRolls(fishingStats.expectedRolls) }}</div>
                   <div class="text-xs text-gray-600">次</div>
                 </div>
-                <div class="bg-white/5 rounded-xl p-3">
+                <div class="bg-[var(--bg-card-hover)] rounded-lg p-3">
                   <div class="text-gray-500 mb-1">50%概率</div>
                   <div class="text-xl font-bold text-orange-400">{{ safeRolls(fishingStats.probability50) }}</div>
                   <div class="text-xs text-gray-600">次 ({{ safeGold(fishingStats.probability50 * 2) }}g)</div>
                 </div>
-                <div class="bg-white/5 rounded-xl p-3">
+                <div class="bg-[var(--bg-card-hover)] rounded-lg p-3">
                   <div class="text-gray-500 mb-1">80%概率</div>
-                  <div class="text-xl font-bold text-purple-400">{{ safeRolls(fishingStats.probability80) }}</div>
+                  <div class="text-xl font-bold text-[var(--accent-color)]">{{ safeRolls(fishingStats.probability80) }}</div>
                   <div class="text-xs text-gray-600">次 ({{ safeGold(fishingStats.probability80 * 2) }}g)</div>
                 </div>
               </div>
 
               <!-- 概率曲线 -->
-              <div class="bg-white/5 rounded-xl p-4">
+              <div class="bg-[var(--bg-card-hover)] rounded-lg p-4">
                 <h4 class="text-sm text-gray-400 mb-3">概率随D牌次数变化</h4>
                 <div class="flex items-end gap-1 h-24">
                   <div v-for="(p, i) in probabilityCurve" :key="i"
@@ -218,7 +218,7 @@
           </div>
 
           <!-- 当前等级刷新概率 -->
-          <div class="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+          <div class="bg-[var(--bg-card)] border border-[var(--line-soft)] rounded-lg p-4">
             <h3 class="text-sm text-gray-400 mb-3">Lv.{{ currentLevel }} 刷新概率</h3>
             <div class="flex gap-1">
               <div v-for="tier in [1,2,3,4,5]" :key="tier" class="flex-1 text-center">
@@ -279,12 +279,13 @@ function resetAll() {
   planGold.value = 0
 }
 
+// 费用档位色遵循游戏内语义（1灰/2绿/3蓝/4紫/5金），4费紫用显式色值以免被品牌重映射覆盖
 function tierColor(tier) {
-  return { 1: 'text-gray-400', 2: 'text-green-400', 3: 'text-blue-400', 4: 'text-purple-400', 5: 'text-yellow-400' }[tier] || 'text-white'
+  return { 1: 'text-gray-400', 2: 'text-green-400', 3: 'text-blue-400', 4: 'text-[#c084fc]', 5: 'text-yellow-400' }[tier] || 'text-white'
 }
 
 function tierBarColor(tier) {
-  return { 1: 'bg-gray-400', 2: 'bg-green-400', 3: 'bg-blue-400', 4: 'bg-purple-400', 5: 'bg-yellow-400' }[tier] || 'bg-gray-400'
+  return { 1: 'bg-gray-400', 2: 'bg-green-400', 3: 'bg-blue-400', 4: 'bg-[#c084fc]', 5: 'bg-yellow-400' }[tier] || 'bg-gray-400'
 }
 
 // 从 gameData 查找英雄图标
@@ -298,7 +299,7 @@ function costBorderClass(cost) {
     1: 'border-2 border-gray-500/50 rounded',
     2: 'border-2 border-green-500/50 rounded',
     3: 'border-2 border-blue-500/50 rounded', 
-    4: 'border-2 border-purple-500/50 rounded',
+    4: 'border-2 border-[rgba(168,85,247,0.5)] rounded',
     5: 'border-2 border-yellow-500/50 rounded'
   }[cost] || 'border-2 border-gray-500/30 rounded'
 }
@@ -307,10 +308,10 @@ function slotClass(hero) {
   const remaining = getRemaining(hero)
   const isTarget = targetHero.value === hero.en
   if (remaining <= 0) return 'bg-red-500/20 border-red-500/50 opacity-50'
-  if (isTarget) return 'bg-purple-500/30 border-purple-400 ring-1 ring-purple-400'
+  if (isTarget) return 'bg-[rgba(var(--accent-rgb),0.25)] border-[var(--accent-color)] ring-1 ring-[var(--accent-color)]'
   if (remaining <= 2) return 'bg-red-500/10 border-red-500/20'
   if (remaining <= 5) return 'bg-yellow-500/10 border-yellow-500/20'
-  return 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20'
+  return 'bg-[var(--bg-card-hover)] border-[var(--line-soft)] hover:border-[var(--line-strong)]'
 }
 
 function heroNameClass(hero) {
