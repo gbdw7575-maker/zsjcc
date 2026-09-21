@@ -58,7 +58,7 @@
                 style="width: 100%; display: block; min-height: 200px; object-fit: contain;"
                 @click="previewMedia(item)"
                 @error="e => { e.target.alt = '加载失败: ' + getMediaUrl(item.url); e.target.style.minHeight = '40px'; e.target.style.background = '#331111'; }"
-                @load="e => console.log('图片加载成功:', e.target.src)"
+                loading="lazy"
               />
               <!-- 视频 -->
               <video 
@@ -80,7 +80,7 @@
               class="fixed inset-0 z-50 bg-black/90 flex items-center justify-center cursor-pointer"
               @click="previewVisible = false"
             >
-              <img :src="getMediaUrl(previewItem?.url)" class="max-w-[90vw] max-h-[90vh] object-contain" />
+              <img :src="getMediaUrl(previewItem?.url)" class="max-w-[90vw] max-h-[90vh] object-contain" loading="lazy" />
               <button 
                 class="absolute top-4 right-4 text-white text-3xl hover:text-gray-300"
                 @click.stop="previewVisible = false"

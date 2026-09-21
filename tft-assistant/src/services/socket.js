@@ -24,7 +24,7 @@ class SocketService {
 
     this.socket.on('connect', () => {
       this.connected.value = true
-      console.log('Socket已连接')
+      // socket connected
       if (this.onConnectionCallback) {
         this.onConnectionCallback(true)
       }
@@ -32,7 +32,7 @@ class SocketService {
 
     this.socket.on('disconnect', () => {
       this.connected.value = false
-      console.log('Socket已断开')
+      // socket disconnected
       if (this.onConnectionCallback) {
         this.onConnectionCallback(false)
       }
@@ -47,7 +47,7 @@ class SocketService {
 
     this.socket.on('message_sent', (message) => {
       // 消息发送成功确认
-      console.log('消息发送成功:', message)
+      // message sent
     })
 
     this.socket.on('error', (error) => {

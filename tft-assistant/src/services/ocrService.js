@@ -18,7 +18,7 @@ class OCRService {
     this.initPromise = Tesseract.createWorker('chi_sim+eng', 1, {
       logger: m => {
         if (m.status === 'recognizing text') {
-          console.log(`OCR进度: ${Math.round(m.progress * 100)}%`)
+
         }
       }
     }).then(worker => {

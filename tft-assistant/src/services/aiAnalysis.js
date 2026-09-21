@@ -238,8 +238,6 @@ class AIAnalysisService {
   async analyzeWithDeepSeekVision(imageBase64) {
     const providerConfig = this.visionProviders[this.apiProvider] || this.visionProviders.qwen
 
-    console.log(`使用Vision服务商: ${providerConfig.name}`)
-
     const data = await this.callProvider({
       messages: [
         {
@@ -264,7 +262,7 @@ class AIAnalysisService {
       // 部分推理模型正文在 reasoning_content
       const reasoningContent = message?.reasoning_content || ''
       if (reasoningContent) {
-        console.log('使用reasoning_content:', reasoningContent)
+
         return this.parseAIResponse(reasoningContent, true)
       }
       throw new Error(`${providerConfig.name}返回内容为空`)
@@ -276,14 +274,12 @@ class AIAnalysisService {
   // Analyze with OCR + DeepSeek (备用方案，当Vision不可用时)
   async analyzeWithOCRAndDeepSeek(videoElement) {
     // 第一步：使用OCR识别画面信息
-    console.log('开始OCR识别...')
+
     const ocrResult = await ocrService.recognizeGameInfo(videoElement)
     
     if (!ocrResult) {
       throw new Error('OCR识别失败，请确保画面清晰')
     }
-
-    console.log('OCR识别结果:', ocrResult)
 
     // 第二步：将OCR识别的文字信息经服务端代理发送给DeepSeek分析
     const textPrompt = this.getTextAnalysisPrompt(ocrResult)
@@ -469,7 +465,7 @@ S8赛季羁绊：战斗机甲、怪兽、福牛守护者、地下魔盗团、星
       const recentGold = recentData.find(d => d.gold !== '未识别')?.gold
       if (recentGold && !this.isClose(currentData.gold, recentGold, 30)) {
         verifiedData.gold = recentGold
-        console.log(`金币识别异常: 当前${currentData.gold}, 历史${recentGold}, 使用历史值`)
+
       }
     }
     
@@ -477,7 +473,7 @@ S8赛季羁绊：战斗机甲、怪兽、福牛守护者、地下魔盗团、星
       const recentHealth = recentData.find(d => d.health !== '未识别')?.health
       if (recentHealth && !this.isClose(currentData.health, recentHealth, 20)) {
         verifiedData.health = recentHealth
-        console.log(`血量识别异常: 当前${currentData.health}, 历史${recentHealth}, 使用历史值`)
+
       }
     }
     
@@ -503,8 +499,7 @@ S8赛季羁绊：战斗机甲、怪兽、福牛守护者、地下魔盗团、星
 
   // Parse AI response into structured data
   parseAIResponse(responseText, isRealAnalysis = false) {
-    console.log('AI返回原始内容:', responseText)
-    
+
     try {
       let jsonStr = null
       const jsonMatch = responseText.match(/\{[\s\S]*\}/)
@@ -520,8 +515,7 @@ S8赛季羁绊：战斗机甲、怪兽、福牛守护者、地下魔盗团、星
       if (jsonStr) {
         try {
           const parsed = JSON.parse(jsonStr)
-          console.log('解析成功:', parsed)
-          
+
           const validated = this.validateGameData(parsed)
           const verified = this.verifyWithHistory(validated)
           const confidence = this.calculateConfidence(verified)
@@ -536,8 +530,7 @@ S8赛季羁绊：战斗机甲、怪兽、福牛守护者、地下魔盗团、星
           console.error('JSON解析失败:', parseError, '原始字符串:', jsonStr)
         }
       }
-      
-      console.log('尝试从文本提取信息...')
+
       return this.parseTextResponse(responseText, isRealAnalysis)
       
     } catch (error) {
