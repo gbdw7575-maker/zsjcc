@@ -11,6 +11,11 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AdminAnnouncements: typeof import('./../components/admin/AdminAnnouncements.vue')['default']
+    AdminFeedbacks: typeof import('./../components/admin/AdminFeedbacks.vue')['default']
+    AdminMaintenance: typeof import('./../components/admin/AdminMaintenance.vue')['default']
+    AdminReview: typeof import('./../components/admin/AdminReview.vue')['default']
+    AdminUsers: typeof import('./../components/admin/AdminUsers.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElDialog: typeof import('element-plus/es')['ElDialog']
